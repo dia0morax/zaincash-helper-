@@ -22,11 +22,12 @@ let activeCompanyFilter = 'all';
 let fullScreenDriverId = null;
 
 // ==========================================
-// 2. إدارة تسجيل الدخول المباشر (Google Auth)
+// 2. إدارة تسجيل الدخول (Google / Anonymous Guest)
 // ==========================================
 const authScreen = document.getElementById('authScreen');
 const appContainer = document.getElementById('appContainer');
 const googleLoginBtn = document.getElementById('googleLoginBtn');
+const guestLoginBtn = document.getElementById('guestLoginBtn');
 const userEmailDisplay = document.getElementById('userEmailDisplay');
 
 // مراقبة حالة المستخدم
@@ -35,8 +36,11 @@ auth.onAuthStateChanged((user) => {
         authScreen.classList.add('hidden');
         appContainer.classList.remove('hidden');
         if (userEmailDisplay) {
-            userEmailDisplay.textContent = `الحساب الحالي: ${user.email}`;
+            userEmailDisplay.textContent = user.isAnonymous 
+                ? `الحساب الحالي: زائر (مجهول)` 
+                : `الحساب الحالي: ${user.email}`;
         }
+        // جلب وقراءة كافة البيانات المخزنة من قاعدة البيانات للجميع
         loadDriversFromCloud();
     } else {
         authScreen.classList.remove('hidden');
@@ -44,15 +48,33 @@ auth.onAuthStateChanged((user) => {
     }
 });
 
-// تسجيل الدخول بضغطة زر عبر حسابات Google
+// 1. تسجيل الدخول كزائر بضغطة زر واحدة (بدون حساب)
+if (guestLoginBtn) {
+    guestLoginBtn.onclick = async () => {
+        try {
+            await auth.signInAnonymously();
+        } catch (error) {
+            alert("فشل الدخول كزائر: " + error.message);
+        }
+    };
+}
+
+// 2. تسجيل الدخول عبر حساب Google
 googleLoginBtn.onclick = async () => {
     const provider = new firebase.auth.GoogleAuthProvider();
     try {
-        await auth.signInWithPopup(provider);
+        await auth.signInWithRedirect(provider);
     } catch (error) {
         alert("فشل تسجيل الدخول بـ Google: " + error.message);
     }
 };
+
+// استقبال نتيجة إعادة التوجيه بعد تسجيل الدخول بـ Google
+auth.getRedirectResult().catch((error) => {
+    if (error.code) {
+        alert("خطأ في تسجيل الدخول: " + error.message);
+    }
+});
 
 document.getElementById('logoutBtn').onclick = () => auth.signOut();
 
