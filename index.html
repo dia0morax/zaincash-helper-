@@ -10,17 +10,21 @@
 </head>
 <body>
 
-    <!-- 1. شاشة تسجيل الدخول المباشر بـ Google -->
+    <!-- 1. شاشة تسجيل الدخول المباشر (Google / زائر) -->
     <div id="authScreen" class="auth-screen">
         <div class="auth-card">
             <div class="auth-header">
                 <i class="fa-solid fa-wallet brand-icon"></i>
                 <h2>مساعد زين كاش</h2>
-                <p>سجل الدخول مباشرة باستخدام حساب Google</p>
+                <p>سجل الدخول لاستخدام المساعد وإدارة السائقين</p>
             </div>
             
             <button id="googleLoginBtn" class="submit-btn google-btn">
                 <i class="fa-brands fa-google"></i> المتابعة باستخدام حساب Google
+            </button>
+
+            <button id="guestLoginBtn" class="submit-btn btn-secondary" style="margin-top: 12px; font-weight: bold;">
+                <i class="fa-solid fa-user-secret"></i> الدخول كزائر (بدون حساب)
             </button>
         </div>
     </div>
