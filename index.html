@@ -906,22 +906,36 @@
             return deviceId;
         }
 
-        // مراقبة حالة المستخدم اللحظية
-        auth.onAuthStateChanged(async (user) => {
-            if (user) {
-                const username = user.email.split('@')[0];
-                if (userEmailDisplay) userEmailDisplay.textContent = `الحساب الحالي: ${username}`;
-                
-                authScreen.classList.add('hidden');
-                appContainer.classList.remove('hidden');
-                loadDriversFromCloud();
-            } else {
-                authScreen.classList.remove('hidden');
-                appContainer.classList.add('hidden');
+        // فحص الجلسة المحفوظة عند فتح الموقع
+        async function checkSavedSession() {
+            const savedUser = localStorage.getItem('zaincash_logged_user');
+            if (savedUser) {
+                try {
+                    const userDoc = await db.collection("subscriptions").doc(savedUser).get();
+                    if (userDoc.exists) {
+                        const data = userDoc.data();
+                        const today = new Date().toISOString().split('T')[0];
+                        
+                        if (today <= data.expiryDate) {
+                            if (userEmailDisplay) userEmailDisplay.textContent = `الحساب الحالي: ${savedUser}`;
+                            authScreen.classList.add('hidden');
+                            appContainer.classList.remove('hidden');
+                            loadDriversFromCloud();
+                            return;
+                        }
+                    }
+                } catch (e) {
+                    console.error(e);
+                }
+                localStorage.removeItem('zaincash_logged_user');
             }
-        });
+            authScreen.classList.remove('hidden');
+            appContainer.classList.add('hidden');
+        }
 
-        // عملية تسجيل الدخول وفحص الصلاحية والأجهزة
+        checkSavedSession();
+
+        // عملية تسجيل الدخول المباشرة وفحص الصلاحية والأجهزة
         loginForm.onsubmit = async (e) => {
             e.preventDefault();
             const username = document.getElementById('loginUsername').value.trim().toLowerCase();
@@ -933,31 +947,31 @@
             loginSubmitBtn.disabled = true;
 
             try {
-                // 1. تسجيل الدخول عبر Firebase Auth
-                const loginEmail = username + '@zaincashapp.com';
-                await auth.signInWithEmailAndPassword(loginEmail, password);
-
-                // 2. جلب بيانات الاشتراك من Firestore
+                // 1. جلب بيانات الحساب مباشرة من Firestore
                 const userDoc = await db.collection("subscriptions").doc(username).get();
                 
                 if (!userDoc.exists) {
-                    throw new Error("بيانات الاشتراك غير موجودة، يرجى مراجعة المطور.");
+                    throw new Error("اسم المستخدم أو كلمة المرور غير صحيحة.");
                 }
 
                 const data = userDoc.data();
+
+                // 2. التحقق من صحة كلمة المرور
+                if (data.password !== password) {
+                    throw new Error("اسم المستخدم أو كلمة المرور غير صحيحة.");
+                }
                 
                 // 3. التحقق من تاريخ الصلاحية
-                const today = new Date();
-                const expiryDate = new Date(data.expiryDate);
-                if (today > expiryDate) {
+                const today = new Date().toISOString().split('T')[0];
+                if (today > data.expiryDate) {
                     throw new Error("لقد انتهت صلاحية اشتراكك!\nراسل المطور للتجديد:\nTelegram: @diajb0\nالهاتف: 07862247686");
                 }
 
-                // 4. التحقق من عدد الأجهزة (4 أجهزة كحد أقصى)
+                // 4. التحقق من الأجهزة (4 أجهزة كحد أقصى)
                 let devicesArray = data.devices || [];
                 if (!devicesArray.includes(currentDeviceId)) {
                     if (devicesArray.length >= 4) {
-                        throw new Error("لقد تم الوصول للحد الأقصى للأجهزة (4 أجهزة) بهذا الحساب!\nلا يمكنك فتح الحساب من جهاز إضافي.");
+                        throw new Error("لقد تم الوصول للحد الأقصى للأجهزة (4 أجهزة) بهذا الحساب!\nلا يمكنك تسجيل الدخول من جهاز جديد.");
                     } else {
                         devicesArray.push(currentDeviceId);
                         await db.collection("subscriptions").doc(username).update({
@@ -966,13 +980,16 @@
                     }
                 }
 
+                // 5. نجاح الدخول وحفظ الجلسة
+                localStorage.setItem('zaincash_logged_user', username);
+                if (userEmailDisplay) userEmailDisplay.textContent = `الحساب الحالي: ${username}`;
+                
+                authScreen.classList.add('hidden');
+                appContainer.classList.remove('hidden');
+                loadDriversFromCloud();
+
             } catch (error) {
-                auth.signOut();
-                let errorMsg = error.message;
-                if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-                    errorMsg = "اسم المستخدم أو كلمة المرور غير صحيحة.";
-                }
-                alert("⚠️ تنبيه:\n" + errorMsg);
+                alert("⚠️ تنبيه:\n" + error.message);
             } finally {
                 loginSubmitBtn.innerHTML = originalBtnText;
                 loginSubmitBtn.disabled = false;
@@ -982,7 +999,8 @@
         // تسجيل الخروج
         document.getElementById('logoutBtn').onclick = () => {
             if (confirm("هل أنت متأكد من تسجيل الخروج؟")) {
-                auth.signOut();
+                localStorage.removeItem('zaincash_logged_user');
+                location.reload();
             }
         };
 
