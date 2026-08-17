@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مساعد ايداع السواق</title>
+    <!-- خط Cairo والأيقونات FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #0066FF;
+            --primary-hover: #0052CC;
+            --bg-color: #F4F7FE;
+            --card-bg: #FFFFFF;
+            --text-color: #1B2559;
+            --text-secondary: #A3AED0;
+            --border-color: #E9ECEF;
+            --success-color: #05CD99;
+            --danger-color: #EE5D50;
+            --shadow: 0px 18px 40px rgba(112, 144, 176, 0.12);
+            --radius: 16px;
+            --talabat-color: #FF5A00;
+            --balee-color: #0066FF;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #0B1437;
+                --card-bg: #111C44;
+                --text-color: #FFFFFF;
+                --text-secondary: #A3AED0;
+                --border-color: #2B3674;
+                --shadow: 0px 18px 40px rgba(0, 0, 0, 0.4);
+            }
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-color); direction: rtl; transition: all 0.3s ease; }
+        .hidden { display: none !important; }
+
+        /* --- شاشة تسجيل الدخول --- */
+        .auth-screen {
+            display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px;
+        }
+        .auth-card {
+            background: var(--card-bg); padding: 35px; border-radius: 24px; box-shadow: var(--shadow); width: 100%; max-width: 400px; text-align: center;
+        }
+        .auth-header i { font-size: 3rem; color: var(--primary-color); margin-bottom: 15px; }
+        .auth-header h2 { font-size: 1.6rem; font-weight: 800; margin-bottom: 5px; }
+        .auth-header p { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 25px; }
+
+        /* --- الهيدر والكونتينر --- */
+        .app-header {
+            display: flex; justify-content: space-between; align-items: center; padding: 18px 24px;
+            background: var(--card-bg); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 100;
+        }
+        .header-title h2 { font-weight: 800; font-size: 1.3rem; }
+        .brand-icon { color: var(--primary-color); font-size: 1.4rem; }
+        .header-actions { display: flex; gap: 10px; }
+        .icon-btn {
+            width: 44px; height: 44px; border-radius: 14px; border: none; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; font-size: 1.1rem; transition: 0.2s;
+        }
+        .btn-primary { background: var(--primary-color); color: #FFF; }
+        .btn-secondary { background: var(--bg-color); color: var(--text-color); position: relative; }
+
+        /* نقطة الإشعار الحمراء للتحديثات */
+        .update-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 11px;
+            height: 11px;
+            background-color: #EE5D50;
+            border-radius: 50%;
+            border: 2px solid var(--card-bg);
+            box-shadow: 0 0 8px rgba(238, 93, 80, 0.8);
+            animation: pulseDot 1.8s infinite;
+        }
+
+        @keyframes pulseDot {
+            0% { transform: scale(0.95); opacity: 1; }
+            50% { transform: scale(1.25); opacity: 0.8; }
+            100% { transform: scale(0.95); opacity: 1; }
+        }
+
+        /* تنسيقات نافذة آخر التحديثات */
+        .updates-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 15px 0 10px 0;
+            text-align: right;
+        }
+
+        .update-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            background: var(--bg-color);
+            padding: 14px;
+            border-radius: 14px;
+            border: 1px solid var(--border-color);
+        }
+
+        .update-icon {
+            font-size: 1.15rem;
+            color: var(--primary-color);
+            background: rgba(0, 102, 255, 0.1);
+            padding: 9px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .update-text strong {
+            display: block;
+            font-size: 0.95rem;
+            margin-bottom: 3px;
+            color: var(--text-color);
+        }
+
+        .update-text p {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            line-height: 1.45;
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .main-container { max-width: 650px; margin: 20px auto; padding: 0 15px; }
+
+        /* --- البحث والاقتراحات --- */
+        .search-box { position: relative; margin-bottom: 15px; }
+        .search-icon { position: absolute; right: 18px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); }
+        .search-box input {
+            width: 100%; padding: 16px 48px 16px 18px; border-radius: var(--radius); border: 1px solid var(--border-color);
+            background: var(--card-bg); color: var(--text-color); font-size: 1rem; outline: none; box-shadow: var(--shadow);
+        }
+        .suggestions-box {
+            position: absolute; top: 105%; right: 0; left: 0; background: var(--card-bg); border-radius: var(--radius);
+            border: 1px solid var(--border-color); box-shadow: var(--shadow); z-index: 99; max-height: 250px; overflow-y: auto;
+        }
+        .suggestion-item {
+            padding: 12px 18px; display: flex; justify-content: space-between; align-items: center; cursor: pointer;
+            border-bottom: 1px solid var(--border-color); transition: 0.2s;
+        }
+        .suggestion-item:hover { background: var(--bg-color); }
+
+        /* الوسوم */
+        .company-tags { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tag {
+            padding: 8px 20px; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 30px;
+            font-size: 0.9rem; font-weight: 700; cursor: pointer; color: var(--text-secondary); transition: 0.2s;
+        }
+        .tag.active { background: var(--primary-color); color: #FFF; border-color: var(--primary-color); }
+
+        /* --- زر العودة --- */
+        .back-btn {
+            width: 100%; padding: 12px; margin-bottom: 15px; background: var(--card-bg); border: 1px solid var(--border-color);
+            border-radius: var(--radius); font-weight: 700; color: var(--primary-color); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+
+        /* --- بطاقات السائقين (Driver Cards) --- */
+        .driver-card {
+            background: var(--card-bg); border-radius: 20px; padding: 20px; margin-bottom: 16px; border: 1px solid var(--border-color);
+            box-shadow: var(--shadow); cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease; position: relative;
+        }
+        .driver-card:hover { transform: translateY(-3px); }
+        .driver-card.fullscreen {
+            cursor: default; transform: none; padding: 25px; border: 2px solid var(--primary-color);
+        }
+
+        .driver-card-header {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px dashed var(--border-color);
+        }
+        .driver-card-header strong { font-size: 1.1rem; }
+        .company-badge { font-size: 0.8rem; padding: 4px 12px; border-radius: 20px; font-weight: 800; }
+
+        .info-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; }
+        .info-label { font-size: 0.9rem; color: var(--text-secondary); font-weight: 600; }
+        .info-value-group { display: flex; align-items: center; gap: 8px; }
+        .info-value { font-weight: 700; font-size: 0.95rem; }
+
+        /* أزرار الإجراءات للكرت */
+        .card-actions {
+            display: flex; gap: 10px; margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border-color);
+        }
+        .card-action-btn {
+            flex: 1; padding: 10px; border-radius: 10px; border: none; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;
+        }
+        .btn-edit { background: rgba(0, 102, 255, 0.1); color: var(--primary-color); }
+        .btn-delete { background: rgba(238, 93, 80, 0.1); color: var(--danger-color); }
+
+        /* ألوان الشركات */
+        .driver-card.talabat-card { border-right: 6px solid var(--talabat-color); }
+        .talabat-card .company-badge { background: rgba(255, 90, 0, 0.15); color: var(--talabat-color); }
+        .driver-card.balee-card { border-right: 6px solid var(--balee-color); }
+        .balee-card .company-badge { background: rgba(0, 102, 255, 0.15); color: var(--balee-color); }
+
+        /* أزرار النسخ */
+        .copy-btn {
+            background: transparent; border: 1px solid var(--border-color); border-radius: 8px; padding: 6px 12px;
+            font-size: 0.8rem; font-weight: 700; cursor: pointer; color: var(--primary-color); display: flex; align-items: center; gap: 5px; transition: 0.2s;
+        }
+
+        /* --- Modals & Forms --- */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); justify-content: center; align-items: center; z-index: 1000; padding: 15px; }
+        .modal-content { background: var(--card-bg); width: 100%; max-width: 480px; border-radius: 24px; padding: 25px; max-height: 90vh; overflow-y: auto; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .close-btn, .close-settings-btn { font-size: 1.5rem; cursor: pointer; color: var(--text-secondary); }
+        .form-group { margin-bottom: 15px; text-align: right; }
+        .form-group label { display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 6px; color: var(--text-secondary); }
+        .form-group input, .form-group select { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border-color); background: var(--bg-color); color: var(--text-color); outline: none; font-size: 0.95rem; }
+        .submit-btn { width: 100%; padding: 14px; background: var(--primary-color); color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        .btn-sync { background: var(--primary-color); margin-bottom: 10px; }
+        .btn-danger { background: var(--danger-color); }
+        .user-email-text { font-weight: 700; text-align: center; margin-bottom: 15px; color: var(--text-secondary); }
+
+        /* --- تنسيقات تسجيل الدخول برقم الهاتف --- */
+        #phoneNumber, #otpCode {
+            direction: ltr;
+            text-align: center;
+        }
+
+        #recaptcha-container {
+            display: flex;
+            justify-content: center;
+        }
+
+        /* --- زر تسجيل الدخول بحساب Google --- */
+        .google-btn {
+            background-color: #4285F4 !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 1rem;
+            padding: 16px;
+            box-shadow: 0 4px 15px rgba(66, 133, 244, 0.3);
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        .google-btn:hover {
+            background-color: #3367D6 !important;
+            transform: translateY(-2px);
+        }
+
+        /* --- تنسيق حقل رمز العميل مع زر التعديل --- */
+        .input-with-action {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .input-with-action input {
+            flex: 1;
+        }
+
+        .input-action-btn {
+            padding: 11px 15px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--primary-color);
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+            transition: 0.2s;
+        }
+
+        .input-action-btn:hover {
+            background: rgba(0, 102, 255, 0.1);
+        }
+
+        /* --- نصوص وتنبيهات إخلاء المسؤولية --- */
+        .disclaimer-banner {
+            color: #EE5D50;
+            font-size: 0.78rem;
+            font-weight: 700;
+            margin-top: 14px;
+            padding: 8px 12px;
+            background: rgba(238, 93, 80, 0.08);
+            border-radius: 8px;
+            pointer-events: none;
+            user-select: none;
+            text-align: center;
+        }
+
+        .card-disclaimer {
+            color: #EE5D50;
+            font-size: 0.72rem;
+            font-weight: 700;
+            margin-top: 8px;
+            padding: 4px 8px;
+            background: rgba(238, 93, 80, 0.05);
+            border-radius: 6px;
+            pointer-events: none;
+            user-select: none;
+            text-align: center;
+        }
+
+        /* --- بطاقة معلومات المطور والإصدار في الإعدادات --- */
+        .app-info-card {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px dashed var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .app-dev {
+            font-size: 0.88rem;
+            font-weight: 700;
+        }
+
+        .app-dev a {
+            color: var(--primary-color);
+            text-decoration: none;
+            margin-right: 4px;
+        }
+
+        .app-version {
+            background: rgba(0, 102, 255, 0.1);
+            color: var(--primary-color);
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        /* --- تصميم نافذة التحذير الاحترافية --- */
+        .confirm-modal-content {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 380px;
+            border-radius: 24px;
+            padding: 24px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            animation: popIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0.85); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .confirm-icon-wrapper {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(255, 170, 0, 0.12);
+            color: #FF9900;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin: 0 auto 16px auto;
+        }
+
+        .confirm-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            color: var(--text-color);
+        }
+
+        .confirm-message {
+            font-size: 0.92rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 22px;
+            font-weight: 600;
+        }
+
+        .confirm-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-correct {
+            background: var(--primary-color);
+            color: white;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: 0.2s;
+        }
+
+        .btn-override {
+            background: transparent;
+            color: var(--text-secondary);
+            padding: 10px;
+            border-radius: 12px;
+            font-weight: 700;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            font-size: 0.88rem;
+            transition: 0.2s;
+        }
+
+        .btn-override:hover {
+            color: var(--danger-color);
+            border-color: var(--danger-color);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. شاشة تسجيل الدخول المباشر (Google / زائر) -->
+    <div id="authScreen" class="auth-screen">
+        <div class="auth-card">
+            <div class="auth-header">
+                <i class="fa-solid fa-wallet brand-icon"></i>
+                <h2>مساعد ايداع السواق</h2>
+                <p>سجل الدخول لاستخدام المساعد وإدارة السائقين</p>
+            </div>
+            
+            <button id="googleLoginBtn" class="submit-btn google-btn">
+                <i class="fa-brands fa-google"></i> المتابعة باستخدام حساب Google
+            </button>
+
+            <button id="guestLoginBtn" class="submit-btn btn-secondary" style="margin-top: 12px; font-weight: bold;">
+                <i class="fa-solid fa-user-secret"></i> الدخول كزائر (بدون حساب)
+            </button>
+
+            <div class="disclaimer-banner">تنبيه اخلاء مسؤولية: قبل التوديع لأي سائق اجعله يتأكد من معلوماته</div>
+        </div>
+    </div>
+
+    <!-- 2. التطبيق الرئيسي (مخفي قبل تسجيل الدخول) -->
+    <div id="appContainer" class="app-container hidden">
+        
+        <!-- الهيدر -->
+        <header class="app-header">
+            <div class="header-title">
+                <i class="fa-solid fa-wallet brand-icon"></i>
+                <h2>مساعد ايداع السواق</h2>
+            </div>
+            <div class="header-actions">
+                <button id="updatesBtn" class="icon-btn btn-secondary" title="آخر التحديثات">
+                    <i class="fa-solid fa-bullhorn"></i>
+                    <span id="updatesDot" class="update-badge hidden"></span>
+                </button>
+                <button id="floatWindowBtn" class="icon-btn btn-secondary" title="نافذة عائمة">
+                    <i class="fa-solid fa-window-restore"></i>
+                </button>
+                <button id="addDriverBtn" class="icon-btn btn-primary" title="إضافة سائق جديد">
+                    <i class="fa-solid fa-user-plus"></i>
+                </button>
+                <button id="settingsBtn" class="icon-btn btn-secondary" title="الإعدادات">
+                    <i class="fa-solid fa-gear"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- البحث والتصفية -->
+        <main class="main-container">
+            <section class="search-section">
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                    <input type="text" id="searchInput" placeholder="ابحث باسم السائق أو الـ ID..." autocomplete="off">
+                    <!-- قائمة الاقتراحات الذكية -->
+                    <div id="searchSuggestions" class="suggestions-box hidden"></div>
+                </div>
+                <div class="company-tags" id="companyTags">
+                    <span class="tag active" data-company="all">الكل</span>
+                    <span class="tag" data-company="talabat">طلبات</span>
+                    <span class="tag" data-company="baleefood">بلي فود</span>
+                </div>
+            </section>
+
+            <!-- زر العودة عند فتح كرت بشاشة كاملة -->
+            <button id="backToListBtn" class="back-btn hidden">
+                <i class="fa-solid fa-arrow-right"></i> العودة لقائمة السائقين
+            </button>
+
+            <!-- قائمة عرض السائقين -->
+            <section class="drivers-list" id="driversList">
+                <!-- يتم توليد البطاقات عبر JS -->
+            </section>
+        </main>
+
+        <!-- نافذة إضافة / تعديل سائق -->
+        <div id="driverModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="modalTitle">إضافة سائق جديد</h3>
+                    <span class="close-btn">&times;</span>
+                </div>
+                <form id="driverForm">
+                    <input type="hidden" id="editDriverDocId">
+                    <div class="form-group">
+                        <label>اختر الشركة:</label>
+                        <select id="companySelect" required>
+                            <option value="talabat">طلبات</option>
+                            <option value="baleefood">بلي فود</option>
+                        </select>
+                    </div>
+
+                    <div id="dynamicFields">
+                        <div class="form-group talabat-only">
+                            <label>اسم الفرع:</label>
+                            <input type="text" id="branchName" placeholder="مثال: الابداع ، الجيل السريع...">
+                        </div>
+                        
+                        <div class="form-group talabat-only">
+                            <label>رمز العميل:</label>
+                            <div class="input-with-action">
+                                <input type="text" id="companyCode" value="531" readonly style="background-color: rgba(0,0,0,0.03); cursor: not-allowed;">
+                                <button type="button" id="editCompanyCodeBtn" class="input-action-btn">
+                                    <i class="fa-solid fa-lock"></i> تعديل
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="form-group talabat-only">
+                            <label>ID السائق (7 أرقام):</label>
+                            <input type="text" id="driverId" placeholder="مثال: 4148032">
+                        </div>
+
+                        <div class="form-group">
+                            <label>اسم السائق الثلاثي:</label>
+                            <input type="text" id="driverName" required placeholder="الاسم الكامل">
+                        </div>
+                        <div class="form-group">
+                            <label>رقم الهاتف (13 رقم):</label>
+                            <input type="tel" id="driverPhone" required placeholder="9647XXXXXXXXX">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-btn">حفظ البيانات</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- نافذة الإعدادات وتنظيف الحساب -->
+        <div id="updatesModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3><i class="fa-solid fa-sparkles" style="color: var(--talabat-color);"></i> ما الجديد في المنظومة</h3>
+                    <span class="close-updates-btn close-btn">&times;</span>
+                </div>
+                <div class="updates-container">
+                    <div class="update-item">
+                        <div class="update-icon"><i class="fa-solid fa-bolt"></i></div>
+                        <div class="update-text">
+                            <strong>رمز العميل التلقائي (531)</strong>
+                            <p>يتم إدراج رمز العميل 531 تلقائياً لسرعة الإيداع دون كتابته كل مرة، مع قفل ذكي لمنع الأخطاء وزر للتعديل عند الحاجة.</p>
+                        </div>
+                    </div>
+                    <div class="update-item">
+                        <div class="update-icon"><i class="fa-solid fa-id-card"></i></div>
+                        <div class="update-text">
+                            <strong>فحص وحماية الـ ID (7 أرقام)</strong>
+                            <p>نظام ذكي ينبهك فوراً إذا كان ID سائق طلبات ناقصاً أو زائداً عن 7 أرقام لتجنب التحويل لرقم حساب خاطئ.</p>
+                        </div>
+                    </div>
+                    <div class="update-item">
+                        <div class="update-icon"><i class="fa-solid fa-phone-volume"></i></div>
+                        <div class="update-text">
+                            <strong>تنسيق رقم الهاتف الدولي (13 رقم)</strong>
+                            <p>تدقيق مباشر لضمان إدخال رقم الهاتف بصيغة 9647XXXXXXXXX المعتمدة في زين كاش لتسريع النسخ دون تعديل.</p>
+                        </div>
+                    </div>
+                    <div class="update-item">
+                        <div class="update-icon"><i class="fa-solid fa-arrows-up-down"></i></div>
+                        <div class="update-text">
+                            <strong>إعادة ترتيب كروت السائقين</strong>
+                            <p>تم رفع حقل الـ ID فوق اسم السائق مباشرة في واجهة طلبات ليتطابق مع تسلسل حقول التحويل في تطبيق زين كاش.</p>
+                        </div>
+                    </div>
+                </div>
+                <button id="closeUpdatesModalBtn" class="submit-btn" style="margin-top: 10px;">
+                    فهمت ذلك، استمرار للعمل
+                </button>
+            </div>
+        </div>
+
+        <div id="settingsModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3><i class="fa-solid fa-gear"></i> الإعدادات والحساب</h3>
+                    <span class="close-settings-btn">&times;</span>
+                </div>
+                <div class="settings-body">
+                    <p id="userEmailDisplay" class="user-email-text"></p>
+                    <button onclick="location.reload()" class="submit-btn btn-sync">
+                        <i class="fa-solid fa-rotate"></i> تحديث والمزامنة
+                    </button>
+                    <button id="logoutBtn" class="submit-btn btn-danger">
+                        <i class="fa-solid fa-right-from-bracket"></i> تسجيل الخروج
+                    </button>
+
+                    <div class="app-info-card">
+                        <p class="app-dev">المطور: <a href="https://t.me/diajb0" target="_blank">@diajb0</a> <i class="fa-brands fa-telegram"></i></p>
+                        <span class="app-version">الإصدار: v1.1</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- نافذة التنبيه والتحقق الاحترافية -->
+        <div id="customConfirmModal" class="modal">
+            <div class="confirm-modal-content">
+                <div class="confirm-icon-wrapper">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <h3 id="customConfirmTitle" class="confirm-title">تنبيه بالبيانات</h3>
+                <p id="customConfirmMessage" class="confirm-message"></p>
+                <div class="confirm-actions">
+                    <button id="customConfirmCorrectBtn" class="btn-correct">
+                        <i class="fa-solid fa-pen"></i> تصحيح الرقم
+                    </button>
+                    <button id="customConfirmOverrideBtn" class="btn-override">
+                        أنا أعلم ما أفعل
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+    <!-- كود الجافاسكربت المدمج -->
+    <script>
+        // ==========================================
+        // 1. تهيئة Firebase & Firestore & Auth
+        // ==========================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyCtGr3r2MS8a7KdVuBh8gJVL0eNve7twSU",
+            authDomain: "zaincashdeliveryhelper.firebaseapp.com",
+            projectId: "zaincashdeliveryhelper",
+            storageBucket: "zaincashdeliveryhelper.firebasestorage.app",
+            messagingSenderId: "108290396776",
+            appId: "1:108290396776:web:ae3a55b268aaaf84c1e1dd"
+        };
+
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        let drivers = [];
+        let activeCompanyFilter = 'all';
+        let fullScreenDriverId = null;
+
+        // ==========================================
+        // 2. إدارة تسجيل الدخول (Google / Anonymous Guest)
+        // ==========================================
+        const authScreen = document.getElementById('authScreen');
+        const appContainer = document.getElementById('appContainer');
+        const googleLoginBtn = document.getElementById('googleLoginBtn');
+        const guestLoginBtn = document.getElementById('guestLoginBtn');
+        const userEmailDisplay = document.getElementById('userEmailDisplay');
+
+        // مراقبة حالة المستخدم
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                authScreen.classList.add('hidden');
+                appContainer.classList.remove('hidden');
+                if (userEmailDisplay) {
+                    userEmailDisplay.textContent = user.isAnonymous 
+                        ? `الحساب الحالي: زائر (مجهول)` 
+                        : `الحساب الحالي: ${user.email}`;
+                }
+                // جلب وقراءة كافة البيانات المخزنة من قاعدة البيانات للجميع
+                loadDriversFromCloud();
+            } else {
+                authScreen.classList.remove('hidden');
+                appContainer.classList.add('hidden');
+            }
+        });
+
+        // 1. تسجيل الدخول كزائر بضغطة زر واحدة (بدون حساب)
+        if (guestLoginBtn) {
+            guestLoginBtn.onclick = async () => {
+                try {
+                    await auth.signInAnonymously();
+                } catch (error) {
+                    alert("فشل الدخول كزائر: " + error.message);
+                }
+            };
+        }
+
+        // 2. تسجيل الدخول عبر حساب Google
+        googleLoginBtn.onclick = async () => {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            try {
+                await auth.signInWithRedirect(provider);
+            } catch (error) {
+                alert("فشل تسجيل الدخول بـ Google: " + error.message);
+            }
+        };
+
+        // استقبال نتيجة إعادة التوجيه بعد تسجيل الدخول بـ Google
+        auth.getRedirectResult().catch((error) => {
+            if (error.code) {
+                alert("خطأ في تسجيل الدخول: " + error.message);
+            }
+        });
+
+        document.getElementById('logoutBtn').onclick = () => auth.signOut();
+
+        // ==========================================
+        // 3. جلب البيانات لحظياً من Cloud Firestore
+        // ==========================================
+        function loadDriversFromCloud() {
+            db.collection("drivers").orderBy("createdAt", "desc").onSnapshot((snapshot) => {
+                drivers = [];
+                snapshot.forEach((doc) => {
+                    drivers.push({ id: doc.id, ...doc.data() });
+                });
+                filterAndRenderDrivers();
+            }, (error) => {
+                console.error("خطأ في جلب البيانات: ", error);
+            });
+        }
+
+        // ==========================================
+        // 4. رسم بطاقات السائقين (دعم الشاشة الكاملة)
+        // ==========================================
+        const driversList = document.getElementById('driversList');
+        const backToListBtn = document.getElementById('backToListBtn');
+
+        function renderDrivers(data) {
+            driversList.innerHTML = '';
+
+            if (data.length === 0) {
+                driversList.innerHTML = `<p style="text-align:center; color: var(--text-secondary); margin-top:30px; font-weight: bold;">لا يوجد سائقين مطابقين.</p>`;
+                return;
+            }
+
+            // إذا كان هناك كرت مفتوح بشاشة كاملة
+            let displayData = data;
+            if (fullScreenDriverId) {
+                displayData = data.filter(d => d.id === fullScreenDriverId);
+                backToListBtn.classList.remove('hidden');
+            } else {
+                backToListBtn.classList.add('hidden');
+            }
+
+            displayData.forEach(driver => {
+                const card = document.createElement('div');
+                const isTalabat = driver.company === 'talabat';
+                const isBalee = driver.company === 'baleefood';
+                const isFullscreen = driver.id === fullScreenDriverId;
+
+                card.className = `driver-card ${isTalabat ? 'talabat-card' : ''} ${isBalee ? 'balee-card' : ''} ${isFullscreen ? 'fullscreen' : ''}`;
+
+                let fieldsHTML = isTalabat ? `
+                    ${driver.branch ? `<div class="info-row"><span class="info-label">اسم الفرع:</span><span class="info-value">${driver.branch}</span></div>` : ''}
+                    ${driver.companyCode ? `<div class="info-row"><span class="info-label">رمز العميل:</span><div class="info-value-group"><span class="info-value">${driver.companyCode}</span><button class="copy-btn" onclick="copyToClipboard('${driver.companyCode}', this)"><i class="fa-regular fa-copy"></i> نسخ</button></div></div>` : ''}
+                    <div class="info-row"><span class="info-label">ID السائق:</span><div class="info-value-group"><span class="info-value">${driver.driverId}</span><button class="copy-btn" onclick="copyToClipboard('${driver.driverId}', this)"><i class="fa-regular fa-copy"></i> نسخ ID</button></div></div>
+                    <div class="info-row"><span class="info-label">اسم السائق:</span><div class="info-value-group"><span class="info-value">${driver.name}</span><button class="copy-btn" onclick="copyToClipboard('${driver.name}', this)"><i class="fa-regular fa-copy"></i> نسخ الاسم</button></div></div>
+                    <div class="info-row"><span class="info-label">رقم الهاتف:</span><div class="info-value-group"><span class="info-value">${driver.phone}</span><button class="copy-btn" onclick="copyToClipboard('${driver.phone}', this)"><i class="fa-regular fa-copy"></i> نسخ الهاتف</button></div></div>
+                    <div class="card-disclaimer">تنبيه اخلاء مسؤولية: قبل التوديع لأي سائق اجعله يتأكد من معلوماته</div>
+                ` : `
+                    <div class="info-row"><span class="info-label">اسم السائق:</span><div class="info-value-group"><span class="info-value">${driver.name}</span><button class="copy-btn" onclick="copyToClipboard('${driver.name}', this)"><i class="fa-regular fa-copy"></i> نسخ الاسم</button></div></div>
+                    <div class="info-row"><span class="info-label">رقم الهاتف:</span><div class="info-value-group"><span class="info-value">${driver.phone}</span><button class="copy-btn" onclick="copyToClipboard('${driver.phone}', this)"><i class="fa-regular fa-copy"></i> نسخ الهاتف</button></div></div>
+                    <div class="card-disclaimer">تنبيه اخلاء مسؤولية: قبل التوديع لأي سائق اجعله يتأكد من معلوماته</div>
+                `;
+
+                card.innerHTML = `
+                    <div class="driver-card-header">
+                        <strong>${driver.name}</strong>
+                        <span class="company-badge">${isTalabat ? 'طلبات' : (isBalee ? 'بلي فود' : driver.company.toUpperCase())}</span>
+                    </div>
+                    ${fieldsHTML}
+                    <div class="card-actions">
+                        <button class="card-action-btn btn-edit" onclick="openEditModal('${driver.id}', event)"><i class="fa-solid fa-pen-to-square"></i> تعديل</button>
+                        <button class="card-action-btn btn-delete" onclick="deleteDriver('${driver.id}', event)"><i class="fa-solid fa-trash"></i> حذف</button>
+                    </div>
+                `;
+
+                // عند الضغط على الكرت للدخول بالشاشة الكاملة
+                card.onclick = (e) => {
+                    if (e.target.closest('button')) return; // تجاهل زر النسخ والتعديل
+                    fullScreenDriverId = driver.id;
+                    filterAndRenderDrivers();
+                };
+
+                driversList.appendChild(card);
+            });
+        }
+
+        backToListBtn.onclick = () => {
+            fullScreenDriverId = null;
+            filterAndRenderDrivers();
+        };
+
+        // ==========================================
+        // 5. البحث والاقتراحات اللحظية
+        // ==========================================
+        const searchInput = document.getElementById('searchInput');
+        const searchSuggestions = document.getElementById('searchSuggestions');
+
+        searchInput.addEventListener('input', () => {
+            const query = searchInput.value.toLowerCase().trim();
+            if (query.length === 0) {
+                searchSuggestions.classList.add('hidden');
+                filterAndRenderDrivers();
+                return;
+            }
+
+            const matches = drivers.filter(d => 
+                d.name.toLowerCase().includes(query) || (d.driverId && d.driverId.toLowerCase().includes(query))
+            );
+
+            if (matches.length > 0) {
+                searchSuggestions.innerHTML = '';
+                matches.forEach(m => {
+                    const item = document.createElement('div');
+                    item.className = 'suggestion-item';
+                    item.innerHTML = `<span><strong>${m.name}</strong> (${m.driverId || m.phone})</span> <small style="color:var(--primary-color)">${m.company.toUpperCase()}</small>`;
+                    item.onclick = () => {
+                        fullScreenDriverId = m.id;
+                        searchSuggestions.classList.add('hidden');
+                        searchInput.value = m.name;
+                        filterAndRenderDrivers();
+                    };
+                    searchSuggestions.appendChild(item);
+                });
+                searchSuggestions.classList.remove('hidden');
+            } else {
+                searchSuggestions.classList.add('hidden');
+            }
+            filterAndRenderDrivers();
+        });
+
+        function filterAndRenderDrivers() {
+            const query = searchInput.value.toLowerCase().trim();
+            const filtered = drivers.filter(d => {
+                const matchesCompany = (activeCompanyFilter === 'all') || (d.company === activeCompanyFilter);
+                const matchesQuery = d.name.toLowerCase().includes(query) || 
+                                     (d.driverId && d.driverId.toLowerCase().includes(query)) ||
+                                     d.phone.includes(query);
+                return matchesCompany && matchesQuery;
+            });
+            renderDrivers(filtered);
+        }
+
+        // ==========================================
+        // 6. ميزة النسخ السريع للـ Clipboard
+        // ==========================================
+        function copyToClipboard(text, buttonElement) {
+            if (!text) return;
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = buttonElement.innerHTML;
+                buttonElement.innerHTML = `<i class="fa-solid fa-check"></i> تم!`;
+                buttonElement.style.color = 'var(--success-color)';
+                setTimeout(() => {
+                    buttonElement.innerHTML = originalText;
+                    buttonElement.style.color = 'var(--primary-color)';
+                }, 1500);
+            });
+        }
+
+        // ==========================================
+        // 7. إضافة وتعديل وحذف السائقين
+        // ==========================================
+        const driverModal = document.getElementById('driverModal');
+        const driverForm = document.getElementById('driverForm');
+        const modalTitle = document.getElementById('modalTitle');
+        const editDriverDocId = document.getElementById('editDriverDocId');
+        const companySelect = document.getElementById('companySelect');
+        const companyCodeInput = document.getElementById('companyCode');
+        const editCompanyCodeBtn = document.getElementById('editCompanyCodeBtn');
+
+        // زر قفل/تعديل رمز العميل
+        let isCodeEditable = false;
+        function resetCompanyCodeField(val = '531') {
+            companyCodeInput.value = val;
+            companyCodeInput.readOnly = true;
+            companyCodeInput.style.backgroundColor = 'rgba(0,0,0,0.03)';
+            companyCodeInput.style.cursor = 'not-allowed';
+            editCompanyCodeBtn.innerHTML = '<i class="fa-solid fa-lock"></i> تعديل';
+            isCodeEditable = false;
+        }
+
+        editCompanyCodeBtn.onclick = () => {
+            isCodeEditable = !isCodeEditable;
+            if (isCodeEditable) {
+                companyCodeInput.readOnly = false;
+                companyCodeInput.style.backgroundColor = 'var(--bg-color)';
+                companyCodeInput.style.cursor = 'text';
+                companyCodeInput.focus();
+                editCompanyCodeBtn.innerHTML = '<i class="fa-solid fa-lock-open"></i> قفل';
+            } else {
+                companyCodeInput.readOnly = true;
+                companyCodeInput.style.backgroundColor = 'rgba(0,0,0,0.03)';
+                companyCodeInput.style.cursor = 'not-allowed';
+                editCompanyCodeBtn.innerHTML = '<i class="fa-solid fa-lock"></i> تعديل';
+            }
+        };
+
+        // دالة التبديل الديناميكي للحقول حسب الشركة
+        function toggleFormFieldsByCompany(company) {
+            const talabatFields = document.querySelectorAll('.talabat-only');
+            talabatFields.forEach(el => {
+                if (company === 'baleefood') {
+                    el.classList.add('hidden');
+                } else {
+                    el.classList.remove('hidden');
+                }
+            });
+        }
+
+        companySelect.addEventListener('change', (e) => {
+            toggleFormFieldsByCompany(e.target.value);
+        });
+
+        document.getElementById('addDriverBtn').onclick = () => {
+            editDriverDocId.value = '';
+            modalTitle.textContent = 'إضافة سائق جديد';
+            driverForm.reset();
+            resetCompanyCodeField('531');
+            toggleFormFieldsByCompany(companySelect.value);
+            driverModal.style.display = 'flex';
+        };
+
+        document.querySelector('.close-btn').onclick = () => driverModal.style.display = 'none';
+
+        function openEditModal(docId, e) {
+            e.stopPropagation();
+            const driver = drivers.find(d => d.id === docId);
+            if (!driver) return;
+
+            editDriverDocId.value = driver.id;
+            modalTitle.textContent = 'تعديل بيانات السائق';
+            companySelect.value = driver.company;
+            toggleFormFieldsByCompany(driver.company);
+
+            document.getElementById('driverName').value = driver.name;
+            document.getElementById('driverPhone').value = driver.phone;
+
+            if (driver.company === 'talabat') {
+                document.getElementById('branchName').value = driver.branch || '';
+                resetCompanyCodeField(driver.companyCode || '531');
+                document.getElementById('driverId').value = driver.driverId || '';
+            }
+
+            driverModal.style.display = 'flex';
+        }
+
+        async function deleteDriver(docId, e) {
+            e.stopPropagation();
+            if (confirm("هل أنت متأكد من رغبتك في حذف هذا السائق؟")) {
+                try {
+                    await db.collection("drivers").doc(docId).delete();
+                    if (fullScreenDriverId === docId) fullScreenDriverId = null;
+                } catch (err) {
+                    alert("خطأ أثناء الحذف: " + err.message);
+                }
+            }
+        }
+
+        // دالة إظهار نافذة التحذير الاحترافية المخصصة
+        function showCustomConfirm(title, message) {
+            return new Promise((resolve) => {
+                const confirmModal = document.getElementById('customConfirmModal');
+                const titleEl = document.getElementById('customConfirmTitle');
+                const msgEl = document.getElementById('customConfirmMessage');
+                const correctBtn = document.getElementById('customConfirmCorrectBtn');
+                const overrideBtn = document.getElementById('customConfirmOverrideBtn');
+
+                titleEl.textContent = title;
+                msgEl.innerHTML = message;
+                confirmModal.style.display = 'flex';
+
+                correctBtn.onclick = () => {
+                    confirmModal.style.display = 'none';
+                    resolve(false); // يريد التصحيح
+                };
+
+                overrideBtn.onclick = () => {
+                    confirmModal.style.display = 'none';
+                    resolve(true); // تجاوز وحفظ
+                };
+            });
+        }
+
+        // حفظ بيانات السائق مع التحقق عبر النافذة المخصصة الأنيقة
+        driverForm.onsubmit = async (e) => {
+            e.preventDefault();
+            const docId = editDriverDocId.value;
+            const company = companySelect.value;
+            const name = document.getElementById('driverName').value.trim();
+            const phone = document.getElementById('driverPhone').value.trim();
+            const driverId = document.getElementById('driverId') ? document.getElementById('driverId').value.trim() : '';
+
+            // 1. التحقق من ID السائق لشركة طلبات (7 أرقام)
+            if (company === 'talabat') {
+                const digitsOnlyId = driverId.replace(/\D/g, '');
+                if (digitsOnlyId.length !== 7) {
+                    const allow = await showCustomConfirm(
+                        "تنبيه ID السائق",
+                        `الـ ID المدخل (<b style="color:var(--primary-color)">${driverId}</b>) يتكون من ${digitsOnlyId.length} أرقام والمطلوب عادةً <b>7 أرقام</b>.`
+                    );
+                    if (!allow) return;
+                }
+            }
+
+            // 2. التحقق من رقم الهاتف (13 رقم)
+            const digitsOnlyPhone = phone.replace(/\D/g, '');
+            if (digitsOnlyPhone.length !== 13) {
+                const allow = await showCustomConfirm(
+                    "تنبيه رقم الهاتف",
+                    `رقم الهاتف (<b style="color:var(--primary-color)">${phone}</b>) يتكون من ${digitsOnlyPhone.length} رقماً والمطلوب صيغة <b>9647XXXXXXXXX</b> (13 رقم).`
+                );
+                if (!allow) return;
+            }
+
+            let payload = {
+                company: company,
+                name: name,
+                phone: phone,
+            };
+
+            if (company === 'talabat') {
+                payload.branch = document.getElementById('branchName').value.trim();
+                payload.companyCode = companyCodeInput.value.trim();
+                payload.driverId = driverId;
+            }
+
+            try {
+                if (docId) {
+                    await db.collection("drivers").doc(docId).update(payload);
+                } else {
+                    payload.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+                    await db.collection("drivers").add(payload);
+                }
+                driverModal.style.display = 'none';
+                driverForm.reset();
+            } catch (err) {
+                alert("خطأ أثناء الحفظ: " + err.message);
+            }
+        };
+
+        // ==========================================
+        // 8. التصفية والنوافذ الفرعية
+        // ==========================================
+        document.querySelectorAll('.company-tags .tag').forEach(tag => {
+            tag.addEventListener('click', () => {
+                document.querySelectorAll('.company-tags .tag').forEach(t => t.classList.remove('active'));
+                tag.classList.add('active');
+                activeCompanyFilter = tag.getAttribute('data-company');
+                filterAndRenderDrivers();
+            });
+        });
+
+        // ==========================================
+        // إدارة نافذة آخر التحديثات والنقطة الحمراء
+        // ==========================================
+        const CURRENT_APP_VERSION = 'v1.2';
+        const updatesBtn = document.getElementById('updatesBtn');
+        const updatesModal = document.getElementById('updatesModal');
+        const updatesDot = document.getElementById('updatesDot');
+        const closeUpdatesBtn = document.querySelector('.close-updates-btn');
+        const closeUpdatesModalBtn = document.getElementById('closeUpdatesModalBtn');
+
+        // التحقق من رؤية آخر تحديث
+        const lastSeenVersion = localStorage.getItem('last_seen_update_version');
+        if (lastSeenVersion !== CURRENT_APP_VERSION) {
+            updatesDot.classList.remove('hidden'); // إظهار النقطة الحمراء
+        }
+
+        function openUpdatesModal() {
+            updatesModal.style.display = 'flex';
+            updatesDot.classList.add('hidden'); // إخفاء النقطة الحمراء
+            localStorage.setItem('last_seen_update_version', CURRENT_APP_VERSION);
+        }
+
+        function closeUpdatesModal() {
+            updatesModal.style.display = 'none';
+        }
+
+        if (updatesBtn) updatesBtn.onclick = openUpdatesModal;
+        if (closeUpdatesBtn) closeUpdatesBtn.onclick = closeUpdatesModal;
+        if (closeUpdatesModalBtn) closeUpdatesModalBtn.onclick = closeUpdatesModal;
+
+        // إدارة نافذة الإعدادات
+        const settingsBtn = document.getElementById('settingsBtn');
+        const settingsModal = document.getElementById('settingsModal');
+        settingsBtn.onclick = () => settingsModal.style.display = 'flex';
+        document.querySelector('.close-settings-btn').onclick = () => settingsModal.style.display = 'none';
+
+        // فتح التطبيق في نافذة منبثقة مصغرة مخصصة للعمل بجانب أو فوق تطبيق زين كاش
+        const floatWindowBtn = document.getElementById('floatWindowBtn');
+
+        if (floatWindowBtn) {
+            floatWindowBtn.onclick = () => {
+                const width = 380;
+                const height = 600;
+                const left = (screen.width) ? screen.width - width : 0;
+                
+                window.open(
+                    window.location.href, 
+                    'ZainCashHelperFloat', 
+                    `width=${width},height=${height},top=50,left=${left},resizable=yes,scrollbars=yes,status=no`
+                );
+            };
+        }
+    </script>
+</body>
+</html>
