@@ -231,23 +231,144 @@
             justify-content: center;
         }
 
-        /* --- زر تسجيل الدخول بحساب Google --- */
-        .google-btn {
-            background-color: #4285F4 !important;
+        /* --- تنسيقات شاشة تسجيل الدخول الجديدة والنظام المدفوع --- */
+        .login-form {
+            margin-top: 20px;
+        }
+        
+        .login-form .form-group {
+            margin-bottom: 12px;
+        }
+
+        .login-form input {
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .login-btn {
+            background: var(--primary-color);
+            margin-top: 10px;
+            font-size: 1.05rem;
+            box-shadow: 0 4px 15px rgba(0, 102, 255, 0.25);
+        }
+
+        .login-btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .login-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px dashed var(--border-color);
+        }
+
+        .action-link-btn {
+            background: var(--bg-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.9rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            font-size: 1rem;
-            padding: 16px;
-            box-shadow: 0 4px 15px rgba(66, 133, 244, 0.3);
-            transition: transform 0.2s, background-color 0.2s;
+            gap: 8px;
         }
 
-        .google-btn:hover {
-            background-color: #3367D6 !important;
-            transform: translateY(-2px);
+        .action-link-btn:hover {
+            background: rgba(0, 102, 255, 0.05);
+            color: var(--primary-color);
         }
+
+        .action-link-btn.highlight {
+            background: rgba(255, 90, 0, 0.1);
+            color: var(--talabat-color);
+            border-color: rgba(255, 90, 0, 0.2);
+        }
+        
+        .action-link-btn.highlight:hover {
+            background: rgba(255, 90, 0, 0.15);
+        }
+
+        .contact-dev {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.03);
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+        }
+
+        .contact-links {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 10px;
+        }
+
+        .contact-links a {
+            color: var(--primary-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+        }
+
+        /* تنسيق كروت الباقات والفوائد */
+        .feature-item, .package-card {
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            text-align: right;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .feature-icon {
+            color: var(--success-color);
+            font-size: 1.2rem;
+            margin-top: 2px;
+        }
+
+        .package-card {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .package-card.popular {
+            border: 2px solid var(--primary-color);
+            background: rgba(0, 102, 255, 0.03);
+        }
+
+        .popular-badge {
+            background: var(--primary-color);
+            color: white;
+            font-size: 0.7rem;
+            padding: 3px 20px;
+            position: absolute;
+            top: 10px;
+            right: -25px;
+            transform: rotate(45deg);
+            font-weight: bold;
+        }
+
+        .pkg-title { font-size: 1.1rem; font-weight: 800; color: var(--text-color); margin-bottom: 5px;}
+        .pkg-price { font-size: 1.5rem; font-weight: 800; color: var(--primary-color); margin-bottom: 5px;}
+        .pkg-desc { font-size: 0.85rem; color: var(--text-secondary); font-weight: 600;}
 
         /* --- تنسيق حقل رمز العميل مع زر التعديل --- */
         .input-with-action {
@@ -426,18 +547,112 @@
             <div class="auth-header">
                 <i class="fa-solid fa-wallet brand-icon"></i>
                 <h2>مساعد ايداع السواق</h2>
-                <p>سجل الدخول لاستخدام المساعد وإدارة السائقين</p>
+                <p style="color: var(--primary-color); font-weight: 700; font-size: 0.85rem;">منظومة الإدارة السريعة للمنافذ (الإصدار 1.2)</p>
             </div>
             
-            <button id="googleLoginBtn" class="submit-btn google-btn">
-                <i class="fa-brands fa-google"></i> المتابعة باستخدام حساب Google
-            </button>
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <input type="text" id="loginUsername" required placeholder="اسم المستخدم">
+                </div>
+                <div class="form-group">
+                    <input type="password" id="loginPassword" required placeholder="كلمة المرور">
+                </div>
+                <button type="submit" class="submit-btn login-btn" id="loginSubmitBtn">
+                    تسجيل الدخول <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                </button>
+            </form>
 
-            <button id="guestLoginBtn" class="submit-btn btn-secondary" style="margin-top: 12px; font-weight: bold;">
-                <i class="fa-solid fa-user-secret"></i> الدخول كزائر (بدون حساب)
-            </button>
+            <div class="login-actions">
+                <button id="showBenefitsBtn" class="action-link-btn">
+                    <i class="fa-solid fa-lightbulb"></i> ليش تحتاج هاي المنظومة؟
+                </button>
+                <button id="showPackagesBtn" class="action-link-btn highlight">
+                    <i class="fa-solid fa-fire"></i> أسعار الباقات (تجربة مجانية 7 أيام)
+                </button>
+            </div>
+
+            <div class="contact-dev">
+                <p>للحصول على حساب أو تجديد الاشتراك، تواصل مع المطور:</p>
+                <div class="contact-links">
+                    <a href="https://t.me/diajb0" target="_blank"><i class="fa-brands fa-telegram"></i> @diajb0</a>
+                    <a href="tel:07862247686"><i class="fa-solid fa-phone"></i> 07862247686</a>
+                </div>
+            </div>
 
             <div class="disclaimer-banner">تنبيه اخلاء مسؤولية: قبل التوديع لأي سائق اجعله يتأكد من معلوماته</div>
+        </div>
+    </div>
+
+    <div id="benefitsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-rocket" style="color: var(--primary-color);"></i> شنو راح تستفاد من المنظومة؟</h3>
+                <span class="close-benefits-btn close-btn">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="feature-item">
+                    <i class="fa-solid fa-check-circle feature-icon"></i>
+                    <div>
+                        <strong>وداعاً لدفاتر الديون والملاحظات المشتتة</strong>
+                        <p>قاعدة بيانات ضخمة جاهزة لسواق طلبات وبلي فود، ابحث عن السائق بثانية وحدة وبدون تعب.</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <i class="fa-solid fa-shield-halved feature-icon"></i>
+                    <div>
+                        <strong>صفر أخطاء بالتحويل</strong>
+                        <p>المنظومة تفحص الـ ID ورقم الهاتف تلقائياً، وتثبت لك رمز الشركة 531، حتى تطمئن وماتحول فلوس بالغلط أبداً.</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <i class="fa-solid fa-copy feature-icon"></i>
+                    <div>
+                        <strong>نسخ سريع بكبسة زر</strong>
+                        <p>بضغطة وحدة تنسخ الاسم، الرقم، أو الـ ID وتلصقه بتطبيق زين كاش فوراً وقت الزخم.</p>
+                    </div>
+                </div>
+                <button class="submit-btn close-benefits-btn" style="margin-top: 10px;">رجوع</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="packagesModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-gem" style="color: var(--talabat-color);"></i> باقات الاشتراك</h3>
+                <span class="close-packages-btn close-btn">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="package-card" style="border: 2px dashed var(--success-color); background: rgba(5, 205, 153, 0.05);">
+                    <div class="pkg-title"><i class="fa-solid fa-gift"></i> باقة التجربة</div>
+                    <div class="pkg-price">مجاناً</div>
+                    <div class="pkg-desc">جرب المنظومة بالكامل لمدة 7 أيام بدون أي رسوم، وإذا عجبتك تشترك!</div>
+                </div>
+                
+                <div class="package-card">
+                    <div class="pkg-title">الاشتراك الشهري</div>
+                    <div class="pkg-price">10,000 د.ع</div>
+                    <div class="pkg-desc">اشتراك مرن ومريح يضمن لك تحديثات مستمرة وقاعدة بيانات محمية.</div>
+                </div>
+
+                <div class="package-card popular">
+                    <div class="popular-badge">الأوفر</div>
+                    <div class="pkg-title">الاشتراك السنوي (خصم 60%)</div>
+                    <div class="pkg-price">48,000 د.ع</div>
+                    <div class="pkg-desc">ادفع لمرة وحدة بالسنة وركز بشغلك! (يطلع عليك الشهر بـ 4 آلاف دينار فقط).</div>
+                </div>
+
+                <div class="package-card">
+                    <div class="pkg-title">اشتراك مدى الحياة</div>
+                    <div class="pkg-price">100,000 د.ع</div>
+                    <div class="pkg-desc">حساب مفتوح للأبد بدون أي تجديد، اشترِ راحتك لمرة واحدة فقط.</div>
+                </div>
+                
+                <p style="font-size: 0.85rem; text-align: center; color: var(--text-secondary); margin-top: 15px; font-weight: bold;">
+                    للاشتراك أو طلب حساب تجريبي تواصل مع المطور: @diajb0
+                </p>
+                <button class="submit-btn close-packages-btn" style="margin-top: 10px;">رجوع</button>
+            </div>
         </div>
     </div>
 
@@ -665,25 +880,40 @@
         let fullScreenDriverId = null;
 
         // ==========================================
-        // 2. إدارة تسجيل الدخول (Google / Anonymous Guest)
+        // 2. إدارة تسجيل الدخول (النظام المدفوع وحماية الأجهزة 4 أجهزة)
         // ==========================================
         const authScreen = document.getElementById('authScreen');
         const appContainer = document.getElementById('appContainer');
-        const googleLoginBtn = document.getElementById('googleLoginBtn');
-        const guestLoginBtn = document.getElementById('guestLoginBtn');
+        const loginForm = document.getElementById('loginForm');
+        const loginSubmitBtn = document.getElementById('loginSubmitBtn');
         const userEmailDisplay = document.getElementById('userEmailDisplay');
 
-        // مراقبة حالة المستخدم
-        auth.onAuthStateChanged((user) => {
+        // إدارة النوافذ التحفيزية (الباقات والفوائد)
+        const benefitsModal = document.getElementById('benefitsModal');
+        const packagesModal = document.getElementById('packagesModal');
+        document.getElementById('showBenefitsBtn').onclick = (e) => { e.preventDefault(); benefitsModal.style.display = 'flex'; };
+        document.getElementById('showPackagesBtn').onclick = (e) => { e.preventDefault(); packagesModal.style.display = 'flex'; };
+        document.querySelectorAll('.close-benefits-btn').forEach(btn => btn.onclick = (e) => { e.preventDefault(); benefitsModal.style.display = 'none'; });
+        document.querySelectorAll('.close-packages-btn').forEach(btn => btn.onclick = (e) => { e.preventDefault(); packagesModal.style.display = 'none'; });
+
+        // دالة توليد وقراءة بصمة الجهاز الثابتة
+        function getDeviceID() {
+            let deviceId = localStorage.getItem('zaincash_device_id');
+            if (!deviceId) {
+                deviceId = 'dev_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
+                localStorage.setItem('zaincash_device_id', deviceId);
+            }
+            return deviceId;
+        }
+
+        // مراقبة حالة المستخدم اللحظية
+        auth.onAuthStateChanged(async (user) => {
             if (user) {
+                const username = user.email.split('@')[0];
+                if (userEmailDisplay) userEmailDisplay.textContent = `الحساب الحالي: ${username}`;
+                
                 authScreen.classList.add('hidden');
                 appContainer.classList.remove('hidden');
-                if (userEmailDisplay) {
-                    userEmailDisplay.textContent = user.isAnonymous 
-                        ? `الحساب الحالي: زائر (مجهول)` 
-                        : `الحساب الحالي: ${user.email}`;
-                }
-                // جلب وقراءة كافة البيانات المخزنة من قاعدة البيانات للجميع
                 loadDriversFromCloud();
             } else {
                 authScreen.classList.remove('hidden');
@@ -691,35 +921,70 @@
             }
         });
 
-        // 1. تسجيل الدخول كزائر بضغطة زر واحدة (بدون حساب)
-        if (guestLoginBtn) {
-            guestLoginBtn.onclick = async () => {
-                try {
-                    await auth.signInAnonymously();
-                } catch (error) {
-                    alert("فشل الدخول كزائر: " + error.message);
-                }
-            };
-        }
+        // عملية تسجيل الدخول وفحص الصلاحية والأجهزة
+        loginForm.onsubmit = async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('loginUsername').value.trim().toLowerCase();
+            const password = document.getElementById('loginPassword').value.trim();
+            const currentDeviceId = getDeviceID();
+            
+            const originalBtnText = loginSubmitBtn.innerHTML;
+            loginSubmitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التحقق...';
+            loginSubmitBtn.disabled = true;
 
-        // 2. تسجيل الدخول عبر حساب Google
-        googleLoginBtn.onclick = async () => {
-            const provider = new firebase.auth.GoogleAuthProvider();
             try {
-                await auth.signInWithRedirect(provider);
+                // 1. تسجيل الدخول عبر Firebase Auth
+                const loginEmail = username + '@zaincashapp.com';
+                await auth.signInWithEmailAndPassword(loginEmail, password);
+
+                // 2. جلب بيانات الاشتراك من Firestore
+                const userDoc = await db.collection("subscriptions").doc(username).get();
+                
+                if (!userDoc.exists) {
+                    throw new Error("بيانات الاشتراك غير موجودة، يرجى مراجعة المطور.");
+                }
+
+                const data = userDoc.data();
+                
+                // 3. التحقق من تاريخ الصلاحية
+                const today = new Date();
+                const expiryDate = new Date(data.expiryDate);
+                if (today > expiryDate) {
+                    throw new Error("لقد انتهت صلاحية اشتراكك!\nراسل المطور للتجديد:\nTelegram: @diajb0\nالهاتف: 07862247686");
+                }
+
+                // 4. التحقق من عدد الأجهزة (4 أجهزة كحد أقصى)
+                let devicesArray = data.devices || [];
+                if (!devicesArray.includes(currentDeviceId)) {
+                    if (devicesArray.length >= 4) {
+                        throw new Error("لقد تم الوصول للحد الأقصى للأجهزة (4 أجهزة) بهذا الحساب!\nلا يمكنك فتح الحساب من جهاز إضافي.");
+                    } else {
+                        devicesArray.push(currentDeviceId);
+                        await db.collection("subscriptions").doc(username).update({
+                            devices: devicesArray
+                        });
+                    }
+                }
+
             } catch (error) {
-                alert("فشل تسجيل الدخول بـ Google: " + error.message);
+                auth.signOut();
+                let errorMsg = error.message;
+                if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+                    errorMsg = "اسم المستخدم أو كلمة المرور غير صحيحة.";
+                }
+                alert("⚠️ تنبيه:\n" + errorMsg);
+            } finally {
+                loginSubmitBtn.innerHTML = originalBtnText;
+                loginSubmitBtn.disabled = false;
             }
         };
 
-        // استقبال نتيجة إعادة التوجيه بعد تسجيل الدخول بـ Google
-        auth.getRedirectResult().catch((error) => {
-            if (error.code) {
-                alert("خطأ في تسجيل الدخول: " + error.message);
+        // تسجيل الخروج
+        document.getElementById('logoutBtn').onclick = () => {
+            if (confirm("هل أنت متأكد من تسجيل الخروج؟")) {
+                auth.signOut();
             }
-        });
-
-        document.getElementById('logoutBtn').onclick = () => auth.signOut();
+        };
 
         // ==========================================
         // 3. جلب البيانات لحظياً من Cloud Firestore
