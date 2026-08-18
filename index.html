@@ -579,7 +579,7 @@
                 </div>
             </div>
 
-            <div class="disclaimer-banner">تنبيه اخلاء مسؤولية: قبل التوديع لأي سائق اجعله يتأكد من معلوماته</div>
+            <div class="disclaimer-banner">تنبيه إخلاء مسؤولية: قبل التوديع لأي سائق اجعله يتأكد من معلوماته، وتأكد من إرسال رسالة واتساب لرقمه لتوثيق حسابه.</div>
         </div>
     </div>
 
@@ -765,43 +765,36 @@
         <div id="updatesModal" class="modal">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3><i class="fa-solid fa-sparkles" style="color: var(--talabat-color);"></i> ما الجديد في الإصدار 1.2</h3>
+                    <h3><i class="fa-solid fa-sparkles" style="color: var(--talabat-color);"></i> ما الجديد في الإصدار 1.3</h3>
                     <span class="close-updates-btn close-btn">&times;</span>
                 </div>
                 <div class="updates-container">
                     <div class="update-item">
+                        <div class="update-icon" style="color: #25D366; background: rgba(37, 211, 102, 0.1);"><i class="fa-brands fa-whatsapp"></i></div>
+                        <div class="update-text">
+                            <strong>تأكيد البيانات التلقائي عبر واتساب و SMS</strong>
+                            <p>عند إضافة سائق جديد يتم فتح واتساب تلقائياً لإرسال بياناته ليتأكد منها بنفسه، مع توفير أزرار إرسال مباشرة داخل كل بطاقة سائق.</p>
+                        </div>
+                    </div>
+                    <div class="update-item">
+                        <div class="update-icon"><i class="fa-solid fa-users-viewfinder"></i></div>
+                        <div class="update-text">
+                            <strong>نظام كشف الحسابات المكررة (التطابق المزدوج)</strong>
+                            <p>تنبيه فوري وذكي إذا كان رقم الهاتف أو الـ ID مسجلاً مسبقاً باسم سائق آخر لمنع أي تداخل بين السائقين.</p>
+                        </div>
+                    </div>
+                    <div class="update-item">
+                        <div class="update-icon"><i class="fa-solid fa-mobile-screen-button"></i></div>
+                        <div class="update-text">
+                            <strong>الفحص الدقيق لمقدمات أرقام العراق</strong>
+                            <p>فحص صارم يتأكد من أن الرقم يبدأ بالمقدمات الصحيحة (96478, 96477, 96475, 96479) ومكون من 13 رقماً بالضبط.</p>
+                        </div>
+                    </div>
+                    <div class="update-item">
                         <div class="update-icon"><i class="fa-solid fa-shield-halved"></i></div>
                         <div class="update-text">
-                            <strong>منظومة الحسابات وتأمين الأجهزة</strong>
-                            <p>حسابك محمي ومخصص لمنفذك فقط، مع إمكانية تشغيله على 4 أجهزة/هواتف في نفس الوقت دون أي تضارب.</p>
-                        </div>
-                    </div>
-                    <div class="update-item">
-                        <div class="update-icon"><i class="fa-solid fa-bolt"></i></div>
-                        <div class="update-text">
-                            <strong>رمز العميل التلقائي (531)</strong>
-                            <p>إدراج تلقائي لرمز الشركة 531 مع قفل ذكي لمنع الأخطاء وزر للتعديل عند الرغبة.</p>
-                        </div>
-                    </div>
-                    <div class="update-item">
-                        <div class="update-icon"><i class="fa-solid fa-check-double"></i></div>
-                        <div class="update-text">
-                            <strong>تدقيق فوري للـ ID ورقم الهاتف</strong>
-                            <p>فحص تلقائي يمنع أي نقص في الـ ID (7 أرقام) أو رقم الهاتف (13 رقم بصيغة 964) لضمان صفر أخطاء بالتحويل.</p>
-                        </div>
-                    </div>
-                    <div class="update-item">
-                        <div class="update-icon"><i class="fa-solid fa-copy"></i></div>
-                        <div class="update-text">
-                            <strong>نسخ فائق السرعة</strong>
-                            <p>أزرار نسخ مباشرة لكل حقل (الـ ID، الاسم، الهاتف) للصقها بتطبيق زين كاش فوراً وقت الزخم.</p>
-                        </div>
-                    </div>
-                    <div class="update-item">
-                        <div class="update-icon"><i class="fa-solid fa-window-restore"></i></div>
-                        <div class="update-text">
-                            <strong>النافذة المصغرة العائمة</strong>
-                            <p>إمكانية فتح الموقع كنافذة عائمة بجانب تطبيق زين كاش لتسهيل وتسريع عملية النقل دون التنقل بين التطبيقات.</p>
+                            <strong>منظومة تأمين الأجهزة وقاعدة البيانات المشتركة</strong>
+                            <p>استقرار كامل لقاعدة البيانات وحماية الحسابات (حتى 4 أجهزة للمنفذ) وتحديث مباشر للبيانات بين جميع المنافذ المشتركة.</p>
                         </div>
                     </div>
                 </div>
@@ -1135,7 +1128,7 @@
                     <div class="info-row"><span class="info-label">ID السائق:</span><div class="info-value-group"><span class="info-value">${driver.driverId}</span><button class="copy-btn" onclick="copyToClipboard('${driver.driverId}', this)"><i class="fa-regular fa-copy"></i> نسخ ID</button></div></div>
                     <div class="info-row"><span class="info-label">اسم السائق:</span><div class="info-value-group"><span class="info-value">${driver.name}</span><button class="copy-btn" onclick="copyToClipboard('${driver.name}', this)"><i class="fa-regular fa-copy"></i> نسخ الاسم</button></div></div>
                     <div class="info-row"><span class="info-label">رقم الهاتف:</span><div class="info-value-group"><span class="info-value">${driver.phone}</span><button class="copy-btn" onclick="copyToClipboard('${driver.phone}', this)"><i class="fa-regular fa-copy"></i> نسخ الهاتف</button></div></div>
-                    <div class="card-disclaimer">تنبيه اخلاء مسؤولية: قبل التوديع لأي سائق اجعله يتأكد من معلوماته</div>
+                    <div class="card-disclaimer">⚠️ تنبيه: قبل التوديع لأي سائق اجعله يتأكد من معلوماته، وتأكد من إرسال رسالة واتساب لرقمه لتوثيق حسابه.</div>
                 ` : `
                     <div class="info-row"><span class="info-label">اسم السائق:</span><div class="info-value-group"><span class="info-value">${driver.name}</span><button class="copy-btn" onclick="copyToClipboard('${driver.name}', this)"><i class="fa-regular fa-copy"></i> نسخ الاسم</button></div></div>
                     <div class="info-row"><span class="info-label">رقم الهاتف:</span><div class="info-value-group"><span class="info-value">${driver.phone}</span><button class="copy-btn" onclick="copyToClipboard('${driver.phone}', this)"><i class="fa-regular fa-copy"></i> نسخ الهاتف</button></div></div>
@@ -1148,6 +1141,14 @@
                         <span class="company-badge">${isTalabat ? 'طلبات' : (isBalee ? 'بلي فود' : driver.company.toUpperCase())}</span>
                     </div>
                     ${fieldsHTML}
+                    <div style="display: flex; gap: 8px; margin-top: 10px;">
+                        <button class="card-action-btn" style="background: rgba(37, 211, 102, 0.15); color: #25D366; font-size: 0.82rem;" onclick="sendDriverVerification('${driver.id}', 'whatsapp', event)">
+                            <i class="fa-brands fa-whatsapp"></i> إرسال تأكيد واتساب
+                        </button>
+                        <button class="card-action-btn" style="background: rgba(0, 102, 255, 0.1); color: var(--primary-color); font-size: 0.82rem;" onclick="sendDriverVerification('${driver.id}', 'sms', event)">
+                            <i class="fa-solid fa-comment-sms"></i> إرسال SMS
+                        </button>
+                    </div>
                     <div class="card-actions">
                         <button class="card-action-btn btn-edit" onclick="openEditModal('${driver.id}', event)"><i class="fa-solid fa-pen-to-square"></i> تعديل</button>
                         <button class="card-action-btn btn-delete" onclick="deleteDriver('${driver.id}', event)"><i class="fa-solid fa-trash"></i> حذف</button>
@@ -1367,7 +1368,39 @@
             });
         }
 
-        // حفظ بيانات السائق مع التحقق عبر النافذة المخصصة الأنيقة
+        // دالة إنشاء وإرسال رسالة التأكيد عبر واتساب أو SMS
+        function sendDriverVerification(docIdOrData, type = 'whatsapp', e = null) {
+            if (e) e.stopPropagation();
+            
+            let data = docIdOrData;
+            if (typeof docIdOrData === 'string') {
+                data = drivers.find(d => d.id === docIdOrData);
+            }
+            if (!data) return;
+
+            const isTalabat = data.company === 'talabat';
+            const companyName = isTalabat ? 'طلبات (رمز 531)' : 'بلي فود';
+            
+            // صياغة رسالة التأكيد المعتمدة
+            const msg = 
+`أهلاً كابتن (${data.name})، بياناتك المسجلة للإيداع لدى المنفذ هي:
+${isTalabat && data.driverId ? '🆔 معرّف السائق (ID): ' + data.driverId + '\n' : ''}🏢 الشركة: ${companyName}
+📱 رقم الهاتف: ${data.phone}
+${isTalabat && data.branch ? '📍 الفرع: ' + data.branch + '\n' : ''}
+يرجى التأكد من صحة البيانات والرد بكلمة (تأكيد) لتوثيق حسابك ومنع أي خطأ بالإيداع.`;
+
+            const cleanPhone = data.phone.replace(/\D/g, '');
+
+            if (type === 'whatsapp') {
+                const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`;
+                window.open(waUrl, '_blank');
+            } else {
+                const smsUrl = `sms:${cleanPhone}?body=${encodeURIComponent(msg)}`;
+                window.location.href = smsUrl;
+            }
+        }
+
+        // حفظ بيانات السائق مع التطابق المزدوج والتحقق الصارم ورسالة الواتساب
         driverForm.onsubmit = async (e) => {
             e.preventDefault();
             const docId = editDriverDocId.value;
@@ -1388,12 +1421,35 @@
                 }
             }
 
-            // 2. التحقق من رقم الهاتف (13 رقم)
+            // 2. التحقق من رقم الهاتف (13 رقماً ويبدأ بالمقدمات العراقية المعتمدة: 96478, 96477, 96475, 96479)
             const digitsOnlyPhone = phone.replace(/\D/g, '');
-            if (digitsOnlyPhone.length !== 13) {
+            const iraqiPrefixRegex = /^964(77|78|75|79)\d{8}$/;
+
+            if (digitsOnlyPhone.length !== 13 || !iraqiPrefixRegex.test(digitsOnlyPhone)) {
                 const allow = await showCustomConfirm(
-                    "تنبيه رقم الهاتف",
-                    `رقم الهاتف (<b style="color:var(--primary-color)">${phone}</b>) يتكون من ${digitsOnlyPhone.length} رقماً والمطلوب صيغة <b>9647XXXXXXXXX</b> (13 رقم).`
+                    "تنبيه مقدمة رقم الهاتف",
+                    `رقم الهاتف (<b style="color:var(--primary-color)">${phone}</b>) غير مطابق للصيغة العراقية المعتمدة (يجب أن يبدأ بـ <b>96478 أو 96477 أو 96475 أو 96479</b> ومكون من 13 رقماً).`
+                );
+                if (!allow) return;
+            }
+
+            // 3. نظام التطابق المزدوج والتأكيد المجتمعي (Crowd-Verification)
+            // فحص هل الـ ID أو رقم الهاتف مسجل مسبقاً لسائق آخر في قاعدة البيانات
+            const existingDuplicate = drivers.find(d => {
+                if (docId && d.id === docId) return false; // استثناء نفس السائق عند التعديل
+                const samePhone = d.phone.replace(/\D/g, '') === digitsOnlyPhone;
+                const sameId = (company === 'talabat' && driverId && d.driverId === driverId);
+                return samePhone || sameId;
+            });
+
+            if (existingDuplicate) {
+                const duplicateReason = (company === 'talabat' && driverId && existingDuplicate.driverId === driverId) 
+                    ? `معرّف السائق (ID: ${driverId})` 
+                    : `رقم الهاتف (${phone})`;
+
+                const allow = await showCustomConfirm(
+                    "⚠️ تحذير: بيانات مسجلة مسبقاً",
+                    `هذا ${duplicateReason} مسجل بالفعل في المنظومة باسم كابتن: <b style="color:var(--danger-color); font-size:1.1rem; display:block; margin-top:5px;">(${existingDuplicate.name})</b>`
                 );
                 if (!allow) return;
             }
@@ -1441,7 +1497,11 @@
                     payload.editHistory = [];
                     payload.createdAt = firebase.firestore.FieldValue.serverTimestamp();
                     await db.collection("drivers").add(payload);
+
+                    // 4. فتح تطبيق واتساب فوراً وتلقائياً للرقم المدخل لطلب التأكيد عند إضافة السائق لأول مرة
+                    sendDriverVerification(payload, 'whatsapp');
                 }
+
                 driverModal.style.display = 'none';
                 driverForm.reset();
             } catch (err) {
@@ -1464,7 +1524,7 @@
         // ==========================================
         // إدارة نافذة آخر التحديثات والنقطة الحمراء
         // ==========================================
-        const CURRENT_APP_VERSION = 'v1.2';
+        const CURRENT_APP_VERSION = 'v1.3';
         const updatesBtn = document.getElementById('updatesBtn');
         const updatesModal = document.getElementById('updatesModal');
         const updatesDot = document.getElementById('updatesDot');
