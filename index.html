@@ -978,7 +978,7 @@
             }
         })();
 
-        // عملية تسجيل الدخول المباشرة وحل مشكلة الجهاز الخامس بالكامل
+        // عملية تسجيل الدخول فائقة السرعة مع معالجة لحظية للأجهزة والانتهاء
         loginForm.onsubmit = async (e) => {
             e.preventDefault();
             const usernameInput = document.getElementById('loginUsername').value.trim().toLowerCase();
@@ -989,56 +989,70 @@
             loginSubmitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التحقق...';
             loginSubmitBtn.disabled = true;
 
+            // دالة مساعدة لإعادة زر الدخول لحالته الطبيعية فوراً
+            const resetBtnState = () => {
+                loginSubmitBtn.innerHTML = originalBtnText;
+                loginSubmitBtn.disabled = false;
+            };
+
             try {
-                const userDoc = await db.collection("subscriptions").doc(usernameInput).get();
+                // جلب وثيقة الحساب مع مهلة زمنية لا تتجاوز 4 ثوانٍ لضمان عدم التعليق
+                const fetchPromise = db.collection("subscriptions").doc(usernameInput).get();
+                const timeoutPromise = new Promise((_, reject) => 
+                    setTimeout(() => reject(new Error("ضعف في الاتصال بالإنترنت، يرجى إعادة المحاولة.")), 4000)
+                );
+
+                const userDoc = await Promise.race([fetchPromise, timeoutPromise]);
                 
                 if (!userDoc.exists) {
-                    throw new Error("اسم المستخدم أو كلمة المرور غير صحيحة.");
+                    resetBtnState();
+                    showAuthError("خطأ في تسجيل الدخول", "اسم المستخدم أو كلمة المرور غير صحيحة.");
+                    return;
                 }
 
                 const data = userDoc.data();
 
-                // مطابقة كلمة المرور
+                // 1. مطابقة كلمة المرور
                 if (String(data.password).trim() !== passwordInput) {
-                    throw new Error("اسم المستخدم أو كلمة المرور غير صحيحة.");
+                    resetBtnState();
+                    showAuthError("خطأ في تسجيل الدخول", "اسم المستخدم أو كلمة المرور غير صحيحة.");
+                    return;
                 }
                 
-                // فحص انتهاء الوقت (يدعم الدقائق والساعات بدقة)
-                const now = new Date().getTime();
-                const expiry = new Date(data.expiryDate).getTime();
-                if (now > expiry) {
+                // 2. فحص انتهاء الوقت اللحظي
+                const now = Date.now();
+                const expiryTime = new Date(data.expiryDate).getTime();
+                if (now > expiryTime) {
+                    resetBtnState();
                     showAuthError(
                         "انتهت صلاحية الحساب",
-                        `عذراً، لقد انتهت صلاحية اشتراك هذا الحساب بتاريخ:<br><b style="color:var(--danger-color); font-size:1rem;">${new Date(data.expiryDate).toLocaleString('ar-EG')}</b>`
+                        `عذراً، لقد انتهت صلاحية اشتراك هذا الحساب بتاريخ:<br><b style="color:var(--danger-color); font-size:1.05rem; display:inline-block; margin-top:6px;">${new Date(data.expiryDate).toLocaleString('ar-EG')}</b>`
                     );
-                    loginSubmitBtn.innerHTML = originalBtnText;
-                    loginSubmitBtn.disabled = false;
                     return;
                 }
 
-                // فحص الأجهزة (4 كحد أقصى)
+                // 3. فحص الأجهزة المعتمدة
                 let devicesArray = Array.isArray(data.devices) ? [...data.devices] : [];
                 
                 if (!devicesArray.includes(currentDeviceId)) {
                     if (devicesArray.length >= 4) {
-                        // إظهار نافذة تجاوز الحد فوراً للجهاز الخامس
+                        resetBtnState();
                         showAuthError(
                             "تم تجاوز الحد الأقصى للأجهزة",
                             `هذا الحساب مسجل بالفعل على <b>4 أجهزة</b> مختلفة.<br>لا يمكن فتح الحساب من جهاز إضافي منعاً لتداول الحسابات بين المنافذ.`
                         );
-                        loginSubmitBtn.innerHTML = originalBtnText;
-                        loginSubmitBtn.disabled = false;
                         return;
                     } else {
-                        // إضافة الجهاز الجديد وحفظه
+                        // حفظ الجهاز الجديد
                         devicesArray.push(currentDeviceId);
-                        await db.collection("subscriptions").doc(usernameInput).update({
+                        // نقوم بالتحديث في الخلفية دون تعطيل واجهة المستخدم
+                        db.collection("subscriptions").doc(usernameInput).update({
                             devices: devicesArray
-                        });
+                        }).catch(e => console.error("Device update err:", e));
                     }
                 }
 
-                // حفظ الجلسة ومفتاح الأمان
+                // 4. الدخول المباشر والفوري
                 localStorage.setItem('zaincash_logged_user', usernameInput);
                 localStorage.setItem('zaincash_session_key', data.sessionKey || '');
                 if (userEmailDisplay) userEmailDisplay.textContent = `الحساب الحالي: ${usernameInput}`;
@@ -1048,10 +1062,8 @@
                 loadDriversFromCloud();
 
             } catch (error) {
-                showAuthError("خطأ في تسجيل الدخول", error.message);
-            } finally {
-                loginSubmitBtn.innerHTML = originalBtnText;
-                loginSubmitBtn.disabled = false;
+                resetBtnState();
+                showAuthError("تنبيه", error.message);
             }
         };
 
