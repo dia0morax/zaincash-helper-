@@ -762,40 +762,46 @@
             </div>
         </div>
 
-        <!-- نافذة الإعدادات وتنظيف الحساب -->
         <div id="updatesModal" class="modal">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3><i class="fa-solid fa-sparkles" style="color: var(--talabat-color);"></i> ما الجديد في المنظومة</h3>
+                    <h3><i class="fa-solid fa-sparkles" style="color: var(--talabat-color);"></i> ما الجديد في الإصدار 1.2</h3>
                     <span class="close-updates-btn close-btn">&times;</span>
                 </div>
                 <div class="updates-container">
                     <div class="update-item">
+                        <div class="update-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                        <div class="update-text">
+                            <strong>منظومة الحسابات وتأمين الأجهزة</strong>
+                            <p>حسابك محمي ومخصص لمنفذك فقط، مع إمكانية تشغيله على 4 أجهزة/هواتف في نفس الوقت دون أي تضارب.</p>
+                        </div>
+                    </div>
+                    <div class="update-item">
                         <div class="update-icon"><i class="fa-solid fa-bolt"></i></div>
                         <div class="update-text">
                             <strong>رمز العميل التلقائي (531)</strong>
-                            <p>يتم إدراج رمز العميل 531 تلقائياً لسرعة الإيداع دون كتابته كل مرة، مع قفل ذكي لمنع الأخطاء وزر للتعديل عند الحاجة.</p>
+                            <p>إدراج تلقائي لرمز الشركة 531 مع قفل ذكي لمنع الأخطاء وزر للتعديل عند الرغبة.</p>
                         </div>
                     </div>
                     <div class="update-item">
-                        <div class="update-icon"><i class="fa-solid fa-id-card"></i></div>
+                        <div class="update-icon"><i class="fa-solid fa-check-double"></i></div>
                         <div class="update-text">
-                            <strong>فحص وحماية الـ ID (7 أرقام)</strong>
-                            <p>نظام ذكي ينبهك فوراً إذا كان ID سائق طلبات ناقصاً أو زائداً عن 7 أرقام لتجنب التحويل لرقم حساب خاطئ.</p>
+                            <strong>تدقيق فوري للـ ID ورقم الهاتف</strong>
+                            <p>فحص تلقائي يمنع أي نقص في الـ ID (7 أرقام) أو رقم الهاتف (13 رقم بصيغة 964) لضمان صفر أخطاء بالتحويل.</p>
                         </div>
                     </div>
                     <div class="update-item">
-                        <div class="update-icon"><i class="fa-solid fa-phone-volume"></i></div>
+                        <div class="update-icon"><i class="fa-solid fa-copy"></i></div>
                         <div class="update-text">
-                            <strong>تنسيق رقم الهاتف الدولي (13 رقم)</strong>
-                            <p>تدقيق مباشر لضمان إدخال رقم الهاتف بصيغة 9647XXXXXXXXX المعتمدة في زين كاش لتسريع النسخ دون تعديل.</p>
+                            <strong>نسخ فائق السرعة</strong>
+                            <p>أزرار نسخ مباشرة لكل حقل (الـ ID، الاسم، الهاتف) للصقها بتطبيق زين كاش فوراً وقت الزخم.</p>
                         </div>
                     </div>
                     <div class="update-item">
-                        <div class="update-icon"><i class="fa-solid fa-arrows-up-down"></i></div>
+                        <div class="update-icon"><i class="fa-solid fa-window-restore"></i></div>
                         <div class="update-text">
-                            <strong>إعادة ترتيب كروت السائقين</strong>
-                            <p>تم رفع حقل الـ ID فوق اسم السائق مباشرة في واجهة طلبات ليتطابق مع تسلسل حقول التحويل في تطبيق زين كاش.</p>
+                            <strong>النافذة المصغرة العائمة</strong>
+                            <p>إمكانية فتح الموقع كنافذة عائمة بجانب تطبيق زين كاش لتسهيل وتسريع عملية النقل دون التنقل بين التطبيقات.</p>
                         </div>
                     </div>
                 </div>
@@ -822,7 +828,7 @@
 
                     <div class="app-info-card">
                         <p class="app-dev">المطور: <a href="https://t.me/diajb0" target="_blank">@diajb0</a> <i class="fa-brands fa-telegram"></i></p>
-                        <span class="app-version">الإصدار: v1.1</span>
+                        <span class="app-version">الإصدار: v1.2</span>
                     </div>
                 </div>
             </div>
@@ -846,38 +852,31 @@
             </div>
         </div>
 
-        <div id="authErrorModal" class="modal">
-            <div class="confirm-modal-content" style="border: 2px solid var(--danger-color);">
-                <div class="confirm-icon-wrapper" style="background: rgba(238, 93, 80, 0.15); color: var(--danger-color);">
-                    <i class="fa-solid fa-ban"></i>
-                </div>
-                <h3 id="authErrorTitle" class="confirm-title" style="color: var(--danger-color);">تنبيه الحساب</h3>
-                <p id="authErrorMessage" class="confirm-message" style="margin-bottom: 18px;"></p>
-                <div class="contact-dev" style="margin-top: 0; margin-bottom: 15px; background: var(--bg-color);">
-                    <p style="margin-bottom: 8px; color: var(--text-color);">تواصل مع المطور لفتح جهاز إضافي أو تجديد الحساب:</p>
-                    <div class="contact-links">
-                        <a href="https://t.me/diajb0" target="_blank"><i class="fa-brands fa-telegram"></i> @diajb0</a>
-                        <a href="tel:07862247686"><i class="fa-solid fa-phone"></i> 07862247686</a>
-                    </div>
-                </div>
-                <button id="closeAuthErrorBtn" class="submit-btn" style="background: var(--primary-color);">
-                    حسناً، فهمت
-                </button>
+    </div><div id="authErrorModal" class="modal" style="z-index: 99999;">
+        <div class="confirm-modal-content" style="border: 2px solid var(--danger-color);">
+            <div class="confirm-icon-wrapper" style="background: rgba(238, 93, 80, 0.15); color: var(--danger-color);">
+                <i class="fa-solid fa-ban"></i>
             </div>
+            <h3 id="authErrorTitle" class="confirm-title" style="color: var(--danger-color);">تنبيه الحساب</h3>
+            <p id="authErrorMessage" class="confirm-message" style="margin-bottom: 18px; font-weight: bold;"></p>
+            <div class="contact-dev" style="margin-top: 0; margin-bottom: 15px; background: var(--bg-color);">
+                <p style="margin-bottom: 8px; color: var(--text-color);">تواصل مع المطور لفتح جهاز إضافي أو تجديد الحساب:</p>
+                <div class="contact-links">
+                    <a href="https://t.me/diajb0" target="_blank"><i class="fa-brands fa-telegram"></i> @diajb0</a>
+                    <a href="tel:07862247686"><i class="fa-solid fa-phone"></i> 07862247686</a>
+                </div>
+            </div>
+            <button id="closeAuthErrorBtn" class="submit-btn" style="background: var(--primary-color);">
+                حسناً، فهمت
+            </button>
         </div>
-
     </div>
 
-    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
-    <!-- كود الجافاسكربت المدمج -->
     <script>
-        // ==========================================
-        // 1. تهيئة Firebase & Firestore & Auth
-        // ==========================================
         const firebaseConfig = {
             apiKey: "AIzaSyCtGr3r2MS8a7KdVuBh8gJVL0eNve7twSU",
             authDomain: "zaincashdeliveryhelper.firebaseapp.com",
@@ -887,19 +886,16 @@
             appId: "1:108290396776:web:ae3a55b268aaaf84c1e1dd"
         };
 
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
-
-        const db = firebase.firestore();
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
+        const db = firebase.firestore();
 
         let drivers = [];
-        let activeCompanyFilter = 'all';
         let fullScreenDriverId = null;
+        let activeCompanyFilter = 'all';
 
         // ==========================================
-        // 2. إدارة تسجيل الدخول الاحترافي وحماية الأجهزة والجلسات
+        // 2. إدارة تسجيل الدخول والتحقق الفوري من الأجهزة
         // ==========================================
         const authScreen = document.getElementById('authScreen');
         const appContainer = document.getElementById('appContainer');
@@ -924,15 +920,18 @@
             authErrorModal.style.display = 'flex';
         }
 
-        // إدارة النوافذ التحفيزية
+        // أزرار النوافذ التحفيزية
         const benefitsModal = document.getElementById('benefitsModal');
         const packagesModal = document.getElementById('packagesModal');
-        document.getElementById('showBenefitsBtn').onclick = (e) => { e.preventDefault(); benefitsModal.style.display = 'flex'; };
-        document.getElementById('showPackagesBtn').onclick = (e) => { e.preventDefault(); packagesModal.style.display = 'flex'; };
-        document.querySelectorAll('.close-benefits-btn').forEach(btn => btn.onclick = (e) => { e.preventDefault(); benefitsModal.style.display = 'none'; });
-        document.querySelectorAll('.close-packages-btn').forEach(btn => btn.onclick = (e) => { e.preventDefault(); packagesModal.style.display = 'none'; });
+        const showBenefitsBtn = document.getElementById('showBenefitsBtn');
+        const showPackagesBtn = document.getElementById('showPackagesBtn');
 
-        // دالة توليد وقراءة بصمة الجهاز الفريدة
+        if (showBenefitsBtn) showBenefitsBtn.onclick = (e) => { e.preventDefault(); if (benefitsModal) benefitsModal.style.display = 'flex'; };
+        if (showPackagesBtn) showPackagesBtn.onclick = (e) => { e.preventDefault(); if (packagesModal) packagesModal.style.display = 'flex'; };
+        document.querySelectorAll('.close-benefits-btn').forEach(btn => btn.onclick = (e) => { e.preventDefault(); if (benefitsModal) benefitsModal.style.display = 'none'; });
+        document.querySelectorAll('.close-packages-btn').forEach(btn => btn.onclick = (e) => { e.preventDefault(); if (packagesModal) packagesModal.style.display = 'none'; });
+
+        // بصمة الجهاز الثابتة
         function getDeviceID() {
             let deviceId = localStorage.getItem('zaincash_device_id');
             if (!deviceId) {
@@ -942,7 +941,7 @@
             return deviceId;
         }
 
-        // فحص الجلسة المحفوظة والمراقبة اللحظية للطرد الفوري عند التصفير أو انتهاء الوقت
+        // فحص الجلسة المحفوظة ومراقبة التصفير اللحظي
         (function initSession() {
             const savedUser = localStorage.getItem('zaincash_logged_user');
             const savedSessionKey = localStorage.getItem('zaincash_session_key');
@@ -953,14 +952,12 @@
                 if (userEmailDisplay) userEmailDisplay.textContent = `الحساب الحالي: ${savedUser}`;
                 loadDriversFromCloud();
 
-                // استماع لحظي: إذا قمت بتصفير الأجهزة أو انتهت الصلاحية بالدقيقة يطرد فوراً
                 db.collection("subscriptions").doc(savedUser).onSnapshot(doc => {
                     if (doc.exists) {
                         const data = doc.data();
-                        const now = new Date().getTime();
+                        const now = Date.now();
                         const expiry = new Date(data.expiryDate).getTime();
 
-                        // إذا انتهت الصلاحية أو تم تغيير مفتاح الجلسة (عند التصفير)
                         if (now > expiry || (data.sessionKey && data.sessionKey !== savedSessionKey)) {
                             localStorage.removeItem('zaincash_logged_user');
                             localStorage.removeItem('zaincash_session_key');
@@ -978,94 +975,85 @@
             }
         })();
 
-        // عملية تسجيل الدخول فائقة السرعة مع معالجة لحظية للأجهزة والانتهاء
-        loginForm.onsubmit = async (e) => {
-            e.preventDefault();
-            const usernameInput = document.getElementById('loginUsername').value.trim().toLowerCase();
-            const passwordInput = document.getElementById('loginPassword').value.trim();
-            const currentDeviceId = getDeviceID();
-            
-            const originalBtnText = loginSubmitBtn.innerHTML;
-            loginSubmitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التحقق...';
-            loginSubmitBtn.disabled = true;
-
-            // دالة مساعدة لإعادة زر الدخول لحالته الطبيعية فوراً
-            const resetBtnState = () => {
-                loginSubmitBtn.innerHTML = originalBtnText;
-                loginSubmitBtn.disabled = false;
-            };
-
-            try {
-                // جلب وثيقة الحساب مع مهلة زمنية لا تتجاوز 4 ثوانٍ لضمان عدم التعليق
-                const fetchPromise = db.collection("subscriptions").doc(usernameInput).get();
-                const timeoutPromise = new Promise((_, reject) => 
-                    setTimeout(() => reject(new Error("ضعف في الاتصال بالإنترنت، يرجى إعادة المحاولة.")), 4000)
-                );
-
-                const userDoc = await Promise.race([fetchPromise, timeoutPromise]);
+        // تسجيل الدخول اللحظي
+        if (loginForm) {
+            loginForm.onsubmit = async (e) => {
+                e.preventDefault();
+                const usernameInput = document.getElementById('loginUsername').value.trim().toLowerCase();
+                const passwordInput = document.getElementById('loginPassword').value.trim();
+                const currentDeviceId = getDeviceID();
                 
-                if (!userDoc.exists) {
-                    resetBtnState();
-                    showAuthError("خطأ في تسجيل الدخول", "اسم المستخدم أو كلمة المرور غير صحيحة.");
-                    return;
-                }
+                const originalBtnText = loginSubmitBtn.innerHTML;
+                loginSubmitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التحقق...';
+                loginSubmitBtn.disabled = true;
 
-                const data = userDoc.data();
+                const resetBtnState = () => {
+                    loginSubmitBtn.innerHTML = originalBtnText;
+                    loginSubmitBtn.disabled = false;
+                };
 
-                // 1. مطابقة كلمة المرور
-                if (String(data.password).trim() !== passwordInput) {
-                    resetBtnState();
-                    showAuthError("خطأ في تسجيل الدخول", "اسم المستخدم أو كلمة المرور غير صحيحة.");
-                    return;
-                }
-                
-                // 2. فحص انتهاء الوقت اللحظي
-                const now = Date.now();
-                const expiryTime = new Date(data.expiryDate).getTime();
-                if (now > expiryTime) {
-                    resetBtnState();
-                    showAuthError(
-                        "انتهت صلاحية الحساب",
-                        `عذراً، لقد انتهت صلاحية اشتراك هذا الحساب بتاريخ:<br><b style="color:var(--danger-color); font-size:1.05rem; display:inline-block; margin-top:6px;">${new Date(data.expiryDate).toLocaleString('ar-EG')}</b>`
-                    );
-                    return;
-                }
+                try {
+                    const userDoc = await db.collection("subscriptions").doc(usernameInput).get();
+                    
+                    if (!userDoc.exists) {
+                        resetBtnState();
+                        showAuthError("خطأ في تسجيل الدخول", "اسم المستخدم أو كلمة المرور غير صحيحة.");
+                        return;
+                    }
 
-                // 3. فحص الأجهزة المعتمدة
-                let devicesArray = Array.isArray(data.devices) ? [...data.devices] : [];
-                
-                if (!devicesArray.includes(currentDeviceId)) {
-                    if (devicesArray.length >= 4) {
+                    const data = userDoc.data();
+
+                    if (String(data.password).trim() !== passwordInput) {
+                        resetBtnState();
+                        showAuthError("خطأ في تسجيل الدخول", "اسم المستخدم أو كلمة المرور غير صحيحة.");
+                        return;
+                    }
+                    
+                    const now = Date.now();
+                    const expiryTime = new Date(data.expiryDate).getTime();
+                    if (now > expiryTime) {
                         resetBtnState();
                         showAuthError(
-                            "تم تجاوز الحد الأقصى للأجهزة",
-                            `هذا الحساب مسجل بالفعل على <b>4 أجهزة</b> مختلفة.<br>لا يمكن فتح الحساب من جهاز إضافي منعاً لتداول الحسابات بين المنافذ.`
+                            "انتهت صلاحية الحساب",
+                            `عذراً، لقد انتهت صلاحية اشتراك هذا الحساب بتاريخ:<br><b style="color:var(--danger-color); font-size:1.05rem; display:inline-block; margin-top:6px;">${new Date(data.expiryDate).toLocaleString('ar-EG')}</b>`
                         );
                         return;
-                    } else {
-                        // حفظ الجهاز الجديد
-                        devicesArray.push(currentDeviceId);
-                        // نقوم بالتحديث في الخلفية دون تعطيل واجهة المستخدم
-                        db.collection("subscriptions").doc(usernameInput).update({
-                            devices: devicesArray
-                        }).catch(e => console.error("Device update err:", e));
                     }
+
+                    let devicesArray = Array.isArray(data.devices) ? [...data.devices] : [];
+                    
+                    if (!devicesArray.includes(currentDeviceId)) {
+                        if (devicesArray.length >= 4) {
+                            resetBtnState();
+                            showAuthError(
+                                "تم تجاوز الحد الأقصى للأجهزة",
+                                `هذا الحساب مسجل بالفعل على <b>4 أجهزة</b> مختلفة.<br>لا يمكن فتح الحساب من جهاز إضافي منعاً لتداول الحسابات بين المنافذ.`
+                            );
+                            return;
+                        } else {
+                            devicesArray.push(currentDeviceId);
+                            db.collection("subscriptions").doc(usernameInput).update({
+                                devices: devicesArray
+                            }).catch(err => console.log("Device update err:", err));
+                        }
+                    }
+
+                    localStorage.setItem('zaincash_logged_user', usernameInput);
+                    localStorage.setItem('zaincash_session_key', data.sessionKey || '');
+                    if (userEmailDisplay) userEmailDisplay.textContent = `الحساب الحالي: ${usernameInput}`;
+                    
+                    authScreen.classList.add('hidden');
+                    appContainer.classList.remove('hidden');
+                    loadDriversFromCloud();
+
+                } catch (error) {
+                    resetBtnState();
+                    showAuthError("تنبيه", error.message);
+                } finally {
+                    resetBtnState();
                 }
-
-                // 4. الدخول المباشر والفوري
-                localStorage.setItem('zaincash_logged_user', usernameInput);
-                localStorage.setItem('zaincash_session_key', data.sessionKey || '');
-                if (userEmailDisplay) userEmailDisplay.textContent = `الحساب الحالي: ${usernameInput}`;
-                
-                authScreen.classList.add('hidden');
-                appContainer.classList.remove('hidden');
-                loadDriversFromCloud();
-
-            } catch (error) {
-                resetBtnState();
-                showAuthError("تنبيه", error.message);
-            }
-        };
+            };
+        }
 
         // تسجيل الخروج
         document.getElementById('logoutBtn').onclick = () => {
@@ -1077,13 +1065,17 @@
         };
 
         // ==========================================
-        // 3. جلب البيانات لحظياً من Cloud Firestore
+        // 3. جلب البيانات لحظياً مع استثناء المحذوفات الوهمية
         // ==========================================
         function loadDriversFromCloud() {
             db.collection("drivers").orderBy("createdAt", "desc").onSnapshot((snapshot) => {
                 drivers = [];
                 snapshot.forEach((doc) => {
-                    drivers.push({ id: doc.id, ...doc.data() });
+                    const data = doc.data();
+                    // عرض السائق فقط إذا لم يكن محذوفاً
+                    if (!data.isDeleted) {
+                        drivers.push({ id: doc.id, ...data });
+                    }
                 });
                 filterAndRenderDrivers();
             }, (error) => {
@@ -1319,9 +1311,15 @@
 
         async function deleteDriver(docId, e) {
             e.stopPropagation();
-            if (confirm("هل أنت متأكد من رغبتك في حذف هذا السائق؟")) {
+            const currentUser = localStorage.getItem('zaincash_logged_user') || 'unknown';
+            if (confirm("هل أنت متأكد من رغبتك في حذف هذا السائق من القائمة؟")) {
                 try {
-                    await db.collection("drivers").doc(docId).delete();
+                    // وسم السائق كمحذوف بدلاً من مسحه نهائياً
+                    await db.collection("drivers").doc(docId).update({
+                        isDeleted: true,
+                        deletedBy: currentUser,
+                        deletedAt: new Date().toISOString()
+                    });
                     if (fullScreenDriverId === docId) fullScreenDriverId = null;
                 } catch (err) {
                     alert("خطأ أثناء الحذف: " + err.message);
@@ -1398,9 +1396,34 @@
             }
 
             try {
+                const currentUser = localStorage.getItem('zaincash_logged_user') || 'unknown';
+
                 if (docId) {
+                    // جلب النسخة الحالية لحفظها في سجل التعديلات قبل الكتابة عليها
+                    const currentDoc = await db.collection("drivers").doc(docId).get();
+                    const oldData = currentDoc.data() || {};
+                    let editHistory = oldData.editHistory || [];
+
+                    // إضافة النسخة القديمة إلى السجل
+                    editHistory.push({
+                        name: oldData.name || '',
+                        phone: oldData.phone || '',
+                        driverId: oldData.driverId || '',
+                        branch: oldData.branch || '',
+                        companyCode: oldData.companyCode || '',
+                        modifiedBy: currentUser,
+                        modifiedAt: new Date().toISOString()
+                    });
+
+                    payload.editHistory = editHistory;
+                    payload.lastUpdatedBy = currentUser;
+                    payload.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
+
                     await db.collection("drivers").doc(docId).update(payload);
                 } else {
+                    payload.createdBy = currentUser;
+                    payload.isDeleted = false;
+                    payload.editHistory = [];
                     payload.createdAt = firebase.firestore.FieldValue.serverTimestamp();
                     await db.collection("drivers").add(payload);
                 }
