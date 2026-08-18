@@ -590,7 +590,7 @@
             <div class="auth-header">
                 <i class="fa-solid fa-wallet brand-icon"></i>
                 <h2>مساعد ايداع السواق</h2>
-                <p style="color: var(--primary-color); font-weight: 700; font-size: 0.85rem;">منظومة الإدارة السريعة للمنافذ (الإصدار 1.3)</p>
+                <p style="color: var(--primary-color); font-weight: 700; font-size: 0.85rem;">منظومة الإدارة السريعة للمنافذ (الإصدار 1.4)</p>
             </div>
             
             <form id="loginForm" class="login-form">
@@ -736,6 +736,9 @@
                 <h2>مساعد ايداع السواق</h2>
             </div>
             <div class="header-actions">
+                <button id="floatWindowBtn" class="icon-btn btn-secondary" title="فتح كنافذة عائمة">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </button>
                 <button id="updatesBtn" class="icon-btn btn-secondary" title="آخر التحديثات">
                     <i class="fa-solid fa-bullhorn"></i>
                     <span id="updatesDot" class="update-badge hidden"></span>
@@ -835,7 +838,7 @@
         <div id="updatesModal" class="modal">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3><i class="fa-solid fa-sparkles" style="color: var(--talabat-color);"></i> ما الجديد في الإصدار 1.3</h3>
+                    <h3><i class="fa-solid fa-sparkles" style="color: var(--talabat-color);"></i> ما الجديد في الإصدار 1.4</h3>
                     <span class="close-updates-btn close-btn">&times;</span>
                 </div>
                 <div class="updates-container">
@@ -935,7 +938,7 @@
 
                     <div class="app-info-card">
                         <p class="app-dev">المطور: <a href="https://t.me/diajb0" target="_blank">@diajb0</a> <i class="fa-brands fa-telegram"></i></p>
-                        <span class="app-version">الإصدار: v1.3</span>
+                        <span class="app-version">الإصدار: v1.4</span>
                     </div>
                 </div>
             </div>
@@ -1038,11 +1041,34 @@
         document.querySelectorAll('.close-benefits-btn').forEach(btn => btn.onclick = (e) => { e.preventDefault(); if (benefitsModal) benefitsModal.style.display = 'none'; });
         document.querySelectorAll('.close-packages-btn').forEach(btn => btn.onclick = (e) => { e.preventDefault(); if (packagesModal) packagesModal.style.display = 'none'; });
 
-        // بصمة الجهاز الثابتة
+        // بصمة الجهاز المحسنة لتجنب استهلاك حد الأجهزة عند مسح الكاش
+        function generateBrowserFingerprint() {
+            const nav = window.navigator;
+            const screen = window.screen;
+            const str = [
+                nav.userAgent || '',
+                nav.language || '',
+                screen.colorDepth || '',
+                (screen.width || '') + 'x' + (screen.height || ''),
+                new Date().getTimezoneOffset(),
+                nav.hardwareConcurrency || '',
+                nav.platform || ''
+            ].join('###');
+
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                const char = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash |= 0;
+            }
+            return 'dev_fp_' + Math.abs(hash).toString(36);
+        }
+
         function getDeviceID() {
             let deviceId = localStorage.getItem('zaincash_device_id');
+            const fpId = generateBrowserFingerprint();
             if (!deviceId) {
-                deviceId = 'dev_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
+                deviceId = fpId;
                 localStorage.setItem('zaincash_device_id', deviceId);
             }
             return deviceId;
@@ -1190,7 +1216,7 @@
         // 3. جلب البيانات لحظياً مع استثناء المحذوفات الوهمية
         // ==========================================
         function loadDriversFromCloud() {
-            db.collection("drivers").orderBy("createdAt", "desc").onSnapshot((snapshot) => {
+            db.collection("drivers").orderBy("createdAt", "desc").limit(100).onSnapshot((snapshot) => {
                 drivers = [];
                 snapshot.forEach((doc) => {
                     const data = doc.data();
@@ -1227,6 +1253,32 @@
             }
         }
 
+        // دالة تنظيف وتأمين النصوص لمنع أخطاء علامات الاقتباس وكسر الـ HTML
+        function escapeHtml(str) {
+            if (str === null || str === undefined) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        // دالة تصحيح وتحويل أرقام الهواتف العراقية تلقائياً
+        function normalizeIraqiPhone(phoneStr) {
+            if (!phoneStr) return '';
+            let cleaned = phoneStr.replace(/\D/g, '');
+            if (cleaned.startsWith('00964')) {
+                cleaned = cleaned.substring(2);
+            }
+            if (cleaned.startsWith('07') && cleaned.length === 11) {
+                cleaned = '964' + cleaned.substring(1);
+            } else if (/^(77|78|75|79)\d{8}$/.test(cleaned)) {
+                cleaned = '964' + cleaned;
+            }
+            return cleaned;
+        }
+
         function renderDrivers(data) {
             driversList.innerHTML = '';
 
@@ -1257,24 +1309,25 @@
                 const isFullscreen = driver.id === fullScreenDriverId;
 
                 card.className = `driver-card ${isTalabat ? 'talabat-card' : ''} ${isBalee ? 'balee-card' : ''} ${isFullscreen ? 'fullscreen' : ''}`;
+                card.dataset.driverId = driver.id;
 
                 let fieldsHTML = isTalabat ? `
-                    ${driver.branch ? `<div class="info-row"><span class="info-label">اسم الفرع:</span><span class="info-value">${driver.branch}</span></div>` : ''}
-                    ${driver.companyCode ? `<div class="info-row"><span class="info-label">رمز العميل:</span><div class="info-value-group"><span class="info-value">${driver.companyCode}</span><button class="copy-btn" onclick="copyToClipboard('${driver.companyCode}', this, event)"><i class="fa-regular fa-copy"></i> نسخ</button></div></div>` : ''}
-                    <div class="info-row"><span class="info-label">ID السائق:</span><div class="info-value-group"><span class="info-value">${driver.driverId}</span><button class="copy-btn" onclick="copyToClipboard('${driver.driverId}', this, event)"><i class="fa-regular fa-copy"></i> نسخ ID</button></div></div>
-                    <div class="info-row"><span class="info-label">اسم السائق:</span><div class="info-value-group"><span class="info-value">${driver.name}</span><button class="copy-btn" onclick="copyToClipboard('${driver.name}', this, event)"><i class="fa-regular fa-copy"></i> نسخ الاسم</button></div></div>
-                    <div class="info-row"><span class="info-label">رقم الهاتف:</span><div class="info-value-group"><span class="info-value">${driver.phone}</span><button class="copy-btn" onclick="copyToClipboard('${driver.phone}', this, event)"><i class="fa-regular fa-copy"></i> نسخ الهاتف</button></div></div>
+                    ${driver.branch ? `<div class="info-row"><span class="info-label">اسم الفرع:</span><span class="info-value">${escapeHtml(driver.branch)}</span></div>` : ''}
+                    ${driver.companyCode ? `<div class="info-row"><span class="info-label">رمز العميل:</span><div class="info-value-group"><span class="info-value">${escapeHtml(driver.companyCode)}</span><button class="copy-btn" data-action="copy" data-copy="${escapeHtml(driver.companyCode)}"><i class="fa-regular fa-copy"></i> نسخ</button></div></div>` : ''}
+                    <div class="info-row"><span class="info-label">ID السائق:</span><div class="info-value-group"><span class="info-value">${escapeHtml(driver.driverId || '')}</span><button class="copy-btn" data-action="copy" data-copy="${escapeHtml(driver.driverId || '')}"><i class="fa-regular fa-copy"></i> نسخ ID</button></div></div>
+                    <div class="info-row"><span class="info-label">اسم السائق:</span><div class="info-value-group"><span class="info-value">${escapeHtml(driver.name || '')}</span><button class="copy-btn" data-action="copy" data-copy="${escapeHtml(driver.name || '')}"><i class="fa-regular fa-copy"></i> نسخ الاسم</button></div></div>
+                    <div class="info-row"><span class="info-label">رقم الهاتف:</span><div class="info-value-group"><span class="info-value">${escapeHtml(driver.phone || '')}</span><button class="copy-btn" data-action="copy" data-copy="${escapeHtml(driver.phone || '')}"><i class="fa-regular fa-copy"></i> نسخ الهاتف</button></div></div>
                     <div class="card-disclaimer">⚠️ تنبيه: قبل التوديع لأي سائق اجعله يتأكد من معلوماته، وتأكد من إرسال رسالة واتساب لرقمه لتوثيق حسابه.</div>
                 ` : `
-                    <div class="info-row"><span class="info-label">اسم السائق:</span><div class="info-value-group"><span class="info-value">${driver.name}</span><button class="copy-btn" onclick="copyToClipboard('${driver.name}', this, event)"><i class="fa-regular fa-copy"></i> نسخ الاسم</button></div></div>
-                    <div class="info-row"><span class="info-label">رقم الهاتف:</span><div class="info-value-group"><span class="info-value">${driver.phone}</span><button class="copy-btn" onclick="copyToClipboard('${driver.phone}', this, event)"><i class="fa-regular fa-copy"></i> نسخ الهاتف</button></div></div>
+                    <div class="info-row"><span class="info-label">اسم السائق:</span><div class="info-value-group"><span class="info-value">${escapeHtml(driver.name || '')}</span><button class="copy-btn" data-action="copy" data-copy="${escapeHtml(driver.name || '')}"><i class="fa-regular fa-copy"></i> نسخ الاسم</button></div></div>
+                    <div class="info-row"><span class="info-label">رقم الهاتف:</span><div class="info-value-group"><span class="info-value">${escapeHtml(driver.phone || '')}</span><button class="copy-btn" data-action="copy" data-copy="${escapeHtml(driver.phone || '')}"><i class="fa-regular fa-copy"></i> نسخ الهاتف</button></div></div>
                     <div class="card-disclaimer">⚠️ تنبيه: قبل التوديع لأي سائق اجعله يتأكد من معلوماته، وتأكد من إرسال رسالة واتساب لرقمه لتوثيق حسابه.</div>
                 `;
 
                 const closeHeaderHTML = isFullscreen ? `
                     <div class="fullscreen-close-bar">
                         <span style="font-weight: 800; color: var(--text-color);"><i class="fa-solid fa-expand" style="color:var(--primary-color);"></i> وضع التركيز</span>
-                        <button class="fullscreen-close-btn" onclick="exitFullScreen(event)">
+                        <button class="fullscreen-close-btn" data-action="exit-fullscreen">
                             <i class="fa-solid fa-arrow-right"></i> رجوع للقائمة
                         </button>
                     </div>
@@ -1283,34 +1336,57 @@
                 card.innerHTML = `
                     ${closeHeaderHTML}
                     <div class="driver-card-header">
-                        <strong>${driver.name}</strong>
-                        <span class="company-badge">${isTalabat ? 'طلبات' : (isBalee ? 'بلي فود' : driver.company.toUpperCase())}</span>
+                        <strong>${escapeHtml(driver.name || '')}</strong>
+                        <span class="company-badge">${isTalabat ? 'طلبات' : (isBalee ? 'بلي فود' : escapeHtml((driver.company || '').toUpperCase()))}</span>
                     </div>
                     ${fieldsHTML}
                     <div style="display: flex; gap: 8px; margin-top: 10px;">
-                        <button class="card-action-btn" style="background: rgba(37, 211, 102, 0.15); color: #25D366; font-size: 0.82rem;" onclick="sendDriverVerification('${driver.id}', 'whatsapp', event)">
+                        <button class="card-action-btn" style="background: rgba(37, 211, 102, 0.15); color: #25D366; font-size: 0.82rem;" data-action="send-verification" data-type="whatsapp" data-id="${escapeHtml(driver.id)}">
                             <i class="fa-brands fa-whatsapp"></i> إرسال تأكيد واتساب
                         </button>
-                        <button class="card-action-btn" style="background: rgba(0, 102, 255, 0.1); color: var(--primary-color); font-size: 0.82rem;" onclick="sendDriverVerification('${driver.id}', 'sms', event)">
+                        <button class="card-action-btn" style="background: rgba(0, 102, 255, 0.1); color: var(--primary-color); font-size: 0.82rem;" data-action="send-verification" data-type="sms" data-id="${escapeHtml(driver.id)}">
                             <i class="fa-solid fa-comment-sms"></i> إرسال SMS
                         </button>
                     </div>
                     <div class="card-actions">
-                        <button class="card-action-btn btn-edit" onclick="openEditModal('${driver.id}', event)"><i class="fa-solid fa-pen-to-square"></i> تعديل</button>
-                        <button class="card-action-btn btn-delete" onclick="deleteDriver('${driver.id}', event)"><i class="fa-solid fa-trash"></i> حذف</button>
+                        <button class="card-action-btn btn-edit" data-action="edit" data-id="${escapeHtml(driver.id)}"><i class="fa-solid fa-pen-to-square"></i> تعديل</button>
+                        <button class="card-action-btn btn-delete" data-action="delete" data-id="${escapeHtml(driver.id)}"><i class="fa-solid fa-trash"></i> حذف</button>
                     </div>
                 `;
-
-                // عند الضغط على الكرت للدخول بالشاشة الكاملة
-                card.onclick = (e) => {
-                    if (e.target.closest('button') || e.target.closest('.copy-btn')) return;
-                    fullScreenDriverId = driver.id;
-                    filterAndRenderDrivers();
-                };
 
                 driversList.appendChild(card);
             });
         }
+
+        // تفويض الأحداث (Event Delegation) لقائمة السائقين لتأمين الأحداث بالكامل
+        driversList.addEventListener('click', (e) => {
+            const actionBtn = e.target.closest('button[data-action]');
+            if (actionBtn) {
+                e.stopPropagation();
+                const action = actionBtn.dataset.action;
+                const id = actionBtn.dataset.id;
+                if (action === 'copy') {
+                    const text = actionBtn.dataset.copy;
+                    copyToClipboard(text, actionBtn, e);
+                } else if (action === 'send-verification') {
+                    const type = actionBtn.dataset.type || 'whatsapp';
+                    sendDriverVerification(id, type, e);
+                } else if (action === 'edit') {
+                    openEditModal(id, e);
+                } else if (action === 'delete') {
+                    deleteDriver(id, e);
+                } else if (action === 'exit-fullscreen') {
+                    exitFullScreen(e);
+                }
+                return;
+            }
+
+            const card = e.target.closest('.driver-card');
+            if (card && !e.target.closest('button') && !e.target.closest('a')) {
+                fullScreenDriverId = card.dataset.driverId;
+                filterAndRenderDrivers();
+            }
+        });
 
         // دالة الخروج من وضع الشاشة الكاملة
         function exitFullScreen(e = null) {
@@ -1567,6 +1643,22 @@
         }
 
         // دالة إنشاء وإرسال رسالة التأكيد عبر واتساب أو SMS
+        function formatVerificationMessage(data) {
+            const isTalabat = data.company === 'talabat';
+            const companyName = isTalabat ? 'طلبات (رمز 531)' : 'بلي فود';
+            return `أهلاً كابتن (${data.name})، بياناتك المسجلة للإيداع لدى المنفذ هي:
+` +
+                   (isTalabat && data.driverId ? `🆔 معرّف السائق (ID): ${data.driverId}
+` : '') +
+                   `🏢 الشركة: ${companyName}
+` +
+                   `📱 رقم الهاتف: ${data.phone}
+` +
+                   (isTalabat && data.branch ? `📍 الفرع: ${data.branch}
+` : '') +
+                   `يرجى التأكد من صحة البيانات والرد بكلمة (تأكيد) لتوثيق حسابك ومنع أي خطأ بالإيداع.`;
+        }
+
         function sendDriverVerification(docIdOrData, type = 'whatsapp', e = null) {
             if (e) e.stopPropagation();
             
@@ -1576,26 +1668,30 @@
             }
             if (!data) return;
 
-            const isTalabat = data.company === 'talabat';
-            const companyName = isTalabat ? 'طلبات (رمز 531)' : 'بلي فود';
-            
-            // صياغة رسالة التأكيد المعتمدة
-            const msg = 
-`أهلاً كابتن (${data.name})، بياناتك المسجلة للإيداع لدى المنفذ هي:
-${isTalabat && data.driverId ? '🆔 معرّف السائق (ID): ' + data.driverId + '\n' : ''}🏢 الشركة: ${companyName}
-📱 رقم الهاتف: ${data.phone}
-${isTalabat && data.branch ? '📍 الفرع: ' + data.branch + '\n' : ''}
-يرجى التأكد من صحة البيانات والرد بكلمة (تأكيد) لتوثيق حسابك ومنع أي خطأ بالإيداع.`;
-
-            const cleanPhone = data.phone.replace(/\D/g, '');
+            const msg = formatVerificationMessage(data);
+            const cleanPhone = (data.phone || '').replace(/\D/g, '');
 
             if (type === 'whatsapp') {
                 const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`;
-                window.open(waUrl, '_blank');
+                const newTab = window.open(waUrl, '_blank');
+                if (!newTab || newTab.closed || typeof newTab.closed === 'undefined') {
+                    window.location.href = waUrl;
+                }
             } else {
                 const smsUrl = `sms:${cleanPhone}?body=${encodeURIComponent(msg)}`;
                 window.location.href = smsUrl;
             }
+        }
+
+        // تنسيق رقم الهاتف تلقائياً عند مغادرة الحقل
+        const phoneInputEl = document.getElementById('driverPhone');
+        if (phoneInputEl) {
+            phoneInputEl.addEventListener('blur', () => {
+                const normalized = normalizeIraqiPhone(phoneInputEl.value.trim());
+                if (normalized.length === 13) {
+                    phoneInputEl.value = normalized;
+                }
+            });
         }
 
         // حفظ بيانات السائق مع التطابق المزدوج والتحقق الصارم ورسالة الواتساب
@@ -1604,8 +1700,12 @@ ${isTalabat && data.branch ? '📍 الفرع: ' + data.branch + '\n' : ''}
             const docId = editDriverDocId.value;
             const company = companySelect.value;
             const name = document.getElementById('driverName').value.trim();
-            const phone = document.getElementById('driverPhone').value.trim();
+            const rawPhone = document.getElementById('driverPhone').value.trim();
+            const phone = normalizeIraqiPhone(rawPhone);
             const driverId = document.getElementById('driverId') ? document.getElementById('driverId').value.trim() : '';
+
+            // تحديث قيمة حقل الهاتف بالصيغة المحولة تلقائياً
+            document.getElementById('driverPhone').value = phone;
 
             // 1. التحقق من ID السائق لشركة طلبات (7 أرقام)
             if (company === 'talabat') {
@@ -1613,76 +1713,82 @@ ${isTalabat && data.branch ? '📍 الفرع: ' + data.branch + '\n' : ''}
                 if (digitsOnlyId.length !== 7) {
                     const allow = await showCustomConfirm(
                         "تنبيه ID السائق",
-                        `الـ ID المدخل (<b style="color:var(--primary-color)">${driverId}</b>) يتكون من ${digitsOnlyId.length} أرقام والمطلوب عادةً <b>7 أرقام</b>.`
+                        `الـ ID المدخل (<b style="color:var(--primary-color)">${escapeHtml(driverId)}</b>) يتكون من ${digitsOnlyId.length} أرقام والمطلوب عادةً <b>7 أرقام</b>.`
                     );
                     if (!allow) return;
                 }
             }
 
-            // 2. التحقق من رقم الهاتف (13 رقماً ويبدأ بالمقدمات العراقية المعتمدة: 96478, 96477, 96475, 96479)
-            const digitsOnlyPhone = phone.replace(/\D/g, '');
+            // 2. التحقق من رقم الهاتف بعد التحويل التلقائي (13 رقماً ويبدأ بالمقدمات العراقية: 96478, 96477, 96475, 96479)
             const iraqiPrefixRegex = /^964(77|78|75|79)\d{8}$/;
-
-            if (digitsOnlyPhone.length !== 13 || !iraqiPrefixRegex.test(digitsOnlyPhone)) {
+            if (phone.length !== 13 || !iraqiPrefixRegex.test(phone)) {
                 const allow = await showCustomConfirm(
                     "تنبيه مقدمة رقم الهاتف",
-                    `رقم الهاتف (<b style="color:var(--primary-color)">${phone}</b>) غير مطابق للصيغة العراقية المعتمدة (يجب أن يبدأ بـ <b>96478 أو 96477 أو 96475 أو 96479</b> ومكون من 13 رقماً).`
+                    `رقم الهاتف (<b style="color:var(--primary-color)">${escapeHtml(rawPhone)}</b>) غير مطابق للصيغة العراقية المعتمدة (يجب أن يبدأ بـ <b>07 أو 9647</b> مثل 077/078/075/079 ومكون من 11 رقماً محلياً أو 13 دولياً).`
                 );
                 if (!allow) return;
             }
 
             // 3. نظام التطابق المزدوج والتأكيد المجتمعي (Crowd-Verification)
-            // فحص هل الـ ID أو رقم الهاتف مسجل مسبقاً لسائق آخر في قاعدة البيانات
             const existingDuplicate = drivers.find(d => {
-                if (docId && d.id === docId) return false; // استثناء نفس السائق عند التعديل
-                const samePhone = d.phone.replace(/\D/g, '') === digitsOnlyPhone;
+                if (docId && d.id === docId) return false;
+                const samePhone = (d.phone || '').replace(/\D/g, '') === phone;
                 const sameId = (company === 'talabat' && driverId && d.driverId === driverId);
                 return samePhone || sameId;
             });
 
             if (existingDuplicate) {
                 const duplicateReason = (company === 'talabat' && driverId && existingDuplicate.driverId === driverId) 
-                    ? `معرّف السائق (ID: ${driverId})` 
-                    : `رقم الهاتف (${phone})`;
+                    ? `معرّف السائق (ID: ${escapeHtml(driverId)})` 
+                    : `رقم الهاتف (${escapeHtml(phone)})`;
 
                 const allow = await showCustomConfirm(
                     "⚠️ تحذير: بيانات مسجلة مسبقاً",
-                    `هذا ${duplicateReason} مسجل بالفعل في المنظومة باسم كابتن: <b style="color:var(--danger-color); font-size:1.1rem; display:block; margin-top:5px;">(${existingDuplicate.name})</b>`
+                    `هذا ${duplicateReason} مسجل بالفعل في المنظومة باسم كابتن: <b style="color:var(--danger-color); font-size:1.1rem; display:block; margin-top:5px;">(${escapeHtml(existingDuplicate.name)})</b>`
                 );
                 if (!allow) return;
             }
 
+            // تفادي حظر النوافذ المنبثقة: فتح نافذة فارغة متزامنة مع نقرة الإرسال عند إضافة سائق جديد
+            let waPreOpenedWindow = null;
+            if (!docId) {
+                waPreOpenedWindow = window.open('', '_blank');
+            }
+
             let payload = {
-                company: company,
-                name: name,
-                phone: phone,
+                company: company || 'talabat',
+                name: name || '',
+                phone: phone || '',
             };
 
             if (company === 'talabat') {
-                payload.branch = document.getElementById('branchName').value.trim();
-                payload.companyCode = companyCodeInput.value.trim();
-                payload.driverId = driverId;
+                payload.branch = (document.getElementById('branchName') ? document.getElementById('branchName').value.trim() : '') || '';
+                payload.companyCode = companyCodeInput.value.trim() || '531';
+                payload.driverId = driverId || '';
             }
 
             try {
                 const currentUser = localStorage.getItem('zaincash_logged_user') || 'unknown';
 
                 if (docId) {
-                    // جلب النسخة الحالية لحفظها في سجل التعديلات قبل الكتابة عليها
                     const currentDoc = await db.collection("drivers").doc(docId).get();
-                    const oldData = currentDoc.data() || {};
-                    let editHistory = oldData.editHistory || [];
+                    const oldData = currentDoc.exists ? (currentDoc.data() || {}) : {};
+                    let editHistory = Array.isArray(oldData.editHistory) ? oldData.editHistory.filter(h => h && typeof h === 'object') : [];
 
-                    // إضافة النسخة القديمة إلى السجل
                     editHistory.push({
                         name: oldData.name || '',
                         phone: oldData.phone || '',
                         driverId: oldData.driverId || '',
                         branch: oldData.branch || '',
                         companyCode: oldData.companyCode || '',
+                        company: oldData.company || '',
                         modifiedBy: currentUser,
                         modifiedAt: new Date().toISOString()
                     });
+
+                    if (editHistory.length > 10) {
+                        editHistory = editHistory.slice(-10);
+                    }
 
                     payload.editHistory = editHistory;
                     payload.lastUpdatedBy = currentUser;
@@ -1696,13 +1802,19 @@ ${isTalabat && data.branch ? '📍 الفرع: ' + data.branch + '\n' : ''}
                     payload.createdAt = firebase.firestore.FieldValue.serverTimestamp();
                     await db.collection("drivers").add(payload);
 
-                    // 4. فتح تطبيق واتساب فوراً وتلقائياً للرقم المدخل لطلب التأكيد عند إضافة السائق لأول مرة
-                    sendDriverVerification(payload, 'whatsapp');
+                    // توجيه النافذة المجهزة مسبقاً لواتساب دون اعتراض من مانع الإطارات المنبثقة
+                    if (waPreOpenedWindow) {
+                        const msg = formatVerificationMessage(payload);
+                        const cleanPhone = payload.phone.replace(/\D/g, '');
+                        const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`;
+                        waPreOpenedWindow.location.href = waUrl;
+                    }
                 }
 
                 driverModal.style.display = 'none';
                 driverForm.reset();
             } catch (err) {
+                if (waPreOpenedWindow) waPreOpenedWindow.close();
                 alert("خطأ أثناء الحفظ: " + err.message);
             }
         };
@@ -1722,7 +1834,7 @@ ${isTalabat && data.branch ? '📍 الفرع: ' + data.branch + '\n' : ''}
         // ==========================================
         // إدارة نافذة آخر التحديثات والنقطة الحمراء
         // ==========================================
-        const CURRENT_APP_VERSION = 'v1.3';
+        const CURRENT_APP_VERSION = 'v1.4';
         const updatesBtn = document.getElementById('updatesBtn');
         const updatesModal = document.getElementById('updatesModal');
         const updatesDot = document.getElementById('updatesDot');
