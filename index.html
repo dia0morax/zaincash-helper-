@@ -942,34 +942,43 @@
             return deviceId;
         }
 
-        // فحص الجلسة المحفوظة فوراً بدون وميض شاشة تسجيل الدخول
+        // فحص الجلسة المحفوظة والمراقبة اللحظية للطرد الفوري عند التصفير أو انتهاء الوقت
         (function initSession() {
             const savedUser = localStorage.getItem('zaincash_logged_user');
+            const savedSessionKey = localStorage.getItem('zaincash_session_key');
+
             if (savedUser) {
-                // إخفاء شاشة تسجيل الدخول وفتح المنظومة مباشرة وفوراً
                 authScreen.classList.add('hidden');
                 appContainer.classList.remove('hidden');
                 if (userEmailDisplay) userEmailDisplay.textContent = `الحساب الحالي: ${savedUser}`;
                 loadDriversFromCloud();
 
-                // التحقق بالخلفية بدون إزعاج المستخدم أو تسجيل خروجه
-                db.collection("subscriptions").doc(savedUser).get().then(doc => {
+                // استماع لحظي: إذا قمت بتصفير الأجهزة أو انتهت الصلاحية بالدقيقة يطرد فوراً
+                db.collection("subscriptions").doc(savedUser).onSnapshot(doc => {
                     if (doc.exists) {
                         const data = doc.data();
-                        const today = new Date().toISOString().split('T')[0];
-                        if (today > String(data.expiryDate)) {
+                        const now = new Date().getTime();
+                        const expiry = new Date(data.expiryDate).getTime();
+
+                        // إذا انتهت الصلاحية أو تم تغيير مفتاح الجلسة (عند التصفير)
+                        if (now > expiry || (data.sessionKey && data.sessionKey !== savedSessionKey)) {
                             localStorage.removeItem('zaincash_logged_user');
+                            localStorage.removeItem('zaincash_session_key');
                             location.reload();
                         }
+                    } else {
+                        localStorage.removeItem('zaincash_logged_user');
+                        localStorage.removeItem('zaincash_session_key');
+                        location.reload();
                     }
-                }).catch(err => console.log("Silent verification err:", err));
+                }, err => console.log("Session error:", err));
             } else {
                 authScreen.classList.remove('hidden');
                 appContainer.classList.add('hidden');
             }
         })();
 
-        // عملية تسجيل الدخول المباشرة (تدعم الحروف الإنجليزية والأرقام والأجهزة)
+        // عملية تسجيل الدخول المباشرة وحل مشكلة الجهاز الخامس بالكامل
         loginForm.onsubmit = async (e) => {
             e.preventDefault();
             const usernameInput = document.getElementById('loginUsername').value.trim().toLowerCase();
@@ -981,7 +990,6 @@
             loginSubmitBtn.disabled = true;
 
             try {
-                // 1. جلب بيانات المشترك من Firestore
                 const userDoc = await db.collection("subscriptions").doc(usernameInput).get();
                 
                 if (!userDoc.exists) {
@@ -990,33 +998,39 @@
 
                 const data = userDoc.data();
 
-                // 2. مطابقة كلمة المرور بدقة كنص (String)
+                // مطابقة كلمة المرور
                 if (String(data.password).trim() !== passwordInput) {
                     throw new Error("اسم المستخدم أو كلمة المرور غير صحيحة.");
                 }
                 
-                // 3. التحقق من تاريخ الصلاحية
-                const today = new Date().toISOString().split('T')[0];
-                if (today > String(data.expiryDate)) {
+                // فحص انتهاء الوقت (يدعم الدقائق والساعات بدقة)
+                const now = new Date().getTime();
+                const expiry = new Date(data.expiryDate).getTime();
+                if (now > expiry) {
                     showAuthError(
                         "انتهت صلاحية الحساب",
-                        `عذراً، لقد انتهت صلاحية اشتراك هذا الحساب بتاريخ (<b>${data.expiryDate}</b>).`
+                        `عذراً، لقد انتهت صلاحية اشتراك هذا الحساب بتاريخ:<br><b style="color:var(--danger-color); font-size:1rem;">${new Date(data.expiryDate).toLocaleString('ar-EG')}</b>`
                     );
+                    loginSubmitBtn.innerHTML = originalBtnText;
+                    loginSubmitBtn.disabled = false;
                     return;
                 }
 
-                // 4. فحص الأجهزة المعتمدة دون المساس بالأجهزة المتصلة
+                // فحص الأجهزة (4 كحد أقصى)
                 let devicesArray = Array.isArray(data.devices) ? [...data.devices] : [];
                 
                 if (!devicesArray.includes(currentDeviceId)) {
                     if (devicesArray.length >= 4) {
+                        // إظهار نافذة تجاوز الحد فوراً للجهاز الخامس
                         showAuthError(
                             "تم تجاوز الحد الأقصى للأجهزة",
-                            `هذا الحساب مسجل بالفعل على <b>4 أجهزة</b> مختلفة.<br>لا يمكن فتح الحساب من جهاز جديد منعاً لتداول الحسابات.`
+                            `هذا الحساب مسجل بالفعل على <b>4 أجهزة</b> مختلفة.<br>لا يمكن فتح الحساب من جهاز إضافي منعاً لتداول الحسابات بين المنافذ.`
                         );
+                        loginSubmitBtn.innerHTML = originalBtnText;
+                        loginSubmitBtn.disabled = false;
                         return;
                     } else {
-                        // إضافة هذا الجهاز للقائمة وتحديث السحابة
+                        // إضافة الجهاز الجديد وحفظه
                         devicesArray.push(currentDeviceId);
                         await db.collection("subscriptions").doc(usernameInput).update({
                             devices: devicesArray
@@ -1024,8 +1038,9 @@
                     }
                 }
 
-                // 5. نجاح الدخول التام
+                // حفظ الجلسة ومفتاح الأمان
                 localStorage.setItem('zaincash_logged_user', usernameInput);
+                localStorage.setItem('zaincash_session_key', data.sessionKey || '');
                 if (userEmailDisplay) userEmailDisplay.textContent = `الحساب الحالي: ${usernameInput}`;
                 
                 authScreen.classList.add('hidden');
@@ -1044,6 +1059,7 @@
         document.getElementById('logoutBtn').onclick = () => {
             if (confirm("هل أنت متأكد من تسجيل الخروج؟ (سيبقى هذا الجهاز مسجلاً ضمن أجهزتك المعتمدة)")) {
                 localStorage.removeItem('zaincash_logged_user');
+                localStorage.removeItem('zaincash_session_key');
                 location.reload();
             }
         };
