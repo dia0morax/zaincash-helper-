@@ -164,10 +164,35 @@
             border-radius: var(--radius); font-weight: 700; color: var(--primary-color); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
         }
 
-        /* --- بطاقات السائقين (Driver Cards) --- */
+        /* --- بطاقات السائقين (Driver Cards) - تحسين سرعة الأداء وتقليل الحمل --- */
         .driver-card {
             background: var(--card-bg); border-radius: 20px; padding: 20px; margin-bottom: 16px; border: 1px solid var(--border-color);
             box-shadow: var(--shadow); cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease; position: relative;
+            content-visibility: auto;
+            contain-intrinsic-size: 0 160px;
+        }
+        .driver-card.fullscreen {
+            content-visibility: visible;
+        }
+        .load-more-container {
+            text-align: center;
+            margin: 20px 0 35px 0;
+        }
+        .load-more-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--primary-color);
+            font-weight: 700;
+            padding: 12px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            box-shadow: var(--shadow);
+            transition: all 0.2s ease;
+        }
+        .load-more-btn:hover {
+            background: var(--primary-color);
+            color: #fff;
         }
         .driver-card:hover { transform: translateY(-3px); }
         .driver-card.fullscreen {
@@ -821,8 +846,14 @@
                         </div>
 
                         <div class="form-group">
-                            <label>اسم السائق الثلاثي:</label>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                                <label style="margin-bottom: 0;">اسم السائق الثلاثي:</label>
+                                <span id="nameDuplicateWarning" class="hidden" style="color: var(--danger-color); font-weight: 700; font-size: 0.78rem; background: rgba(238, 93, 80, 0.12); padding: 2px 8px; border-radius: 6px;">
+                                    <i class="fa-solid fa-triangle-exclamation"></i> هذا السائق موجود أصلاً
+                                </span>
+                            </div>
                             <input type="text" id="driverName" required placeholder="الاسم الكامل">
+                            <div id="nameDuplicateDetail" class="hidden" style="margin-top: 5px; font-size: 0.8rem; color: var(--danger-color); font-weight: 700;"></div>
                         </div>
                         <div class="form-group">
                             <label>رقم الهاتف (13 رقم):</label>
@@ -1253,6 +1284,25 @@
             }
         }
 
+        // دالة تسوية وتوحيد النصوص العربية للبحث والمطابقة
+        function normalizeArabicText(text) {
+            if (!text) return '';
+            return String(text)
+                .replace(/[\u064B-\u065F\u0640]/g, '')
+                .replace(/[أإآ]/g, 'ا')
+                .replace(/[ى]/g, 'ي')
+                .replace(/[ة]/g, 'ه')
+                .trim()
+                .toLowerCase();
+        }
+
+        // استخراج أول 3 أسماء من الاسم الكامل
+        function getFirstThreeNames(fullName) {
+            const norm = normalizeArabicText(fullName);
+            const words = norm.split(/\s+/).filter(w => w.length > 0);
+            return words.slice(0, 3).join(' ');
+        }
+
         // دالة تنظيف وتأمين النصوص لمنع أخطاء علامات الاقتباس وكسر الـ HTML
         function escapeHtml(str) {
             if (str === null || str === undefined) return '';
@@ -1279,8 +1329,67 @@
             return cleaned;
         }
 
+        // متغيرات التحكم في العرض التدريجي لتسريع التصفح
+        let currentRenderLimit = 30;
+        let currentFilteredDrivers = [];
+
+        function renderDriverCardElement(driver, isFullscreen) {
+            const card = document.createElement('div');
+            const isTalabat = driver.company === 'talabat';
+            const isBalee = driver.company === 'baleefood';
+
+            card.className = `driver-card ${isTalabat ? 'talabat-card' : ''} ${isBalee ? 'balee-card' : ''} ${isFullscreen ? 'fullscreen' : ''}`;
+            card.dataset.driverId = driver.id;
+
+            let fieldsHTML = isTalabat ? `
+                ${driver.branch ? `<div class="info-row"><span class="info-label">اسم الفرع:</span><span class="info-value">${escapeHtml(driver.branch)}</span></div>` : ''}
+                ${driver.companyCode ? `<div class="info-row"><span class="info-label">رمز العميل:</span><div class="info-value-group"><span class="info-value">${escapeHtml(driver.companyCode)}</span><button class="copy-btn" data-action="copy" data-copy="${escapeHtml(driver.companyCode)}"><i class="fa-regular fa-copy"></i> نسخ</button></div></div>` : ''}
+                <div class="info-row"><span class="info-label">ID السائق:</span><div class="info-value-group"><span class="info-value">${escapeHtml(driver.driverId || '')}</span><button class="copy-btn" data-action="copy" data-copy="${escapeHtml(driver.driverId || '')}"><i class="fa-regular fa-copy"></i> نسخ ID</button></div></div>
+                <div class="info-row"><span class="info-label">اسم السائق:</span><div class="info-value-group"><span class="info-value">${escapeHtml(driver.name || '')}</span><button class="copy-btn" data-action="copy" data-copy="${escapeHtml(driver.name || '')}"><i class="fa-regular fa-copy"></i> نسخ الاسم</button></div></div>
+                <div class="info-row"><span class="info-label">رقم الهاتف:</span><div class="info-value-group"><span class="info-value">${escapeHtml(driver.phone || '')}</span><button class="copy-btn" data-action="copy" data-copy="${escapeHtml(driver.phone || '')}"><i class="fa-regular fa-copy"></i> نسخ الهاتف</button></div></div>
+                <div class="card-disclaimer">⚠️ تنبيه: قبل التوديع لأي سائق اجعله يتأكد من معلوماته، وتأكد من إرسال رسالة واتساب لرقمه لتوثيق حسابه.</div>
+            ` : `
+                <div class="info-row"><span class="info-label">اسم السائق:</span><div class="info-value-group"><span class="info-value">${escapeHtml(driver.name || '')}</span><button class="copy-btn" data-action="copy" data-copy="${escapeHtml(driver.name || '')}"><i class="fa-regular fa-copy"></i> نسخ الاسم</button></div></div>
+                <div class="info-row"><span class="info-label">رقم الهاتف:</span><div class="info-value-group"><span class="info-value">${escapeHtml(driver.phone || '')}</span><button class="copy-btn" data-action="copy" data-copy="${escapeHtml(driver.phone || '')}"><i class="fa-regular fa-copy"></i> نسخ الهاتف</button></div></div>
+                <div class="card-disclaimer">⚠️ تنبيه: قبل التوديع لأي سائق اجعله يتأكد من معلوماته، وتأكد من إرسال رسالة واتساب لرقمه لتوثيق حسابه.</div>
+            `;
+
+            const closeHeaderHTML = isFullscreen ? `
+                <div class="fullscreen-close-bar">
+                    <span style="font-weight: 800; color: var(--text-color);"><i class="fa-solid fa-expand" style="color:var(--primary-color);"></i> وضع التركيز</span>
+                    <button class="fullscreen-close-btn" data-action="exit-fullscreen">
+                        <i class="fa-solid fa-arrow-right"></i> رجوع للقائمة
+                    </button>
+                </div>
+            ` : '';
+
+            card.innerHTML = `
+                ${closeHeaderHTML}
+                <div class="driver-card-header">
+                    <strong>${escapeHtml(driver.name || '')}</strong>
+                    <span class="company-badge">${isTalabat ? 'طلبات' : (isBalee ? 'بلي فود' : escapeHtml((driver.company || '').toUpperCase()))}</span>
+                </div>
+                ${fieldsHTML}
+                <div style="display: flex; gap: 8px; margin-top: 10px;">
+                    <button class="card-action-btn" style="background: rgba(37, 211, 102, 0.15); color: #25D366; font-size: 0.82rem;" data-action="send-verification" data-type="whatsapp" data-id="${escapeHtml(driver.id)}">
+                        <i class="fa-brands fa-whatsapp"></i> إرسال تأكيد واتساب
+                    </button>
+                    <button class="card-action-btn" style="background: rgba(0, 102, 255, 0.1); color: var(--primary-color); font-size: 0.82rem;" data-action="send-verification" data-type="sms" data-id="${escapeHtml(driver.id)}">
+                        <i class="fa-solid fa-comment-sms"></i> إرسال SMS
+                    </button>
+                </div>
+                <div class="card-actions">
+                    <button class="card-action-btn btn-edit" data-action="edit" data-id="${escapeHtml(driver.id)}"><i class="fa-solid fa-pen-to-square"></i> تعديل</button>
+                    <button class="card-action-btn btn-delete" data-action="delete" data-id="${escapeHtml(driver.id)}"><i class="fa-solid fa-trash"></i> حذف</button>
+                </div>
+            `;
+
+            return card;
+        }
+
         function renderDrivers(data) {
             driversList.innerHTML = '';
+            currentFilteredDrivers = data;
 
             if (data.length === 0) {
                 driversList.innerHTML = `<p style="text-align:center; color: var(--text-secondary); margin-top:30px; font-weight: bold;">لا يوجد سائقين مطابقين.</p>`;
@@ -1288,74 +1397,47 @@
                 return;
             }
 
-            let displayData = data;
             if (fullScreenDriverId) {
-                displayData = data.filter(d => d.id === fullScreenDriverId);
-                if (displayData.length === 0) {
-                    fullScreenDriverId = null;
-                    displayData = data;
-                    toggleFocusMode(false);
-                } else {
+                const singleDriver = data.find(d => d.id === fullScreenDriverId);
+                if (singleDriver) {
                     toggleFocusMode(true);
+                    driversList.appendChild(renderDriverCardElement(singleDriver, true));
+                    return;
+                } else {
+                    fullScreenDriverId = null;
+                    toggleFocusMode(false);
                 }
             } else {
                 toggleFocusMode(false);
             }
 
-            displayData.forEach(driver => {
-                const card = document.createElement('div');
-                const isTalabat = driver.company === 'talabat';
-                const isBalee = driver.company === 'baleefood';
-                const isFullscreen = driver.id === fullScreenDriverId;
+            // استخدام DocumentFragment لتقليل عمليات الـ Reflow والرسم المتكرر
+            const fragment = document.createDocumentFragment();
+            const itemsToRender = data.slice(0, currentRenderLimit);
 
-                card.className = `driver-card ${isTalabat ? 'talabat-card' : ''} ${isBalee ? 'balee-card' : ''} ${isFullscreen ? 'fullscreen' : ''}`;
-                card.dataset.driverId = driver.id;
-
-                let fieldsHTML = isTalabat ? `
-                    ${driver.branch ? `<div class="info-row"><span class="info-label">اسم الفرع:</span><span class="info-value">${escapeHtml(driver.branch)}</span></div>` : ''}
-                    ${driver.companyCode ? `<div class="info-row"><span class="info-label">رمز العميل:</span><div class="info-value-group"><span class="info-value">${escapeHtml(driver.companyCode)}</span><button class="copy-btn" data-action="copy" data-copy="${escapeHtml(driver.companyCode)}"><i class="fa-regular fa-copy"></i> نسخ</button></div></div>` : ''}
-                    <div class="info-row"><span class="info-label">ID السائق:</span><div class="info-value-group"><span class="info-value">${escapeHtml(driver.driverId || '')}</span><button class="copy-btn" data-action="copy" data-copy="${escapeHtml(driver.driverId || '')}"><i class="fa-regular fa-copy"></i> نسخ ID</button></div></div>
-                    <div class="info-row"><span class="info-label">اسم السائق:</span><div class="info-value-group"><span class="info-value">${escapeHtml(driver.name || '')}</span><button class="copy-btn" data-action="copy" data-copy="${escapeHtml(driver.name || '')}"><i class="fa-regular fa-copy"></i> نسخ الاسم</button></div></div>
-                    <div class="info-row"><span class="info-label">رقم الهاتف:</span><div class="info-value-group"><span class="info-value">${escapeHtml(driver.phone || '')}</span><button class="copy-btn" data-action="copy" data-copy="${escapeHtml(driver.phone || '')}"><i class="fa-regular fa-copy"></i> نسخ الهاتف</button></div></div>
-                    <div class="card-disclaimer">⚠️ تنبيه: قبل التوديع لأي سائق اجعله يتأكد من معلوماته، وتأكد من إرسال رسالة واتساب لرقمه لتوثيق حسابه.</div>
-                ` : `
-                    <div class="info-row"><span class="info-label">اسم السائق:</span><div class="info-value-group"><span class="info-value">${escapeHtml(driver.name || '')}</span><button class="copy-btn" data-action="copy" data-copy="${escapeHtml(driver.name || '')}"><i class="fa-regular fa-copy"></i> نسخ الاسم</button></div></div>
-                    <div class="info-row"><span class="info-label">رقم الهاتف:</span><div class="info-value-group"><span class="info-value">${escapeHtml(driver.phone || '')}</span><button class="copy-btn" data-action="copy" data-copy="${escapeHtml(driver.phone || '')}"><i class="fa-regular fa-copy"></i> نسخ الهاتف</button></div></div>
-                    <div class="card-disclaimer">⚠️ تنبيه: قبل التوديع لأي سائق اجعله يتأكد من معلوماته، وتأكد من إرسال رسالة واتساب لرقمه لتوثيق حسابه.</div>
-                `;
-
-                const closeHeaderHTML = isFullscreen ? `
-                    <div class="fullscreen-close-bar">
-                        <span style="font-weight: 800; color: var(--text-color);"><i class="fa-solid fa-expand" style="color:var(--primary-color);"></i> وضع التركيز</span>
-                        <button class="fullscreen-close-btn" data-action="exit-fullscreen">
-                            <i class="fa-solid fa-arrow-right"></i> رجوع للقائمة
-                        </button>
-                    </div>
-                ` : '';
-
-                card.innerHTML = `
-                    ${closeHeaderHTML}
-                    <div class="driver-card-header">
-                        <strong>${escapeHtml(driver.name || '')}</strong>
-                        <span class="company-badge">${isTalabat ? 'طلبات' : (isBalee ? 'بلي فود' : escapeHtml((driver.company || '').toUpperCase()))}</span>
-                    </div>
-                    ${fieldsHTML}
-                    <div style="display: flex; gap: 8px; margin-top: 10px;">
-                        <button class="card-action-btn" style="background: rgba(37, 211, 102, 0.15); color: #25D366; font-size: 0.82rem;" data-action="send-verification" data-type="whatsapp" data-id="${escapeHtml(driver.id)}">
-                            <i class="fa-brands fa-whatsapp"></i> إرسال تأكيد واتساب
-                        </button>
-                        <button class="card-action-btn" style="background: rgba(0, 102, 255, 0.1); color: var(--primary-color); font-size: 0.82rem;" data-action="send-verification" data-type="sms" data-id="${escapeHtml(driver.id)}">
-                            <i class="fa-solid fa-comment-sms"></i> إرسال SMS
-                        </button>
-                    </div>
-                    <div class="card-actions">
-                        <button class="card-action-btn btn-edit" data-action="edit" data-id="${escapeHtml(driver.id)}"><i class="fa-solid fa-pen-to-square"></i> تعديل</button>
-                        <button class="card-action-btn btn-delete" data-action="delete" data-id="${escapeHtml(driver.id)}"><i class="fa-solid fa-trash"></i> حذف</button>
-                    </div>
-                `;
-
-                driversList.appendChild(card);
+            itemsToRender.forEach(driver => {
+                fragment.appendChild(renderDriverCardElement(driver, false));
             });
+
+            driversList.appendChild(fragment);
+
+            // زر تحميل المزيد إذا كانت النتائج أكثر من حد العرض الأولي
+            if (data.length > currentRenderLimit) {
+                const loadMoreDiv = document.createElement('div');
+                loadMoreDiv.className = 'load-more-container';
+                const remaining = data.length - currentRenderLimit;
+                loadMoreDiv.innerHTML = `
+                    <button class="load-more-btn" id="loadMoreBtn">
+                        <i class="fa-solid fa-angles-down"></i> عرض المزيد من السائقين (متبقي ${remaining})
+                    </button>
+                `;
+                driversList.appendChild(loadMoreDiv);
+
+                document.getElementById('loadMoreBtn').onclick = () => {
+                    currentRenderLimit += 30;
+                    renderDrivers(currentFilteredDrivers);
+                };
+            }
         }
 
         // تفويض الأحداث (Event Delegation) لقائمة السائقين لتأمين الأحداث بالكامل
@@ -1445,54 +1527,156 @@
         });
 
         // ==========================================
-        // 5. البحث والاقتراحات اللحظية
+        // 5. محرك البحث الذكي وترتيب الاقتراحات حسب الأولوية الاسمية
         // ==========================================
         const searchInput = document.getElementById('searchInput');
         const searchSuggestions = document.getElementById('searchSuggestions');
 
+        // خوارزمية ذكية لاحتساب درجة التطابق وترتيب النتائج اسمياً
+        function calculateSearchScore(driver, rawQuery) {
+            const queryNorm = normalizeArabicText(rawQuery);
+            if (!queryNorm) return 0;
+
+            const queryWords = queryNorm.split(/\s+/).filter(Boolean);
+            const nameNorm = normalizeArabicText(driver.name || '');
+            const nameWords = nameNorm.split(/\s+/).filter(Boolean);
+            const driverId = (driver.driverId || '').trim().toLowerCase();
+            const phone = (driver.phone || '').replace(/\D/g, '');
+            const cleanQuery = rawQuery.trim().toLowerCase();
+            const cleanDigits = rawQuery.replace(/\D/g, '');
+
+            let score = 0;
+
+            // 1. تطابق تام للاسم الكامل
+            if (nameNorm === queryNorm) return 1000;
+
+            // 2. بداية الاسم مطابقة تماماً لعبارة البحث
+            if (nameNorm.startsWith(queryNorm)) {
+                return 800 + (nameWords.length === queryWords.length ? 100 : 0);
+            }
+
+            // 3. تطابق مباشر مع ID السائق أو رقم الهاتف
+            if (driverId && driverId === cleanQuery) return 750;
+            if (cleanDigits && (phone === cleanDigits || phone.endsWith(cleanDigits))) {
+                return phone === cleanDigits ? 700 : (cleanDigits.length >= 4 ? 500 : 0);
+            }
+            if (driverId && cleanQuery && driverId.startsWith(cleanQuery)) {
+                score = Math.max(score, 450);
+            }
+
+            // 4. معالجة البحث المتعدد (كلمتين أو أكثر، مثلاً: "ضياء حسين")
+            if (queryWords.length > 1) {
+                // تطابق متسلسل لبداية الأسماء (الاسم الأول يبدأ بـ ضياء والاسم الثاني بـ حسين)
+                if (nameWords.length >= queryWords.length) {
+                    const isSequential = queryWords.every((qw, i) => nameWords[i] && nameWords[i].startsWith(qw));
+                    if (isSequential) return 650;
+                }
+
+                // جميع كلمات البحث تطابق بدايات كلمات في اسم السائق
+                const allPrefixMatch = queryWords.every(qw => nameWords.some(nw => nw.startsWith(qw)));
+                if (allPrefixMatch) return 550;
+
+                // جميع كلمات البحث موجودة داخل أجزاء الاسم
+                const allWordsExist = queryWords.every(qw => nameWords.some(nw => nw.includes(qw)));
+                if (allWordsExist) return 350;
+
+                // إذا كان البحث متعدد الكلمات ولم تطابق جميع الكلمات، يتم استبعاده لمنع إظهار أسماء عشوائية مثل "حسن"
+                return 0;
+            }
+
+            // 5. معالجة البحث بكلمة واحدة (مثلاً: "ضياء")
+            if (queryWords.length === 1) {
+                const qw = queryWords[0];
+                // إذا كان الاسم الأول يبدأ بالكلمة
+                if (nameWords.length > 0 && nameWords[0].startsWith(qw)) {
+                    score = Math.max(score, 600);
+                } else {
+                    // إذا كان أي اسم تالٍ يبدأ بالكلمة، مع إعطاء أولوية للترتيب المتقدم
+                    const matchIdx = nameWords.findIndex(nw => nw.startsWith(qw));
+                    if (matchIdx !== -1) {
+                        score = Math.max(score, 400 - (matchIdx * 30));
+                    } else if (nameNorm.includes(qw)) {
+                        score = Math.max(score, 150);
+                    }
+                }
+            }
+
+            return score;
+        }
+
+        // تسريع البحث وتقليل ضغط إعادة الرسم باستخدام Debounce
+        let searchDebounceTimer = null;
+
         searchInput.addEventListener('input', () => {
-            const query = searchInput.value.toLowerCase().trim();
-            if (query.length === 0) {
-                searchSuggestions.classList.add('hidden');
-                filterAndRenderDrivers();
-                return;
-            }
+            clearTimeout(searchDebounceTimer);
+            searchDebounceTimer = setTimeout(() => {
+                currentRenderLimit = 30; // إعادة التصفح للحد الأولي عند البحث الجديد
+                const query = searchInput.value.trim();
 
-            const matches = drivers.filter(d => 
-                d.name.toLowerCase().includes(query) || (d.driverId && d.driverId.toLowerCase().includes(query))
-            );
+                if (query.length === 0) {
+                    searchSuggestions.classList.add('hidden');
+                    filterAndRenderDrivers();
+                    return;
+                }
 
-            if (matches.length > 0) {
-                searchSuggestions.innerHTML = '';
-                matches.forEach(m => {
-                    const item = document.createElement('div');
-                    item.className = 'suggestion-item';
-                    item.innerHTML = `<span><strong>${m.name}</strong> (${m.driverId || m.phone})</span> <small style="color:var(--primary-color)">${m.company.toUpperCase()}</small>`;
-                    item.onclick = () => {
-                        fullScreenDriverId = m.id;
-                        searchSuggestions.classList.add('hidden');
-                        searchInput.value = m.name;
-                        filterAndRenderDrivers();
-                    };
-                    searchSuggestions.appendChild(item);
+                // حساب درجات التطابق وترتيب الاقتراحات حسب الأولوية الاسمية الدقيقة
+                const scoredMatches = [];
+                drivers.forEach(d => {
+                    const score = calculateSearchScore(d, query);
+                    if (score > 0) {
+                        scoredMatches.push({ driver: d, score: score });
+                    }
                 });
-                searchSuggestions.classList.remove('hidden');
-            } else {
-                searchSuggestions.classList.add('hidden');
-            }
-            filterAndRenderDrivers();
+
+                scoredMatches.sort((a, b) => b.score - a.score || a.driver.name.localeCompare(b.driver.name, 'ar'));
+
+                if (scoredMatches.length > 0) {
+                    searchSuggestions.innerHTML = '';
+                    scoredMatches.slice(0, 10).forEach(itemObj => {
+                        const m = itemObj.driver;
+                        const item = document.createElement('div');
+                        item.className = 'suggestion-item';
+                        item.innerHTML = `<span><strong>${escapeHtml(m.name)}</strong> (${escapeHtml(m.driverId || m.phone)})</span> <small style="color:var(--primary-color)">${escapeHtml(m.company.toUpperCase())}</small>`;
+                        item.onclick = () => {
+                            fullScreenDriverId = m.id;
+                            searchSuggestions.classList.add('hidden');
+                            searchInput.value = m.name;
+                            filterAndRenderDrivers();
+                        };
+                        searchSuggestions.appendChild(item);
+                    });
+                    searchSuggestions.classList.remove('hidden');
+                } else {
+                    searchSuggestions.classList.add('hidden');
+                }
+                filterAndRenderDrivers();
+            }, 100);
         });
 
         function filterAndRenderDrivers() {
-            const query = searchInput.value.toLowerCase().trim();
-            const filtered = drivers.filter(d => {
+            const query = searchInput.value.trim();
+
+            let matchedList = [];
+            drivers.forEach(d => {
                 const matchesCompany = (activeCompanyFilter === 'all') || (d.company === activeCompanyFilter);
-                const matchesQuery = d.name.toLowerCase().includes(query) || 
-                                     (d.driverId && d.driverId.toLowerCase().includes(query)) ||
-                                     d.phone.includes(query);
-                return matchesCompany && matchesQuery;
+                if (!matchesCompany) return;
+
+                if (!query) {
+                    matchedList.push({ driver: d, score: 1 });
+                } else {
+                    const score = calculateSearchScore(d, query);
+                    if (score > 0) {
+                        matchedList.push({ driver: d, score: score });
+                    }
+                }
             });
-            renderDrivers(filtered);
+
+            if (query) {
+                matchedList.sort((a, b) => b.score - a.score || a.driver.name.localeCompare(b.driver.name, 'ar'));
+            }
+
+            const finalDrivers = matchedList.map(item => item.driver);
+            renderDrivers(finalDrivers);
         }
 
         // ==========================================
@@ -1570,6 +1754,7 @@
             editDriverDocId.value = '';
             modalTitle.textContent = 'إضافة سائق جديد';
             driverForm.reset();
+            resetNameDuplicateAlert();
             resetCompanyCodeField('531');
             toggleFormFieldsByCompany(companySelect.value);
             driverModal.style.display = 'flex';
@@ -1681,6 +1866,111 @@
                 const smsUrl = `sms:${cleanPhone}?body=${encodeURIComponent(msg)}`;
                 window.location.href = smsUrl;
             }
+        }
+
+        // فحص السائق المكرر لحظياً عند كتابة أول 3 أسماء
+        const driverNameInput = document.getElementById('driverName');
+        const nameDuplicateWarning = document.getElementById('nameDuplicateWarning');
+        const nameDuplicateDetail = document.getElementById('nameDuplicateDetail');
+
+        function checkDriverNameDuplicate() {
+            if (!driverNameInput) return;
+            const rawVal = driverNameInput.value.trim();
+            const currentDocId = editDriverDocId ? editDriverDocId.value : '';
+            const typedNorm = normalizeArabicText(rawVal);
+            const typedWords = typedNorm.split(/\s+/).filter(Boolean);
+
+            if (typedWords.length >= 2) {
+                const typed2 = typedWords.slice(0, 2).join(' ');
+                const typed3 = typedWords.slice(0, 3).join(' ');
+
+                let matchType = null; // 'EXACT' (تطابق 100% باللون الأحمر) أو 'PARTIAL' (تشابه أسماء باللون الأصفر)
+                let matchedDriver = null;
+
+                // 1. أولاً: التحقق من التطابق التام بنسبة 100% للاسم بالكامل
+                matchedDriver = drivers.find(d => {
+                    if (currentDocId && d.id === currentDocId) return false;
+                    const driverNorm = normalizeArabicText(d.name || '');
+                    return driverNorm && driverNorm === typedNorm;
+                });
+
+                if (matchedDriver) {
+                    matchType = 'EXACT';
+                } else {
+                    // 2. ثانياً: التحقق من التطابق الجزئي أو الاحتمالي (قد يكون هذا السائق موجود بالنظام)
+                    matchedDriver = drivers.find(d => {
+                        if (currentDocId && d.id === currentDocId) return false;
+                        const driverNorm = normalizeArabicText(d.name || '');
+                        const driverWords = driverNorm.split(/\s+/).filter(Boolean);
+                        if (driverWords.length < 2) return false;
+
+                        // إذا كان السائق المسجل اسماً ثنائياً وتطابق مع بداية الاسم المدخل
+                        if (driverWords.length === 2 && driverNorm === typed2) return true;
+
+                        // إذا أدخل المستخدم اسمين فقط وتطابقا مع أول اسمين لسائق مسجل ثلاثي أو أكثر
+                        if (typedWords.length === 2 && driverWords.slice(0, 2).join(' ') === typed2) return true;
+
+                        // إذا كان الاسم ثلاثياً فأكثر وتطابقت أول 3 أسماء
+                        if (typedWords.length >= 3 && driverWords.length >= 3) {
+                            const driver3 = driverWords.slice(0, 3).join(' ');
+                            if (driver3 === typed3) return true;
+                        }
+
+                        return false;
+                    });
+
+                    if (matchedDriver) {
+                        matchType = 'PARTIAL';
+                    }
+                }
+
+                if (matchedDriver && matchType) {
+                    const compLabel = matchedDriver.company === 'talabat' ? 'طلبات' : 'بلي فود';
+                    if (nameDuplicateWarning) {
+                        if (matchType === 'EXACT') {
+                            nameDuplicateWarning.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> هذا السائق موجود أصلاً`;
+                            nameDuplicateWarning.style.color = 'var(--danger-color)';
+                            nameDuplicateWarning.style.background = 'rgba(238, 93, 80, 0.12)';
+                            nameDuplicateWarning.classList.remove('hidden');
+                        } else {
+                            nameDuplicateWarning.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> قد يكون هذا السائق موجود بالنظام`;
+                            nameDuplicateWarning.style.color = '#EAA041';
+                            nameDuplicateWarning.style.background = 'rgba(234, 160, 65, 0.15)';
+                            nameDuplicateWarning.classList.remove('hidden');
+                        }
+                    }
+
+                    if (nameDuplicateDetail) {
+                        if (matchType === 'EXACT') {
+                            nameDuplicateDetail.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> مسجل مسبقاً بنفس الاسم تماماً: <b>${escapeHtml(matchedDriver.name)}</b> (${compLabel})${matchedDriver.phone ? ` - هاتف: ${escapeHtml(matchedDriver.phone)}` : ''}`;
+                            nameDuplicateDetail.style.color = 'var(--danger-color)';
+                            nameDuplicateDetail.classList.remove('hidden');
+                        } else {
+                            nameDuplicateDetail.innerHTML = `<i class="fa-solid fa-circle-info"></i> تشابه في الأسماء مع: <b>${escapeHtml(matchedDriver.name)}</b> (${compLabel})${matchedDriver.phone ? ` - هاتف: ${escapeHtml(matchedDriver.phone)}` : ''}`;
+                            nameDuplicateDetail.style.color = '#EAA041';
+                            nameDuplicateDetail.classList.remove('hidden');
+                        }
+                    }
+
+                    driverNameInput.style.borderColor = matchType === 'EXACT' ? 'var(--danger-color)' : '#EAA041';
+                    return;
+                }
+            }
+
+            // إخفاء التنبيه في حال عدم وجود تطابق
+            if (nameDuplicateWarning) nameDuplicateWarning.classList.add('hidden');
+            if (nameDuplicateDetail) nameDuplicateDetail.classList.add('hidden');
+            driverNameInput.style.borderColor = '';
+        }
+
+        function resetNameDuplicateAlert() {
+            if (nameDuplicateWarning) nameDuplicateWarning.classList.add('hidden');
+            if (nameDuplicateDetail) nameDuplicateDetail.classList.add('hidden');
+            if (driverNameInput) driverNameInput.style.borderColor = '';
+        }
+
+        if (driverNameInput) {
+            driverNameInput.addEventListener('input', checkDriverNameDuplicate);
         }
 
         // تنسيق رقم الهاتف تلقائياً عند مغادرة الحقل
@@ -1813,6 +2103,7 @@
 
                 driverModal.style.display = 'none';
                 driverForm.reset();
+                resetNameDuplicateAlert();
             } catch (err) {
                 if (waPreOpenedWindow) waPreOpenedWindow.close();
                 alert("خطأ أثناء الحفظ: " + err.message);
