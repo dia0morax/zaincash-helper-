@@ -941,7 +941,7 @@
             return deviceId;
         }
 
-        // فحص الجلسة المحفوظة ومراقبة التصفير اللحظي
+        // فحص الجلسة المحفوظة ومراقبة الحظر والطرد اللحظي
         (function initSession() {
             const savedUser = localStorage.getItem('zaincash_logged_user');
             const savedSessionKey = localStorage.getItem('zaincash_session_key');
@@ -958,7 +958,8 @@
                         const now = Date.now();
                         const expiry = new Date(data.expiryDate).getTime();
 
-                        if (now > expiry || (data.sessionKey && data.sessionKey !== savedSessionKey)) {
+                        // طرد فوري إذا تم الحظر أو انتهى الاشتراك أو تم تصفير الأجهزة
+                        if (data.isBanned === true || now > expiry || (data.sessionKey && data.sessionKey !== savedSessionKey)) {
                             localStorage.removeItem('zaincash_logged_user');
                             localStorage.removeItem('zaincash_session_key');
                             location.reload();
@@ -975,7 +976,7 @@
             }
         })();
 
-        // تسجيل الدخول اللحظي
+        // تسجيل الدخول مع فحص الحظر اللحظي وسبب الحظر
         if (loginForm) {
             loginForm.onsubmit = async (e) => {
                 e.preventDefault();
@@ -1003,12 +1004,24 @@
 
                     const data = userDoc.data();
 
+                    // 1. مطابقة كلمة المرور
                     if (String(data.password).trim() !== passwordInput) {
                         resetBtnState();
                         showAuthError("خطأ في تسجيل الدخول", "اسم المستخدم أو كلمة المرور غير صحيحة.");
                         return;
                     }
+
+                    // 2. فحص حالة الحظر (Blacklist)
+                    if (data.isBanned === true) {
+                        resetBtnState();
+                        showAuthError(
+                            "تم حظر هذا الحساب",
+                            `تم حظر هذا الحساب من استخدام المنظومة.<br><b style="color:var(--danger-color); display:block; margin-top:8px;">سبب الحظر: ${data.banReason || 'مخالفة الشروط'}</b>`
+                        );
+                        return;
+                    }
                     
+                    // 3. فحص انتهاء الوقت
                     const now = Date.now();
                     const expiryTime = new Date(data.expiryDate).getTime();
                     if (now > expiryTime) {
@@ -1020,6 +1033,7 @@
                         return;
                     }
 
+                    // 4. فحص الأجهزة (4 كحد أقصى)
                     let devicesArray = Array.isArray(data.devices) ? [...data.devices] : [];
                     
                     if (!devicesArray.includes(currentDeviceId)) {
@@ -1038,6 +1052,7 @@
                         }
                     }
 
+                    // 5. حفظ الجلسة والدخول
                     localStorage.setItem('zaincash_logged_user', usernameInput);
                     localStorage.setItem('zaincash_session_key', data.sessionKey || '');
                     if (userEmailDisplay) userEmailDisplay.textContent = `الحساب الحالي: ${usernameInput}`;
