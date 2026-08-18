@@ -547,7 +547,7 @@
             <div class="auth-header">
                 <i class="fa-solid fa-wallet brand-icon"></i>
                 <h2>مساعد ايداع السواق</h2>
-                <p style="color: var(--primary-color); font-weight: 700; font-size: 0.85rem;">منظومة الإدارة السريعة للمنافذ (الإصدار 1.2)</p>
+                <p style="color: var(--primary-color); font-weight: 700; font-size: 0.85rem;">منظومة الإدارة السريعة للمنافذ (الإصدار 1.3)</p>
             </div>
             
             <form id="loginForm" class="login-form">
@@ -586,31 +586,58 @@
     <div id="benefitsModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3><i class="fa-solid fa-rocket" style="color: var(--primary-color);"></i> شنو راح تستفاد من المنظومة؟</h3>
+                <h3><i class="fa-solid fa-shield-check" style="color: var(--primary-color);"></i> لماذا تحتاج هذه المنظومة في منفذك؟</h3>
                 <span class="close-benefits-btn close-btn">&times;</span>
             </div>
             <div class="modal-body">
                 <div class="feature-item">
-                    <i class="fa-solid fa-check-circle feature-icon"></i>
+                    <i class="fa-solid fa-users feature-icon"></i>
                     <div>
-                        <strong>وداعاً لدفاتر الديون والملاحظات المشتتة</strong>
-                        <p>قاعدة بيانات ضخمة جاهزة لسواق طلبات وبلي فود، ابحث عن السائق بثانية وحدة وبدون تعب.</p>
+                        <strong>قاعدة بيانات سحابية مشتركة ومحدثة</strong>
+                        <p>بدلاً من تكرار حفظ السائقين في دفاتر أو جهات الاتصال، المنظومة توفر دليلاً مشتركاً ينمو بمساهمة المنافذ لتجد بيانات السائقين فوراً.</p>
                     </div>
                 </div>
+
                 <div class="feature-item">
-                    <i class="fa-solid fa-shield-halved feature-icon"></i>
+                    <i class="fa-brands fa-whatsapp feature-icon" style="color: #25D366;"></i>
                     <div>
-                        <strong>صفر أخطاء بالتحويل</strong>
-                        <p>المنظومة تفحص الـ ID ورقم الهاتف تلقائياً، وتثبت لك رمز الشركة 531، حتى تطمئن وماتحول فلوس بالغلط أبداً.</p>
+                        <strong>توثيق البيانات مع السائق عبر واتساب و SMS</strong>
+                        <p>إمكانية إرسال كليشة جاهزة ببيانات السائق (الاسم، الـ ID، رمز 531، الهاتف) لرقمه بضغطة زر ليتأكد منها ويتحمل مسؤولية صحتها قبل الإيداع.</p>
                     </div>
                 </div>
+
                 <div class="feature-item">
-                    <i class="fa-solid fa-copy feature-icon"></i>
+                    <i class="fa-solid fa-filter-circle-dollar feature-icon"></i>
                     <div>
-                        <strong>نسخ سريع بكبسة زر</strong>
-                        <p>بضغطة وحدة تنسخ الاسم، الرقم، أو الـ ID وتلصقه بتطبيق زين كاش فوراً وقت الزخم.</p>
+                        <strong>تدقيق صيغ الأرقام ومنع نقص الخانات</strong>
+                        <p>فحص برمجي صارم يضمن أن الـ ID يتكون من 7 أرقام، وأن الهاتف بالصيغة العراقية الصحيحة المعتمدة (9647XXXXXXXXX)، مع تثبيت رمز 531 لمنع أخطاء الإدخال اليدوي.</p>
                     </div>
                 </div>
+
+                <div class="feature-item">
+                    <i class="fa-solid fa-users-viewfinder feature-icon"></i>
+                    <div>
+                        <strong>نظام كشف الحسابات المكررة (التطابق المزدوج)</strong>
+                        <p>تنبيه فوري لصاحب المنفذ إذا كان رقم الهاتف أو الـ ID مسجلاً مسبقاً باسم كابتن آخر لمنع أي تداخل بين السائقين.</p>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <i class="fa-solid fa-bolt feature-icon"></i>
+                    <div>
+                        <strong>نسخ فوري فائق السرعة ونافذة عائمة</strong>
+                        <p>أزرار نسخ بنقرة واحدة لكل حقل مع إمكانية فتح التطبيق كنافذة عائمة فوق أو بجانب تطبيق زين كاش لتسريع عملية الإيداع وقت الزخم.</p>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <i class="fa-solid fa-mobile-screen feature-icon"></i>
+                    <div>
+                        <strong>حساب مخصص وآمن (حتى 4 أجهزة)</strong>
+                        <p>إمكانية تسجيل الدخول لحساب منفذك على 4 أجهزة وهواتف في نفس الوقت لتغطية كادر العمل بالكامل وبحماية سحابية عالية.</p>
+                    </div>
+                </div>
+
                 <button class="submit-btn close-benefits-btn" style="margin-top: 10px;">رجوع</button>
             </div>
         </div>
@@ -660,7 +687,7 @@
     <div id="appContainer" class="app-container hidden">
         
         <!-- الهيدر -->
-        <header class="app-header">
+        <header class="app-header" id="mainAppHeader">
             <div class="header-title">
                 <i class="fa-solid fa-wallet brand-icon"></i>
                 <h2>مساعد ايداع السواق</h2>
@@ -670,8 +697,8 @@
                     <i class="fa-solid fa-bullhorn"></i>
                     <span id="updatesDot" class="update-badge hidden"></span>
                 </button>
-                <button id="floatWindowBtn" class="icon-btn btn-secondary" title="نافذة عائمة">
-                    <i class="fa-solid fa-window-restore"></i>
+                <button id="guideBtn" class="icon-btn btn-secondary" title="دليل الاستخدام والنافذة العائمة">
+                    <i class="fa-solid fa-book-open"></i>
                 </button>
                 <button id="addDriverBtn" class="icon-btn btn-primary" title="إضافة سائق جديد">
                     <i class="fa-solid fa-user-plus"></i>
@@ -804,6 +831,50 @@
             </div>
         </div>
 
+        <!-- نافذة دليل الاستخدام وتثبيت التطبيق -->
+        <div id="guideModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3><i class="fa-solid fa-book-bookmark" style="color: var(--primary-color);"></i> دليل استخدام المنظومة</h3>
+                    <span class="close-guide-btn close-btn">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div class="feature-item">
+                        <i class="fa-solid fa-window-restore feature-icon"></i>
+                        <div>
+                            <strong>تشغيل المنظومة كنافذة عائمة فوق زين كاش:</strong>
+                            <p>1. افتح المنظومة ثم اخرج لقائمة التطبيقات المفتوحة الحديثة (زر المهام ||| أسفل الشاشة).<br>
+                            2. اضغط مطولاً على أيقونة المتصفح في الأعلى واختر <b>"الفتح في عرض الإطار المنبثق"</b> (Pop-up view) أو <b>"نافذة عائمة"</b>.<br>
+                            3. افتح تطبيق زين كاش واجعل نافذة المنظومة مصغرة على الجانب لتنسخ وتلصق البيانات فوراً دون تبديل التطبيقات.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-item">
+                        <i class="fa-solid fa-expand feature-icon"></i>
+                        <div>
+                            <strong>التركيز وشاشة الكرت الكاملة:</strong>
+                            <p>اضغط على أي كرت سائق لتكبيره بشاشة كاملة وإخفاء القوائم وأشرطة البحث لسهولة القراءة والنسخ أثناء الزخم.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-item">
+                        <i class="fa-solid fa-mobile-screen-button feature-icon" style="color: var(--talabat-color);"></i>
+                        <div>
+                            <strong>إضافة الموقع كتطبيق للشاشة الرئيسية:</strong>
+                            <p>اضغط على خيارات المتصفح (⋮) ثم اختر <b>"إضافة إلى الشاشة الرئيسية"</b> (Add to Home Screen) ليفتح معك التطبيق بملء الشاشة وبسرعة فائقة كتطبيق مثبت.</p>
+                        </div>
+                    </div>
+
+                    <button id="pwaInstallBtn" class="submit-btn" style="background: var(--talabat-color); margin-top: 10px;">
+                        <i class="fa-solid fa-download"></i> تثبيت التطبيق على الشاشة الرئيسية
+                    </button>
+                    <button class="submit-btn close-guide-btn" style="margin-top: 8px; background: var(--border-color); color: var(--text-color);">
+                        إغلاق الدليل
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <div id="settingsModal" class="modal">
             <div class="modal-content">
                 <div class="modal-header">
@@ -821,7 +892,7 @@
 
                     <div class="app-info-card">
                         <p class="app-dev">المطور: <a href="https://t.me/diajb0" target="_blank">@diajb0</a> <i class="fa-brands fa-telegram"></i></p>
-                        <span class="app-version">الإصدار: v1.2</span>
+                        <span class="app-version">الإصدار: v1.3</span>
                     </div>
                 </div>
             </div>
@@ -1092,26 +1163,48 @@
         }
 
         // ==========================================
-        // 4. رسم بطاقات السائقين (دعم الشاشة الكاملة)
+        // 4. رسم بطاقات السائقين (دعم الشاشة الكاملة الفوري)
         // ==========================================
         const driversList = document.getElementById('driversList');
         const backToListBtn = document.getElementById('backToListBtn');
+
+        function toggleFocusMode(isFullScreen) {
+            const headerEl = document.getElementById('mainAppHeader');
+            const searchEl = document.querySelector('.search-section');
+
+            if (isFullScreen) {
+                if (headerEl) headerEl.classList.add('hidden');
+                if (searchEl) searchEl.classList.add('hidden');
+                if (backToListBtn) backToListBtn.classList.remove('hidden');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                if (headerEl) headerEl.classList.remove('hidden');
+                if (searchEl) searchEl.classList.remove('hidden');
+                if (backToListBtn) backToListBtn.classList.add('hidden');
+            }
+        }
 
         function renderDrivers(data) {
             driversList.innerHTML = '';
 
             if (data.length === 0) {
                 driversList.innerHTML = `<p style="text-align:center; color: var(--text-secondary); margin-top:30px; font-weight: bold;">لا يوجد سائقين مطابقين.</p>`;
+                toggleFocusMode(false);
                 return;
             }
 
-            // إذا كان هناك كرت مفتوح بشاشة كاملة
             let displayData = data;
             if (fullScreenDriverId) {
                 displayData = data.filter(d => d.id === fullScreenDriverId);
-                backToListBtn.classList.remove('hidden');
+                if (displayData.length === 0) {
+                    fullScreenDriverId = null;
+                    displayData = data;
+                    toggleFocusMode(false);
+                } else {
+                    toggleFocusMode(true);
+                }
             } else {
-                backToListBtn.classList.add('hidden');
+                toggleFocusMode(false);
             }
 
             displayData.forEach(driver => {
@@ -1124,15 +1217,15 @@
 
                 let fieldsHTML = isTalabat ? `
                     ${driver.branch ? `<div class="info-row"><span class="info-label">اسم الفرع:</span><span class="info-value">${driver.branch}</span></div>` : ''}
-                    ${driver.companyCode ? `<div class="info-row"><span class="info-label">رمز العميل:</span><div class="info-value-group"><span class="info-value">${driver.companyCode}</span><button class="copy-btn" onclick="copyToClipboard('${driver.companyCode}', this)"><i class="fa-regular fa-copy"></i> نسخ</button></div></div>` : ''}
-                    <div class="info-row"><span class="info-label">ID السائق:</span><div class="info-value-group"><span class="info-value">${driver.driverId}</span><button class="copy-btn" onclick="copyToClipboard('${driver.driverId}', this)"><i class="fa-regular fa-copy"></i> نسخ ID</button></div></div>
-                    <div class="info-row"><span class="info-label">اسم السائق:</span><div class="info-value-group"><span class="info-value">${driver.name}</span><button class="copy-btn" onclick="copyToClipboard('${driver.name}', this)"><i class="fa-regular fa-copy"></i> نسخ الاسم</button></div></div>
-                    <div class="info-row"><span class="info-label">رقم الهاتف:</span><div class="info-value-group"><span class="info-value">${driver.phone}</span><button class="copy-btn" onclick="copyToClipboard('${driver.phone}', this)"><i class="fa-regular fa-copy"></i> نسخ الهاتف</button></div></div>
+                    ${driver.companyCode ? `<div class="info-row"><span class="info-label">رمز العميل:</span><div class="info-value-group"><span class="info-value">${driver.companyCode}</span><button class="copy-btn" onclick="copyToClipboard('${driver.companyCode}', this, event)"><i class="fa-regular fa-copy"></i> نسخ</button></div></div>` : ''}
+                    <div class="info-row"><span class="info-label">ID السائق:</span><div class="info-value-group"><span class="info-value">${driver.driverId}</span><button class="copy-btn" onclick="copyToClipboard('${driver.driverId}', this, event)"><i class="fa-regular fa-copy"></i> نسخ ID</button></div></div>
+                    <div class="info-row"><span class="info-label">اسم السائق:</span><div class="info-value-group"><span class="info-value">${driver.name}</span><button class="copy-btn" onclick="copyToClipboard('${driver.name}', this, event)"><i class="fa-regular fa-copy"></i> نسخ الاسم</button></div></div>
+                    <div class="info-row"><span class="info-label">رقم الهاتف:</span><div class="info-value-group"><span class="info-value">${driver.phone}</span><button class="copy-btn" onclick="copyToClipboard('${driver.phone}', this, event)"><i class="fa-regular fa-copy"></i> نسخ الهاتف</button></div></div>
                     <div class="card-disclaimer">⚠️ تنبيه: قبل التوديع لأي سائق اجعله يتأكد من معلوماته، وتأكد من إرسال رسالة واتساب لرقمه لتوثيق حسابه.</div>
                 ` : `
-                    <div class="info-row"><span class="info-label">اسم السائق:</span><div class="info-value-group"><span class="info-value">${driver.name}</span><button class="copy-btn" onclick="copyToClipboard('${driver.name}', this)"><i class="fa-regular fa-copy"></i> نسخ الاسم</button></div></div>
-                    <div class="info-row"><span class="info-label">رقم الهاتف:</span><div class="info-value-group"><span class="info-value">${driver.phone}</span><button class="copy-btn" onclick="copyToClipboard('${driver.phone}', this)"><i class="fa-regular fa-copy"></i> نسخ الهاتف</button></div></div>
-                    <div class="card-disclaimer">تنبيه اخلاء مسؤولية: قبل التوديع لأي سائق اجعله يتأكد من معلوماته</div>
+                    <div class="info-row"><span class="info-label">اسم السائق:</span><div class="info-value-group"><span class="info-value">${driver.name}</span><button class="copy-btn" onclick="copyToClipboard('${driver.name}', this, event)"><i class="fa-regular fa-copy"></i> نسخ الاسم</button></div></div>
+                    <div class="info-row"><span class="info-label">رقم الهاتف:</span><div class="info-value-group"><span class="info-value">${driver.phone}</span><button class="copy-btn" onclick="copyToClipboard('${driver.phone}', this, event)"><i class="fa-regular fa-copy"></i> نسخ الهاتف</button></div></div>
+                    <div class="card-disclaimer">⚠️ تنبيه: قبل التوديع لأي سائق اجعله يتأكد من معلوماته، وتأكد من إرسال رسالة واتساب لرقمه لتوثيق حسابه.</div>
                 `;
 
                 card.innerHTML = `
@@ -1157,7 +1250,7 @@
 
                 // عند الضغط على الكرت للدخول بالشاشة الكاملة
                 card.onclick = (e) => {
-                    if (e.target.closest('button')) return; // تجاهل زر النسخ والتعديل
+                    if (e.target.closest('button') || e.target.closest('.copy-btn')) return;
                     fullScreenDriverId = driver.id;
                     filterAndRenderDrivers();
                 };
@@ -1166,10 +1259,55 @@
             });
         }
 
-        backToListBtn.onclick = () => {
-            fullScreenDriverId = null;
-            filterAndRenderDrivers();
-        };
+        // زر العودة لقائمة السائقين
+        if (backToListBtn) {
+            backToListBtn.onclick = () => {
+                fullScreenDriverId = null;
+                toggleFocusMode(false);
+                filterAndRenderDrivers();
+            };
+        }
+
+        // إدارة نافذة دليل الاستخدام والتثبيت للشاشة الرئيسية
+        const guideBtn = document.getElementById('guideBtn');
+        const guideModal = document.getElementById('guideModal');
+        const pwaInstallBtn = document.getElementById('pwaInstallBtn');
+        let deferredPrompt;
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            if (pwaInstallBtn) pwaInstallBtn.style.display = 'block';
+        });
+
+        if (guideBtn) guideBtn.onclick = () => guideModal.style.display = 'flex';
+
+        if (pwaInstallBtn) {
+            pwaInstallBtn.onclick = async () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    deferredPrompt = null;
+                } else {
+                    alert("📱 لتثبيت التطبيق على الشاشة الرئيسية:\n1. اضغط على زر خيارات المتصفح (⋮) في الزاوية.\n2. اضغط على 'إضافة إلى الشاشة الرئيسية' أو 'Install App'.");
+                }
+            };
+        }
+
+        // كود موحد يشغل أزرار (X) لجميع النوافذ المنبثقة والنقر الخارجي
+        document.querySelectorAll('.close-btn, .close-settings-btn, .close-updates-btn, .close-benefits-btn, .close-packages-btn, .close-guide-btn').forEach(btn => {
+            btn.onclick = (e) => {
+                e.preventDefault();
+                const modal = btn.closest('.modal');
+                if (modal) modal.style.display = 'none';
+            };
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal') && e.target.id !== 'authErrorModal') {
+                e.target.style.display = 'none';
+            }
+        });
 
         // ==========================================
         // 5. البحث والاقتراحات اللحظية
@@ -1225,7 +1363,8 @@
         // ==========================================
         // 6. ميزة النسخ السريع للـ Clipboard
         // ==========================================
-        function copyToClipboard(text, buttonElement) {
+        function copyToClipboard(text, buttonElement, e = null) {
+            if (e) e.stopPropagation();
             if (!text) return;
             navigator.clipboard.writeText(text).then(() => {
                 const originalText = buttonElement.innerHTML;
