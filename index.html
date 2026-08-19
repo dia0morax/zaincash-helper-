@@ -1223,6 +1223,13 @@
                                     <p>رسالة منبثقة خضراء فورية تظهر عند إضافة سائق بنجاح مع زر مباشر للانتقال السريع لبطاقة السائق.</p>
                                 </div>
                             </div>
+                            <div class="update-item">
+                                <div class="update-icon" style="color: var(--primary-color); background: rgba(0, 102, 255, 0.1);"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
+                                <div class="update-text">
+                                    <strong>محرك البحث الشامل وتوحيد الأسماء المركبة</strong>
+                                    <p>البحث التلقائي يشمل كافة الشركات والأفرع فور كتابة أي حرف دون التقيد بالتبويب المفتوح، مع توحيد ومطابقة الأسماء المركبة (مثل: عبدالله وعبد الله) والأسماء الثنائية والثلاثية بدقة تامة.</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -1705,15 +1712,29 @@
         // 3. جلب البيانات لحظياً مع استثناء المحذوفات الوهمية
         // ==========================================
         function loadDriversFromCloud() {
-            db.collection("drivers").orderBy("createdAt", "desc").limit(100).onSnapshot((snapshot) => {
+            // جلب كافة السائقين دون استثناء السجلات القديمة التي تفتقر لحقل createdAt
+            db.collection("drivers").onSnapshot((snapshot) => {
                 drivers = [];
                 snapshot.forEach((doc) => {
                     const data = doc.data();
-                    // عرض السائق فقط إذا لم يكن محذوفاً
-                    if (!data.isDeleted) {
+                    // عرض السائق فقط إذا لم يكن موسوماً كمحذوف (Soft Delete)
+                    if (data.isDeleted !== true) {
                         drivers.push({ id: doc.id, ...data });
                     }
                 });
+
+                // ترتيب السائقين في الذاكرة لضمان عدم استبعاد أي سجل قديم من قاعدة البيانات
+                drivers.sort((a, b) => {
+                    const getTimestamp = (val) => {
+                        if (!val) return 0;
+                        if (val.toMillis) return val.toMillis();
+                        if (val.seconds) return val.seconds * 1000;
+                        const parsed = new Date(val).getTime();
+                        return isNaN(parsed) ? 0 : parsed;
+                    };
+                    return getTimestamp(b.createdAt) - getTimestamp(a.createdAt);
+                });
+
                 updateDriverCounts();
                 filterAndRenderDrivers();
             }, (error) => {
@@ -1743,16 +1764,28 @@
             }
         }
 
-        // دالة تسوية وتوحيد النصوص العربية للبحث والمطابقة
+        // دالة تسوية وتوحيد النصوص العربية والأسماء المركبة
         function normalizeArabicText(text) {
             if (!text) return '';
-            return String(text)
-                .replace(/[\u064B-\u065F\u0640]/g, '')
+            let norm = String(text)
+                .replace(/[\u064B-\u065F\u0640]/g, '') // إزالة علامات التشكيل والتطويل
                 .replace(/[أإآ]/g, 'ا')
                 .replace(/[ى]/g, 'ي')
                 .replace(/[ة]/g, 'ه')
+                .replace(/[ؤئء]/g, 'ا') // تسوية الهمزات
                 .trim()
                 .toLowerCase();
+
+            // دمج وتوحيد المقاطع المركبة الشائعة لمنع أخطاء المسافات (مثل: عبد الله / عبدالله، ابو بكر / ابوبكر)
+            norm = norm
+                .replace(/\bعبد\s+/g, 'عبد')
+                .replace(/\bابو\s+/g, 'ابو')
+                .replace(/\bام\s+/g, 'ام')
+                .replace(/\bال\s+/g, 'ال')
+                .replace(/\s+/g, ' ')
+                .trim();
+
+            return norm;
         }
 
         // استخراج أول 3 أسماء من الاسم الكامل
@@ -2023,34 +2056,42 @@
                 score = Math.max(score, 450);
             }
 
-            // 4. معالجة البحث المتعدد (كلمتين أو أكثر، مثلاً: "ضياء حسين")
+            // 4. معالجة البحث المتعدد (كلمتين أو أكثر، مثلاً: "ضياء حسين" أو "ضياء حسين علي")
             if (queryWords.length > 1) {
-                // تطابق متسلسل لبداية الأسماء (الاسم الأول يبدأ بـ ضياء والاسم الثاني بـ حسين)
+                // أ) تطابق متسلسل لبداية الأسماء (الاسم الأول يبدأ بـ ضياء والاسم الثاني بـ حسين)
                 if (nameWords.length >= queryWords.length) {
                     const isSequential = queryWords.every((qw, i) => nameWords[i] && nameWords[i].startsWith(qw));
                     if (isSequential) return 650;
                 }
 
-                // جميع كلمات البحث تطابق بدايات كلمات في اسم السائق
+                // ب) إذا بحث المستخدم بـ 3 أسماء أو أكثر وكان السائق مسجلاً باسمين فقط وبدايتهما مطابقة
+                // مثال: بحث "ضياء حسين علي" والسائق مسجل باسم "ضياء حسين"
+                if (nameWords.length < queryWords.length && nameWords.length >= 2) {
+                    const driverPrefixMatches = nameWords.every((nw, i) => queryWords[i] && queryWords[i].startsWith(nw));
+                    if (driverPrefixMatches) return 600;
+                }
+
+                // ج) جميع كلمات البحث تطابق بدايات كلمات في اسم السائق
                 const allPrefixMatch = queryWords.every(qw => nameWords.some(nw => nw.startsWith(qw)));
                 if (allPrefixMatch) return 550;
 
-                // جميع كلمات البحث موجودة داخل أجزاء الاسم
+                // د) جميع كلمات اسم السائق موجودة داخل عبارة البحث
+                const allDriverWordsInQuery = nameWords.every(nw => queryWords.some(qw => qw.startsWith(nw) || nw.startsWith(qw)));
+                if (allDriverWordsInQuery) return 450;
+
+                // هـ) جميع كلمات البحث موجودة داخل أجزاء الاسم
                 const allWordsExist = queryWords.every(qw => nameWords.some(nw => nw.includes(qw)));
                 if (allWordsExist) return 350;
 
-                // إذا كان البحث متعدد الكلمات ولم تطابق جميع الكلمات، يتم استبعاده لمنع إظهار أسماء عشوائية مثل "حسن"
                 return 0;
             }
 
             // 5. معالجة البحث بكلمة واحدة (مثلاً: "ضياء")
             if (queryWords.length === 1) {
                 const qw = queryWords[0];
-                // إذا كان الاسم الأول يبدأ بالكلمة
                 if (nameWords.length > 0 && nameWords[0].startsWith(qw)) {
                     score = Math.max(score, 600);
                 } else {
-                    // إذا كان أي اسم تالٍ يبدأ بالكلمة، مع إعطاء أولوية للترتيب المتقدم
                     const matchIdx = nameWords.findIndex(nw => nw.startsWith(qw));
                     if (matchIdx !== -1) {
                         score = Math.max(score, 400 - (matchIdx * 30));
@@ -2078,7 +2119,7 @@
                     return;
                 }
 
-                // حساب درجات التطابق وترتيب الاقتراحات حسب الأولوية الاسمية الدقيقة
+                // حساب درجات التطابق وترتيب الاقتراحات شاملاً لكافة السائقين والأفرع
                 const scoredMatches = [];
                 drivers.forEach(d => {
                     const score = calculateSearchScore(d, query);
@@ -2095,7 +2136,7 @@
                         const m = itemObj.driver;
                         const item = document.createElement('div');
                         item.className = 'suggestion-item';
-                        item.innerHTML = `<span><strong>${escapeHtml(m.name)}</strong> (${escapeHtml(m.driverId || m.phone)})</span> <small style="color:var(--primary-color)">${escapeHtml(m.company.toUpperCase())}</small>`;
+                        item.innerHTML = `<span><strong>${escapeHtml(m.name)}</strong> (${escapeHtml(m.driverId || m.phone)})</span> <small style="color:var(--primary-color)">${escapeHtml(m.company.toUpperCase())}${m.branch ? ' - ' + escapeHtml(m.branch) : ''}</small>`;
                         item.onclick = () => {
                             fullScreenDriverId = m.id;
                             searchSuggestions.classList.add('hidden');
@@ -2117,6 +2158,16 @@
 
             let matchedList = [];
             drivers.forEach(d => {
+                // إذا كان هناك بحث نصي، نبحث في كامل السائقين بلا استثناء (شامل كل الشركات والأفرع)
+                if (query.length > 0) {
+                    const score = calculateSearchScore(d, query);
+                    if (score > 0) {
+                        matchedList.push({ driver: d, score: score });
+                    }
+                    return;
+                }
+
+                // في حال عدم وجود بحث نصي، نطبق فلترة التبويب المحدد والفرع المحدد
                 // 1. فلترة الشركة
                 const matchesCompany = (activeCompanyFilter === 'all') || (d.company === activeCompanyFilter);
                 if (!matchesCompany) return;
@@ -2125,22 +2176,13 @@
                 if (activeCompanyFilter === 'talabat' && activeTalabatBranchFilter !== 'all') {
                     const driverBranch = (d.branch || '').trim();
                     if (activeTalabatBranchFilter === '__custom__') {
-                        // الفروع المخصصة / غير المتطابقة 100% مع الأفرع المعتمدة
                         if (TALABAT_BRANCHES.includes(driverBranch)) return;
                     } else {
-                        // فرع معتمد محدد
                         if (driverBranch !== activeTalabatBranchFilter) return;
                     }
                 }
 
-                if (!query) {
-                    matchedList.push({ driver: d, score: 1 });
-                } else {
-                    const score = calculateSearchScore(d, query);
-                    if (score > 0) {
-                        matchedList.push({ driver: d, score: score });
-                    }
-                }
+                matchedList.push({ driver: d, score: 1 });
             });
 
             if (query) {
