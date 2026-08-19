@@ -150,13 +150,224 @@
         }
         .suggestion-item:hover { background: var(--bg-color); }
 
-        /* الوسوم */
-        .company-tags { display: flex; gap: 10px; margin-bottom: 20px; }
+        /* الوسوم والأفرع والقوائم */
+        .company-tags-container {
+            margin-bottom: 20px;
+        }
+        .company-tags {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            white-space: nowrap;
+            padding-bottom: 6px;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+        }
+        .company-tags::-webkit-scrollbar { display: none; }
         .tag {
-            padding: 8px 20px; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 30px;
-            font-size: 0.9rem; font-weight: 700; cursor: pointer; color: var(--text-secondary); transition: 0.2s;
+            padding: 8px 16px; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 30px;
+            font-size: 0.88rem; font-weight: 700; cursor: pointer; color: var(--text-secondary); transition: 0.2s;
+            display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0;
         }
         .tag.active { background: var(--primary-color); color: #FFF; border-color: var(--primary-color); }
+        .tag-badge {
+            background: rgba(0, 102, 255, 0.12);
+            color: var(--primary-color);
+            font-size: 0.75rem;
+            padding: 1px 7px;
+            border-radius: 12px;
+            font-weight: 800;
+        }
+        .tag.active .tag-badge {
+            background: rgba(255, 255, 255, 0.25);
+            color: #FFF;
+        }
+        .branch-tags-bar {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            white-space: nowrap;
+            padding-bottom: 6px;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+            animation: fadeIn 0.25s ease;
+        }
+        .branch-tags-bar::-webkit-scrollbar { display: none; }
+        .branch-tag {
+            padding: 7px 14px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            color: var(--text-secondary);
+            flex-shrink: 0;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .branch-tag .tag-badge {
+            background: rgba(255, 90, 0, 0.12);
+            color: var(--talabat-color);
+            font-size: 0.72rem;
+            padding: 1px 6px;
+            border-radius: 10px;
+            font-weight: 800;
+        }
+        .branch-tag.active .tag-badge {
+            background: rgba(255, 255, 255, 0.3);
+            color: #FFF;
+        }
+        .version-section {
+            margin-bottom: 20px;
+        }
+        .version-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 102, 255, 0.07);
+            border: 1px solid var(--border-color);
+            padding: 8px 14px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+        .version-title {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .version-badge-current {
+            background: var(--success-color);
+            color: #FFF;
+            font-size: 0.72rem;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-weight: 800;
+        }
+        .version-badge-past {
+            background: var(--text-secondary);
+            color: #FFF;
+            font-size: 0.72rem;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-weight: 700;
+        }
+        .branch-tag:hover {
+            border-color: var(--talabat-color);
+            color: var(--text-color);
+        }
+        .branch-tag.active {
+            background: var(--talabat-color);
+            color: #FFF;
+            border-color: var(--talabat-color);
+        }
+        .reset-tags-btn {
+            background: rgba(0, 102, 255, 0.1);
+            color: var(--primary-color);
+            border-color: transparent;
+        }
+        .reset-tags-btn:hover {
+            background: var(--primary-color);
+            color: #FFF;
+        }
+
+        /* سويتش الواتساب التلقائي مع التولتيب */
+        .whatsapp-toggle-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-color);
+            padding: 12px 16px;
+            border-radius: 14px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 16px;
+        }
+        .toggle-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.86rem;
+            font-weight: 700;
+            color: var(--text-color);
+        }
+        .tooltip-btn {
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1rem;
+            transition: 0.2s;
+        }
+        .tooltip-btn:hover { color: var(--primary-color); }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #cbd5e1; transition: .3s; border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px;
+            background-color: white; transition: .3s; border-radius: 50%;
+        }
+        input:checked + .slider { background-color: #25D366; }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+        /* نافذة التوست الخضراء للنجاح */
+        .success-toast {
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #05CD99;
+            color: #FFFFFF;
+            padding: 12px 18px;
+            border-radius: 16px;
+            box-shadow: 0 12px 35px rgba(5, 205, 153, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            z-index: 100000;
+            min-width: 320px;
+            max-width: 92vw;
+            animation: slideUpToast 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-weight: 700;
+        }
+        @keyframes slideUpToast {
+            from { opacity: 0; transform: translate(-50%, 25px); }
+            to { opacity: 1; transform: translate(-50%, 0); }
+        }
+        .toast-content { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; }
+        .toast-icon { font-size: 1.3rem; }
+        .toast-actions { display: flex; align-items: center; gap: 8px; }
+        .toast-go-btn {
+            background: rgba(255, 255, 255, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            color: #FFFFFF;
+            padding: 6px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 800;
+            font-size: 0.78rem;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .toast-go-btn:hover { background: #FFFFFF; color: #05CD99; }
+        .toast-close-btn {
+            background: transparent; border: none; color: rgba(255, 255, 255, 0.8);
+            font-size: 1.2rem; cursor: pointer; padding: 0 4px; line-height: 1;
+        }
 
         /* --- زر العودة --- */
         .back-btn {
@@ -276,7 +487,7 @@
         }
 
         /* --- Modals & Forms --- */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); justify-content: center; align-items: center; z-index: 1000; padding: 15px; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); justify-content: center; align-items: center; z-index: 100005; padding: 15px; }
         .modal-content { background: var(--card-bg); width: 100%; max-width: 480px; border-radius: 24px; padding: 25px; max-height: 90vh; overflow-y: auto; }
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .close-btn, .close-settings-btn { font-size: 1.5rem; cursor: pointer; color: var(--text-secondary); }
@@ -615,7 +826,7 @@
             <div class="auth-header">
                 <i class="fa-solid fa-wallet brand-icon"></i>
                 <h2>مساعد ايداع السواق</h2>
-                <p style="color: var(--primary-color); font-weight: 700; font-size: 0.85rem;">منظومة الإدارة السريعة للمنافذ (الإصدار 1.4)</p>
+                <p style="color: var(--primary-color); font-weight: 700; font-size: 0.85rem;">منظومة الإدارة السريعة للمنافذ (الإصدار 1.5)</p>
             </div>
             
             <form id="loginForm" class="login-form">
@@ -789,10 +1000,65 @@
                     <!-- قائمة الاقتراحات الذكية -->
                     <div id="searchSuggestions" class="suggestions-box hidden"></div>
                 </div>
-                <div class="company-tags" id="companyTags">
-                    <span class="tag active" data-company="all">الكل</span>
-                    <span class="tag" data-company="talabat">طلبات</span>
-                    <span class="tag" data-company="baleefood">بلي فود</span>
+                <div class="company-tags-container" id="companyTagsContainer">
+                    <!-- التبويبات الرئيسية (الكل - طلبات - بلي) مع أعداد السائقين -->
+                    <div class="company-tags" id="mainCompanyTags">
+                        <span class="tag active" id="tagAll" data-company="all">
+                            الكل <span class="tag-badge" id="countAll">0</span>
+                        </span>
+                        <span class="tag" id="tagTalabat" data-company="talabat">
+                            طلبات <span class="tag-badge" id="countTalabat">0</span>
+                        </span>
+                        <span class="tag" id="tagBalee" data-company="baleefood">
+                            بلي <span class="tag-badge" id="countBalee">0</span>
+                        </span>
+                    </div>
+
+                    <!-- شريط أفرع طلبات المنزلق (يظهر عند اختيار طلبات) مع أعداد السائقين لكل فرع -->
+                    <div class="branch-tags-bar hidden" id="talabatBranchesBar">
+                        <button type="button" class="branch-tag reset-tags-btn" id="backToMainTagsBtn">
+                            <i class="fa-solid fa-arrow-right"></i> رجوع
+                        </button>
+                        <span class="branch-tag active" data-branch="all">
+                            كل الأفرع <span class="tag-badge">0</span>
+                        </span>
+                        <span class="branch-tag" data-branch="الابداع">
+                            الابداع <span class="tag-badge">0</span>
+                        </span>
+                        <span class="branch-tag" data-branch="التعاضد">
+                            التعاضد <span class="tag-badge">0</span>
+                        </span>
+                        <span class="branch-tag" data-branch="طائر الخدمة">
+                            طائر الخدمة <span class="tag-badge">0</span>
+                        </span>
+                        <span class="branch-tag" data-branch="الاستمرار">
+                            الاستمرار <span class="tag-badge">0</span>
+                        </span>
+                        <span class="branch-tag" data-branch="التطوير الحضاري">
+                            التطوير الحضاري <span class="tag-badge">0</span>
+                        </span>
+                        <span class="branch-tag" data-branch="مزايا">
+                            مزايا <span class="tag-badge">0</span>
+                        </span>
+                        <span class="branch-tag" data-branch="كانكاروو">
+                            كانكاروو <span class="tag-badge">0</span>
+                        </span>
+                        <span class="branch-tag" data-branch="سنرجي">
+                            سنرجي <span class="tag-badge">0</span>
+                        </span>
+                        <span class="branch-tag" data-branch="الجيل السريع">
+                            الجيل السريع <span class="tag-badge">0</span>
+                        </span>
+                        <span class="branch-tag" data-branch="طلبات - كردستان">
+                            طلبات - كردستان <span class="tag-badge">0</span>
+                        </span>
+                        <span class="branch-tag" data-branch="طلبات - الوسط والجنوب">
+                            طلبات - الوسط والجنوب <span class="tag-badge">0</span>
+                        </span>
+                        <span class="branch-tag" data-branch="__custom__">
+                            فروع مخصصة / أخرى <span class="tag-badge">0</span>
+                        </span>
+                    </div>
                 </div>
             </section>
 
@@ -816,6 +1082,22 @@
                 </div>
                 <form id="driverForm">
                     <input type="hidden" id="editDriverDocId">
+
+                    <!-- زر تفعيل/إيقاف التوجيه التلقائي للواتساب مع التوضيح -->
+                    <div class="whatsapp-toggle-box">
+                        <div class="toggle-info">
+                            <i class="fa-brands fa-whatsapp" style="color: #25D366; font-size: 1.2rem;"></i>
+                            <span>توجيه تلقائي لواتساب بعد الإضافة</span>
+                            <span class="tooltip-btn" id="waTooltipBtn" title="توضيح: عند تفعيل هذا الخيار يتم فتح واتساب تلقائياً بعد إضافة السائق مباشرة لتأكيد بياناته. عند إيقافه يُضاف السائق بدون فتح واتساب ويحفظ اختيارك دائماً.">
+                                <i class="fa-solid fa-circle-question"></i>
+                            </span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="autoWhatsAppToggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
                     <div class="form-group">
                         <label>اختر الشركة:</label>
                         <select id="companySelect" required>
@@ -825,9 +1107,27 @@
                     </div>
 
                     <div id="dynamicFields">
+                        <!-- قائمة اختيارات أفرع طلبات المعتمدة والفرع المخصص -->
                         <div class="form-group talabat-only">
                             <label>اسم الفرع:</label>
-                            <input type="text" id="branchName" placeholder="مثال: الابداع ، الجيل السريع...">
+                            <select id="branchSelect">
+                                <option value="" disabled selected>اختر الفرع...</option>
+                                <option value="الابداع">الابداع</option>
+                                <option value="التعاضد">التعاضد</option>
+                                <option value="طائر الخدمة">طائر الخدمة</option>
+                                <option value="الاستمرار">الاستمرار</option>
+                                <option value="التطوير الحضاري">التطوير الحضاري</option>
+                                <option value="مزايا">مزايا</option>
+                                <option value="كانكاروو">كانكاروو</option>
+                                <option value="سنرجي">سنرجي</option>
+                                <option value="الجيل السريع">الجيل السريع</option>
+                                <option value="طلبات - كردستان">طلبات - كردستان</option>
+                                <option value="طلبات - الوسط والجنوب">طلبات - الوسط والجنوب</option>
+                                <option value="__custom__">➕ إضافة فرع مخصص (كتابة يدوية)...</option>
+                            </select>
+                            <div id="customBranchContainer" class="hidden" style="margin-top: 8px;">
+                                <input type="text" id="customBranchInput" placeholder="اكتب اسم الفرع المخصص لهذا السائق...">
+                            </div>
                         </div>
                         
                         <div class="form-group talabat-only">
@@ -867,42 +1167,105 @@
         </div>
 
         <div id="updatesModal" class="modal">
-            <div class="modal-content">
+            <div class="modal-content" style="max-height: 85vh; overflow-y: auto;">
                 <div class="modal-header">
-                    <h3><i class="fa-solid fa-sparkles" style="color: var(--talabat-color);"></i> ما الجديد في الإصدار 1.4</h3>
+                    <h3><i class="fa-solid fa-sparkles" style="color: var(--talabat-color);"></i> سجل التحديثات والميزات الجديدة</h3>
                     <span class="close-updates-btn close-btn">&times;</span>
                 </div>
                 <div class="updates-container">
-                    <div class="update-item">
-                        <div class="update-icon" style="color: #25D366; background: rgba(37, 211, 102, 0.1);"><i class="fa-brands fa-whatsapp"></i></div>
-                        <div class="update-text">
-                            <strong>تأكيد البيانات التلقائي عبر واتساب و SMS</strong>
-                            <p>عند إضافة سائق جديد يتم فتح واتساب تلقائياً لإرسال بياناته ليتأكد منها بنفسه، مع توفير أزرار إرسال مباشرة داخل كل بطاقة سائق.</p>
+                    
+                    <!-- قسم الإصدار 1.5 الحالي -->
+                    <div class="version-section">
+                        <div class="version-section-header">
+                            <span class="version-title"><i class="fa-solid fa-rocket"></i> الإصدار v1.5</span>
+                            <span class="version-badge-current">✨ التحديث الحالي</span>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <div class="update-item">
+                                <div class="update-icon" style="color: var(--primary-color); background: rgba(0, 102, 255, 0.1);"><i class="fa-solid fa-calculator"></i></div>
+                                <div class="update-text">
+                                    <strong>عدادات السائقين التفاعلية بالواجهة والأفرع</strong>
+                                    <p>إظهار عدد السائقين الإجمالي بجانب التبويبات الرئيسية (الكل، طلبات، بلي) وبجانب كافة أفرع طلبات مع تحديث رقمي فوري.</p>
+                                </div>
+                            </div>
+                            <div class="update-item">
+                                <div class="update-icon" style="color: var(--talabat-color); background: rgba(255, 90, 0, 0.1);"><i class="fa-solid fa-code-branch"></i></div>
+                                <div class="update-text">
+                                    <strong>شريط فرز أفرع طلبات وقائمة الأفرع المعتمدة</strong>
+                                    <p>شريط أفرع منزلق لتصفية السائقين حسب فرعهم بدقة، مع قائمة اختيارات للأفرع المعتمدة وخيار إضافة فرع مخصص.</p>
+                                </div>
+                            </div>
+                            <div class="update-item">
+                                <div class="update-icon" style="color: #25D366; background: rgba(37, 211, 102, 0.1);"><i class="fa-solid fa-toggle-on"></i></div>
+                                <div class="update-text">
+                                    <strong>سويتش التحكم في توجيه الواتساب التلقائي</strong>
+                                    <p>خيار تفعيل أو إيقاف فتح محادثة الواتساب تلقائياً عند إضافة سائق جديد مع حفظ التفضيل بشكل دائم.</p>
+                                </div>
+                            </div>
+                            <div class="update-item">
+                                <div class="update-icon" style="color: #EAA041; background: rgba(234, 160, 65, 0.12);"><i class="fa-solid fa-id-card-clip"></i></div>
+                                <div class="update-text">
+                                    <strong>التعرف الذكي على الأسماء والتمييز اللوني</strong>
+                                    <p>تنبيه بالأصفر لاحتمالية وجود السائق عند كتابة اسمين، وتنبيه بالأحمر الصارم في حال تطابق الاسم بالكامل 100%.</p>
+                                </div>
+                            </div>
+                            <div class="update-item">
+                                <div class="update-icon" style="color: #05CD99; background: rgba(5, 205, 153, 0.1);"><i class="fa-solid fa-bolt-lightning"></i></div>
+                                <div class="update-text">
+                                    <strong>محرك بحث ذكي وتخفيف أداء الواجهة</strong>
+                                    <p>ترتيب الاقتراحات حسب الأولوية الاسمية وتسريع التصفح بتقنية content-visibility والعرض التدريجي للكروت.</p>
+                                </div>
+                            </div>
+                            <div class="update-item">
+                                <div class="update-icon" style="color: #05CD99; background: rgba(5, 205, 153, 0.1);"><i class="fa-solid fa-circle-check"></i></div>
+                                <div class="update-text">
+                                    <strong>إشعار النجاح السريع (Success Toast)</strong>
+                                    <p>رسالة منبثقة خضراء فورية تظهر عند إضافة سائق بنجاح مع زر مباشر للانتقال السريع لبطاقة السائق.</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="update-item">
-                        <div class="update-icon"><i class="fa-solid fa-users-viewfinder"></i></div>
-                        <div class="update-text">
-                            <strong>نظام كشف الحسابات المكررة (التطابق المزدوج)</strong>
-                            <p>تنبيه فوري وذكي إذا كان رقم الهاتف أو الـ ID مسجلاً مسبقاً باسم سائق آخر لمنع أي تداخل بين السائقين.</p>
+
+                    <!-- قسم الإصدار 1.4 السابق -->
+                    <div class="version-section">
+                        <div class="version-section-header" style="background: rgba(163, 174, 208, 0.1);">
+                            <span class="version-title" style="color: var(--text-secondary);"><i class="fa-solid fa-clock-rotate-left"></i> الإصدار v1.4</span>
+                            <span class="version-badge-past">إصدار سابق</span>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <div class="update-item">
+                                <div class="update-icon" style="color: #25D366; background: rgba(37, 211, 102, 0.1);"><i class="fa-brands fa-whatsapp"></i></div>
+                                <div class="update-text">
+                                    <strong>تأكيد البيانات التلقائي عبر واتساب و SMS</strong>
+                                    <p>فتح واتساب تلقائياً لإرسال بيانات السائق ليتأكد منها بنفسه مع توفير أزرار إرسال مباشرة داخل كل بطاقة سائق.</p>
+                                </div>
+                            </div>
+                            <div class="update-item">
+                                <div class="update-icon"><i class="fa-solid fa-users-viewfinder"></i></div>
+                                <div class="update-text">
+                                    <strong>نظام كشف الحسابات المكررة (التطابق المزدوج)</strong>
+                                    <p>تنبيه فوري وذكي إذا كان رقم الهاتف أو الـ ID مسجلاً مسبقاً باسم سائق آخر لمنع أي تداخل بين السائقين.</p>
+                                </div>
+                            </div>
+                            <div class="update-item">
+                                <div class="update-icon"><i class="fa-solid fa-mobile-screen-button"></i></div>
+                                <div class="update-text">
+                                    <strong>الفحص الدقيق لمقدمات أرقام العراق</strong>
+                                    <p>فحص صارم يتأكد من أن الرقم يبدأ بالمقدمات الصحيحة (96478, 96477, 96475, 96479) ومكون من 13 رقماً بالضبط.</p>
+                                </div>
+                            </div>
+                            <div class="update-item">
+                                <div class="update-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                                <div class="update-text">
+                                    <strong>منظومة تأمين الأجهزة وقاعدة البيانات المشتركة</strong>
+                                    <p>استقرار كامل لقاعدة البيانات وحماية الحسابات (حتى 4 أجهزة للمنفذ) وتحديث مباشر للبيانات بين جميع المنافذ المشتركة.</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="update-item">
-                        <div class="update-icon"><i class="fa-solid fa-mobile-screen-button"></i></div>
-                        <div class="update-text">
-                            <strong>الفحص الدقيق لمقدمات أرقام العراق</strong>
-                            <p>فحص صارم يتأكد من أن الرقم يبدأ بالمقدمات الصحيحة (96478, 96477, 96475, 96479) ومكون من 13 رقماً بالضبط.</p>
-                        </div>
-                    </div>
-                    <div class="update-item">
-                        <div class="update-icon"><i class="fa-solid fa-shield-halved"></i></div>
-                        <div class="update-text">
-                            <strong>منظومة تأمين الأجهزة وقاعدة البيانات المشتركة</strong>
-                            <p>استقرار كامل لقاعدة البيانات وحماية الحسابات (حتى 4 أجهزة للمنفذ) وتحديث مباشر للبيانات بين جميع المنافذ المشتركة.</p>
-                        </div>
-                    </div>
+
                 </div>
-                <button id="closeUpdatesModalBtn" class="submit-btn" style="margin-top: 10px;">
+                <button id="closeUpdatesModalBtn" class="submit-btn" style="margin-top: 15px;">
                     فهمت ذلك، استمرار للعمل
                 </button>
             </div>
@@ -969,13 +1332,13 @@
 
                     <div class="app-info-card">
                         <p class="app-dev">المطور: <a href="https://t.me/diajb0" target="_blank">@diajb0</a> <i class="fa-brands fa-telegram"></i></p>
-                        <span class="app-version">الإصدار: v1.4</span>
+                        <span class="app-version">الإصدار: v1.5</span>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div id="customConfirmModal" class="modal">
+        <div id="customConfirmModal" class="modal" style="z-index: 100010;">
             <div class="confirm-modal-content">
                 <div class="confirm-icon-wrapper">
                     <i class="fa-solid fa-triangle-exclamation"></i>
@@ -993,7 +1356,7 @@
             </div>
         </div>
 
-    </div><div id="authErrorModal" class="modal" style="z-index: 99999;">
+    </div><div id="authErrorModal" class="modal" style="z-index: 100020;">
         <div class="confirm-modal-content" style="border: 2px solid var(--danger-color);">
             <div class="confirm-icon-wrapper" style="background: rgba(238, 93, 80, 0.15); color: var(--danger-color);">
                 <i class="fa-solid fa-ban"></i>
@@ -1034,6 +1397,101 @@
         let drivers = [];
         let fullScreenDriverId = null;
         let activeCompanyFilter = 'all';
+        let activeTalabatBranchFilter = 'all';
+
+        // قائمة أفرع طلبات المعتمدة
+        const TALABAT_BRANCHES = [
+            "الابداع",
+            "التعاضد",
+            "طائر الخدمة",
+            "الاستمرار",
+            "التطوير الحضاري",
+            "مزايا",
+            "كانكاروو",
+            "سنرجي",
+            "الجيل السريع",
+            "طلبات - كردستان",
+            "طلبات - الوسط والجنوب"
+        ];
+
+        // دالة تحديث أعداد السائقين بالواجهة الرئيسية وكافة أفرع طلبات
+        function updateDriverCounts() {
+            const activeList = drivers.filter(d => !d.isDeleted);
+            const total = activeList.length;
+            const talabatList = activeList.filter(d => d.company === 'talabat');
+            const talabatTotal = talabatList.length;
+            const baleeTotal = activeList.filter(d => d.company === 'baleefood').length;
+
+            const countAll = document.getElementById('countAll');
+            const countTalabat = document.getElementById('countTalabat');
+            const countBalee = document.getElementById('countBalee');
+
+            if (countAll) countAll.textContent = total;
+            if (countTalabat) countTalabat.textContent = talabatTotal;
+            if (countBalee) countBalee.textContent = baleeTotal;
+
+            // حساب أعداد السائقين لكل فرع من أفرع طلبات
+            const branchCounts = {};
+            TALABAT_BRANCHES.forEach(b => { branchCounts[b] = 0; });
+            let customBranchCount = 0;
+
+            talabatList.forEach(d => {
+                const b = (d.branch || '').trim();
+                if (TALABAT_BRANCHES.includes(b)) {
+                    branchCounts[b] = (branchCounts[b] || 0) + 1;
+                } else if (b) {
+                    customBranchCount++;
+                }
+            });
+
+            // تحديث الشارات في شريط أفرع طلبات
+            document.querySelectorAll('#talabatBranchesBar .branch-tag').forEach(tag => {
+                const bName = tag.getAttribute('data-branch');
+                const badge = tag.querySelector('.tag-badge');
+                if (badge && bName) {
+                    if (bName === 'all') {
+                        badge.textContent = talabatTotal;
+                    } else if (bName === '__custom__') {
+                        badge.textContent = customBranchCount;
+                    } else if (branchCounts[bName] !== undefined) {
+                        badge.textContent = branchCounts[bName];
+                    }
+                }
+            });
+        }
+
+        // إدارة التوست المنبثق للنجاح
+        let toastTimeout = null;
+        function showSuccessToast(driverName, driverDocId) {
+            const toast = document.getElementById('successToast');
+            const msgEl = document.getElementById('toastMessage');
+            const goBtn = document.getElementById('toastGoBtn');
+            const closeBtn = document.getElementById('toastCloseBtn');
+
+            if (!toast || !msgEl) return;
+
+            msgEl.innerHTML = `تمت إضافة السائق (<b>${escapeHtml(driverName)}</b>) بنجاح`;
+            toast.classList.remove('hidden');
+
+            if (goBtn) {
+                goBtn.onclick = () => {
+                    toast.classList.add('hidden');
+                    fullScreenDriverId = driverDocId;
+                    filterAndRenderDrivers();
+                };
+            }
+
+            if (closeBtn) {
+                closeBtn.onclick = () => {
+                    toast.classList.add('hidden');
+                };
+            }
+
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 4500);
+        }
 
         // ==========================================
         // 2. إدارة تسجيل الدخول والتحقق الفوري من الأجهزة
@@ -1256,6 +1714,7 @@
                         drivers.push({ id: doc.id, ...data });
                     }
                 });
+                updateDriverCounts();
                 filterAndRenderDrivers();
             }, (error) => {
                 console.error("خطأ في جلب البيانات: ", error);
@@ -1658,8 +2117,21 @@
 
             let matchedList = [];
             drivers.forEach(d => {
+                // 1. فلترة الشركة
                 const matchesCompany = (activeCompanyFilter === 'all') || (d.company === activeCompanyFilter);
                 if (!matchesCompany) return;
+
+                // 2. فلترة الأفرع لشركة طلبات
+                if (activeCompanyFilter === 'talabat' && activeTalabatBranchFilter !== 'all') {
+                    const driverBranch = (d.branch || '').trim();
+                    if (activeTalabatBranchFilter === '__custom__') {
+                        // الفروع المخصصة / غير المتطابقة 100% مع الأفرع المعتمدة
+                        if (TALABAT_BRANCHES.includes(driverBranch)) return;
+                    } else {
+                        // فرع معتمد محدد
+                        if (driverBranch !== activeTalabatBranchFilter) return;
+                    }
+                }
 
                 if (!query) {
                     matchedList.push({ driver: d, score: 1 });
@@ -1706,6 +2178,41 @@
         const companySelect = document.getElementById('companySelect');
         const companyCodeInput = document.getElementById('companyCode');
         const editCompanyCodeBtn = document.getElementById('editCompanyCodeBtn');
+        const branchSelect = document.getElementById('branchSelect');
+        const customBranchContainer = document.getElementById('customBranchContainer');
+        const customBranchInput = document.getElementById('customBranchInput');
+        const autoWhatsAppToggle = document.getElementById('autoWhatsAppToggle');
+        const waTooltipBtn = document.getElementById('waTooltipBtn');
+
+        // تهيئة وحفظ حالة سويتش الواتساب التلقائي
+        function initWhatsAppToggle() {
+            const savedPref = localStorage.getItem('auto_whatsapp_redirect');
+            if (autoWhatsAppToggle) {
+                autoWhatsAppToggle.checked = savedPref !== 'false';
+                autoWhatsAppToggle.onchange = () => {
+                    localStorage.setItem('auto_whatsapp_redirect', autoWhatsAppToggle.checked ? 'true' : 'false');
+                };
+            }
+        }
+        initWhatsAppToggle();
+
+        if (waTooltipBtn) {
+            waTooltipBtn.onclick = () => {
+                alert("ℹ️ توضيح زر الواتساب التلقائي:\n\n• عند التفعيل: يتم توجيهك فوراً إلى محادثة واتساب مع السائق بمجرد حفظ بياناته لتوثيق حسابه وتأكيد بياناته.\n• عند الإيقاف: تتم إضافة السائق وحفظه فوراً في النظام دون فتح واتساب.\n\nيتم حفظ اختيارك دائماً ولا يتغير إلا عند تعديله بنفسك.");
+            };
+        }
+
+        if (branchSelect) {
+            branchSelect.onchange = () => {
+                if (branchSelect.value === '__custom__') {
+                    customBranchContainer.classList.remove('hidden');
+                    customBranchInput.focus();
+                } else {
+                    customBranchContainer.classList.add('hidden');
+                    customBranchInput.value = '';
+                }
+            };
+        }
 
         // زر قفل/تعديل رمز العميل
         let isCodeEditable = false;
@@ -1755,6 +2262,10 @@
             modalTitle.textContent = 'إضافة سائق جديد';
             driverForm.reset();
             resetNameDuplicateAlert();
+            initWhatsAppToggle();
+            if (branchSelect) branchSelect.value = '';
+            if (customBranchContainer) customBranchContainer.classList.add('hidden');
+            if (customBranchInput) customBranchInput.value = '';
             resetCompanyCodeField('531');
             toggleFormFieldsByCompany(companySelect.value);
             driverModal.style.display = 'flex';
@@ -1776,7 +2287,20 @@
             document.getElementById('driverPhone').value = driver.phone;
 
             if (driver.company === 'talabat') {
-                document.getElementById('branchName').value = driver.branch || '';
+                const existingBranch = (driver.branch || '').trim();
+                if (TALABAT_BRANCHES.includes(existingBranch)) {
+                    branchSelect.value = existingBranch;
+                    customBranchContainer.classList.add('hidden');
+                    customBranchInput.value = '';
+                } else if (existingBranch) {
+                    branchSelect.value = '__custom__';
+                    customBranchContainer.classList.remove('hidden');
+                    customBranchInput.value = existingBranch;
+                } else {
+                    branchSelect.value = '';
+                    customBranchContainer.classList.add('hidden');
+                    customBranchInput.value = '';
+                }
                 resetCompanyCodeField(driver.companyCode || '531');
                 document.getElementById('driverId').value = driver.driverId || '';
             }
@@ -2039,9 +2563,10 @@
                 if (!allow) return;
             }
 
-            // تفادي حظر النوافذ المنبثقة: فتح نافذة فارغة متزامنة مع نقرة الإرسال عند إضافة سائق جديد
+            // فحص خيار التوجيه التلقائي لواتساب
+            const isAutoWhatsApp = localStorage.getItem('auto_whatsapp_redirect') !== 'false';
             let waPreOpenedWindow = null;
-            if (!docId) {
+            if (!docId && isAutoWhatsApp) {
                 waPreOpenedWindow = window.open('', '_blank');
             }
 
@@ -2052,7 +2577,15 @@
             };
 
             if (company === 'talabat') {
-                payload.branch = (document.getElementById('branchName') ? document.getElementById('branchName').value.trim() : '') || '';
+                if (branchSelect) {
+                    if (branchSelect.value === '__custom__') {
+                        payload.branch = (customBranchInput ? customBranchInput.value.trim() : '') || 'فرع مخصص';
+                    } else {
+                        payload.branch = branchSelect.value.trim() || '';
+                    }
+                } else {
+                    payload.branch = '';
+                }
                 payload.companyCode = companyCodeInput.value.trim() || '531';
                 payload.driverId = driverId || '';
             }
@@ -2090,15 +2623,18 @@
                     payload.isDeleted = false;
                     payload.editHistory = [];
                     payload.createdAt = firebase.firestore.FieldValue.serverTimestamp();
-                    await db.collection("drivers").add(payload);
+                    const docRef = await db.collection("drivers").add(payload);
 
-                    // توجيه النافذة المجهزة مسبقاً لواتساب دون اعتراض من مانع الإطارات المنبثقة
-                    if (waPreOpenedWindow) {
+                    // توجيه النافذة لواتساب فقط إذا كان الخيار مفعلاً
+                    if (waPreOpenedWindow && isAutoWhatsApp) {
                         const msg = formatVerificationMessage(payload);
                         const cleanPhone = payload.phone.replace(/\D/g, '');
                         const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`;
                         waPreOpenedWindow.location.href = waUrl;
                     }
+
+                    // إظهار التنبيه الأخضر المنبثق للنجاح
+                    showSuccessToast(payload.name, docRef.id);
                 }
 
                 driverModal.style.display = 'none';
@@ -2111,21 +2647,72 @@
         };
 
         // ==========================================
-        // 8. التصفية والنوافذ الفرعية
+        // 8. التصفية المتقدمة والتنقل بين الشركات وأفرع طلبات
         // ==========================================
-        document.querySelectorAll('.company-tags .tag').forEach(tag => {
+        const mainCompanyTags = document.getElementById('mainCompanyTags');
+        const talabatBranchesBar = document.getElementById('talabatBranchesBar');
+        const backToMainTagsBtn = document.getElementById('backToMainTagsBtn');
+
+        function showMainTagsView() {
+            activeCompanyFilter = 'all';
+            activeTalabatBranchFilter = 'all';
+            if (mainCompanyTags) mainCompanyTags.classList.remove('hidden');
+            if (talabatBranchesBar) talabatBranchesBar.classList.add('hidden');
+
+            document.querySelectorAll('#mainCompanyTags .tag').forEach(t => t.classList.remove('active'));
+            const tagAll = document.getElementById('tagAll');
+            if (tagAll) tagAll.classList.add('active');
+
+            filterAndRenderDrivers();
+        }
+
+        function showTalabatBranchesView() {
+            activeCompanyFilter = 'talabat';
+            activeTalabatBranchFilter = 'all';
+            if (mainCompanyTags) mainCompanyTags.classList.add('hidden');
+            if (talabatBranchesBar) talabatBranchesBar.classList.remove('hidden');
+
+            document.querySelectorAll('#talabatBranchesBar .branch-tag').forEach(bt => bt.classList.remove('active'));
+            const branchAll = document.querySelector('#talabatBranchesBar [data-branch="all"]');
+            if (branchAll) branchAll.classList.add('active');
+
+            filterAndRenderDrivers();
+        }
+
+        document.querySelectorAll('#mainCompanyTags .tag').forEach(tag => {
             tag.addEventListener('click', () => {
-                document.querySelectorAll('.company-tags .tag').forEach(t => t.classList.remove('active'));
-                tag.classList.add('active');
-                activeCompanyFilter = tag.getAttribute('data-company');
+                const comp = tag.getAttribute('data-company');
+                if (comp === 'talabat') {
+                    showTalabatBranchesView();
+                } else {
+                    document.querySelectorAll('#mainCompanyTags .tag').forEach(t => t.classList.remove('active'));
+                    tag.classList.add('active');
+                    activeCompanyFilter = comp;
+                    activeTalabatBranchFilter = 'all';
+                    filterAndRenderDrivers();
+                }
+            });
+        });
+
+        // النقر على أفرع طلبات المنزلقة
+        document.querySelectorAll('#talabatBranchesBar .branch-tag:not(.reset-tags-btn)').forEach(branchTag => {
+            branchTag.addEventListener('click', () => {
+                document.querySelectorAll('#talabatBranchesBar .branch-tag').forEach(bt => bt.classList.remove('active'));
+                branchTag.classList.add('active');
+                activeTalabatBranchFilter = branchTag.getAttribute('data-branch');
                 filterAndRenderDrivers();
             });
         });
 
+        // زر العودة من الأفرع إلى التبويبات الرئيسية
+        if (backToMainTagsBtn) {
+            backToMainTagsBtn.onclick = showMainTagsView;
+        }
+
         // ==========================================
         // إدارة نافذة آخر التحديثات والنقطة الحمراء
         // ==========================================
-        const CURRENT_APP_VERSION = 'v1.4';
+        const CURRENT_APP_VERSION = 'v1.5';
         const updatesBtn = document.getElementById('updatesBtn');
         const updatesModal = document.getElementById('updatesModal');
         const updatesDot = document.getElementById('updatesDot');
@@ -2175,5 +2762,18 @@
             };
         }
     </script>
+    <!-- نافذة النجاح المنبثقة السريعة -->
+    <div id="successToast" class="success-toast hidden">
+        <div class="toast-content">
+            <i class="fa-solid fa-circle-check toast-icon"></i>
+            <span id="toastMessage">تمت إضافة السائق بنجاح</span>
+        </div>
+        <div class="toast-actions">
+            <button type="button" id="toastGoBtn" class="toast-go-btn">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i> الانتقال للسائق
+            </button>
+            <button type="button" id="toastCloseBtn" class="toast-close-btn">&times;</button>
+        </div>
+    </div>
 </body>
 </html>
