@@ -1091,7 +1091,7 @@
             transform: scale(0.96);
         }
 
-        /* زر القائمة المنسدلة الثلاث خطوط (Hamburger) */
+        /* زر القائمة المنسدلة الثلاث خطوط (Hamburger) متوافق 100% مع كافة المتصفحات */
         .hamburger-btn {
             width: 42px;
             height: 42px;
@@ -1106,54 +1106,76 @@
             justify-content: center;
             position: relative;
             transition: all 0.2s ease;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
         }
         .hamburger-btn:hover {
             background: var(--card-bg);
             border-color: var(--primary-color);
             color: var(--primary-color);
         }
+        .hamburger-btn * {
+            pointer-events: none;
+        }
 
-        /* قائمة الشاشة الكاملة المنبثقة من الثلاث خطوط */
+        /* قائمة الشاشة الكاملة المنبثقة من الثلاث خطوط (بدون أي تداخل مع العناصر) */
         .fullscreen-nav-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
             width: 100vw; height: 100vh;
+            background: var(--bg-color);
+            z-index: 100040;
+            display: none;
+            flex-direction: column;
+            padding: 0;
+            margin: 0;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            animation: fadeInNav 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .fullscreen-nav-container {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            min-height: 100vh;
             background: var(--card-bg);
-            z-index: 100020;
             display: flex;
             flex-direction: column;
-            animation: fadeInNav 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-            overflow-y: auto;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.08);
         }
         .fullscreen-nav-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 18px 22px;
+            padding: 12px 16px;
             border-bottom: 1px solid var(--border-color);
             background: var(--card-bg);
             position: sticky;
             top: 0;
             z-index: 10;
+            width: 100%;
         }
         .fullscreen-nav-title {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
         .fullscreen-nav-title h3 {
-            font-size: 1.25rem;
+            font-size: 1.15rem;
             font-weight: 800;
             margin: 0;
+            color: var(--text-color);
         }
         .fullscreen-nav-close-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
+            width: 38px;
+            height: 38px;
+            border-radius: 11px;
             border: 1px solid var(--border-color);
             background: var(--bg-color);
             color: var(--text-color);
-            font-size: 1.25rem;
+            font-size: 1.15rem;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -1166,13 +1188,11 @@
             border-color: var(--danger-color);
         }
         .fullscreen-nav-body {
-            padding: 22px 18px;
-            max-width: 550px;
-            margin: 0 auto;
+            padding: 18px 16px;
             width: 100%;
             display: flex;
             flex-direction: column;
-            gap: 18px;
+            gap: 16px;
             flex: 1;
         }
         .nav-menu-list {
@@ -1616,106 +1636,14 @@
                 <button id="addDriverBtn" class="main-add-driver-btn" title="إضافة سائق جديد">
                     <i class="fa-solid fa-user-plus"></i> إضافة سائق
                 </button>
-                <button id="hamburgerMenuBtn" class="hamburger-btn" title="القائمة الرئيسية">
+                <button type="button" id="hamburgerMenuBtn" class="hamburger-btn" title="القائمة الرئيسية" onclick="openFullscreenNavMenu()">
                     <i class="fa-solid fa-bars"></i>
                     <span id="menuNotificationDot" class="update-badge hidden"></span>
                 </button>
             </div>
         </header>
 
-        <!-- قائمة الشاشة الكاملة المنبثقة من الثلاث خطوط -->
-        <div id="fullscreenNavMenu" class="fullscreen-nav-overlay hidden">
-            <div class="fullscreen-nav-header">
-                <div class="fullscreen-nav-title">
-                    <i class="fa-solid fa-layer-group brand-icon"></i>
-                    <h3>قائمة المنظومة</h3>
-                </div>
-                <button id="closeNavMenuBtn" class="fullscreen-nav-close-btn" title="إغلاق القائمة">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
 
-            <div class="fullscreen-nav-body">
-                <div class="nav-menu-list">
-                    
-                    <!-- 1. الإيداعات المؤجلة -->
-                    <div class="nav-menu-item" id="navItemPending">
-                        <div class="nav-item-icon" style="background: rgba(255, 153, 0, 0.12); color: var(--warning-color);">
-                            <i class="fa-solid fa-clock-rotate-left"></i>
-                        </div>
-                        <div class="nav-item-content">
-                            <strong>الإيداعات المؤجلة</strong>
-                            <small>تدوين وإدارة مبالغ السائقين عند عطل زين كاش</small>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 8px;">
-                            <span id="navPendingBadge" class="tag-badge hidden" style="background: rgba(255, 153, 0, 0.18); color: var(--warning-color); font-size: 0.75rem;">0</span>
-                            <i class="fa-solid fa-chevron-left nav-arrow"></i>
-                        </div>
-                    </div>
-
-                    <!-- 2. إضافات التحديثات -->
-                    <div class="nav-menu-item" id="navItemUpdates">
-                        <div class="nav-item-icon" style="background: rgba(0, 102, 255, 0.12); color: var(--primary-color);">
-                            <i class="fa-solid fa-bullhorn"></i>
-                        </div>
-                        <div class="nav-item-content">
-                            <strong>إضافات التحديثات</strong>
-                            <small>سجل التحديثات والميزات الجديدة في الإصدار 2.0</small>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 8px;">
-                            <span id="navUpdatesDot" class="update-badge hidden" style="position: static; display: inline-block;"></span>
-                            <i class="fa-solid fa-chevron-left nav-arrow"></i>
-                        </div>
-                    </div>
-
-                    <!-- 3. دليل الاستخدام -->
-                    <div class="nav-menu-item" id="navItemGuide">
-                        <div class="nav-item-icon" style="background: rgba(5, 205, 153, 0.12); color: var(--success-color);">
-                            <i class="fa-solid fa-book-open-reader"></i>
-                        </div>
-                        <div class="nav-item-content">
-                            <strong>دليل الاستخدام</strong>
-                            <small>شرح مبسط لكيفية العمل والنسخ السريع خطوة بخطوة</small>
-                        </div>
-                        <i class="fa-solid fa-chevron-left nav-arrow"></i>
-                    </div>
-
-                    <!-- 4. إخلاء المسؤولية وقوانين الاستخدام -->
-                    <div class="nav-menu-item" id="navItemDisclaimer">
-                        <div class="nav-item-icon" style="background: rgba(163, 174, 208, 0.18); color: var(--text-color);">
-                            <i class="fa-solid fa-scale-balanced"></i>
-                        </div>
-                        <div class="nav-item-content">
-                            <strong>إخلاء المسؤولية وقوانين الاستخدام</strong>
-                            <small>الشروط القانونية، حظر التلاعب، وسياسة حماية البيانات</small>
-                        </div>
-                        <i class="fa-solid fa-chevron-left nav-arrow"></i>
-                    </div>
-
-                    <!-- 5. الإعدادات -->
-                    <div class="nav-menu-item" id="navItemSettings">
-                        <div class="nav-item-icon" style="background: rgba(238, 93, 80, 0.12); color: var(--danger-color);">
-                            <i class="fa-solid fa-gear"></i>
-                        </div>
-                        <div class="nav-item-content">
-                            <strong>الإعدادات</strong>
-                            <small>بيانات الحساب، المزامنة، وتسجيل الخروج</small>
-                        </div>
-                        <i class="fa-solid fa-chevron-left nav-arrow"></i>
-                    </div>
-
-                </div>
-
-                <div class="nav-menu-footer">
-                    <div class="binding-terms-alert" style="margin-bottom: 8px;">
-                        <i class="fa-solid fa-scale-balanced"></i> بتسجيلك الدخول واستخدام الموقع أنت توافق على جميع سياسات وشروط الاستخدام
-                    </div>
-                    <p style="text-align: center; color: var(--text-secondary); font-size: 0.78rem; font-weight: 700;">
-                        المطور: <a href="https://t.me/diajb0" target="_blank" style="color: var(--primary-color);">@diajb0</a> | الإصدار v2.0
-                    </p>
-                </div>
-            </div>
-        </div>
 
         <!-- البحث والتصفية -->
         <main class="main-container">
@@ -1895,7 +1823,103 @@
             </div>
         </div>
 
-            <!-- شاشة الإيداعات المؤجلة الكاملة (عند عطل زين كاش) -->
+            <!-- قائمة الشاشة الكاملة المنبثقة من الثلاث خطوط (في المستوى الرئيسي للجذر لضمان التوافق) -->
+    <div id="fullscreenNavMenu" class="fullscreen-nav-overlay">
+        <div class="fullscreen-nav-container">
+            <div class="fullscreen-nav-header">
+                <div class="fullscreen-nav-title">
+                    <i class="fa-solid fa-layer-group brand-icon"></i>
+                    <h3>قائمة المنظومة</h3>
+                </div>
+                <button type="button" id="closeNavMenuBtn" class="fullscreen-nav-close-btn" title="إغلاق القائمة" onclick="closeFullscreenNavMenu()">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="fullscreen-nav-body">
+                <div class="nav-menu-list">
+                    
+                    <!-- 1. الإيداعات المؤجلة -->
+                    <div class="nav-menu-item" id="navItemPending">
+                        <div class="nav-item-icon" style="background: rgba(255, 153, 0, 0.12); color: var(--warning-color);">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                        </div>
+                        <div class="nav-item-content">
+                            <strong>الإيداعات المؤجلة</strong>
+                            <small>تدوين وإدارة مبالغ السائقين عند عطل زين كاش</small>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span id="navPendingBadge" class="tag-badge hidden" style="background: rgba(255, 153, 0, 0.18); color: var(--warning-color); font-size: 0.75rem;">0</span>
+                            <i class="fa-solid fa-chevron-left nav-arrow"></i>
+                        </div>
+                    </div>
+
+                    <!-- 2. إضافات التحديثات -->
+                    <div class="nav-menu-item" id="navItemUpdates">
+                        <div class="nav-item-icon" style="background: rgba(0, 102, 255, 0.12); color: var(--primary-color);">
+                            <i class="fa-solid fa-bullhorn"></i>
+                        </div>
+                        <div class="nav-item-content">
+                            <strong>إضافات التحديثات</strong>
+                            <small>سجل التحديثات والميزات الجديدة في الإصدار 2.0</small>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span id="navUpdatesDot" class="update-badge hidden" style="position: static; display: inline-block;"></span>
+                            <i class="fa-solid fa-chevron-left nav-arrow"></i>
+                        </div>
+                    </div>
+
+                    <!-- 3. دليل الاستخدام -->
+                    <div class="nav-menu-item" id="navItemGuide">
+                        <div class="nav-item-icon" style="background: rgba(5, 205, 153, 0.12); color: var(--success-color);">
+                            <i class="fa-solid fa-book-open-reader"></i>
+                        </div>
+                        <div class="nav-item-content">
+                            <strong>دليل الاستخدام</strong>
+                            <small>شرح مبسط لكيفية العمل والنسخ السريع خطوة بخطوة</small>
+                        </div>
+                        <i class="fa-solid fa-chevron-left nav-arrow"></i>
+                    </div>
+
+                    <!-- 4. إخلاء المسؤولية وقوانين الاستخدام -->
+                    <div class="nav-menu-item" id="navItemDisclaimer">
+                        <div class="nav-item-icon" style="background: rgba(163, 174, 208, 0.18); color: var(--text-color);">
+                            <i class="fa-solid fa-scale-balanced"></i>
+                        </div>
+                        <div class="nav-item-content">
+                            <strong>إخلاء المسؤولية وقوانين الاستخدام</strong>
+                            <small>الشروط القانونية، حظر التلاعب، وسياسة حماية البيانات</small>
+                        </div>
+                        <i class="fa-solid fa-chevron-left nav-arrow"></i>
+                    </div>
+
+                    <!-- 5. الإعدادات -->
+                    <div class="nav-menu-item" id="navItemSettings">
+                        <div class="nav-item-icon" style="background: rgba(238, 93, 80, 0.12); color: var(--danger-color);">
+                            <i class="fa-solid fa-gear"></i>
+                        </div>
+                        <div class="nav-item-content">
+                            <strong>الإعدادات</strong>
+                            <small>بيانات الحساب، المزامنة، وتسجيل الخروج</small>
+                        </div>
+                        <i class="fa-solid fa-chevron-left nav-arrow"></i>
+                    </div>
+
+                </div>
+
+                <div class="nav-menu-footer">
+                    <div class="binding-terms-alert" style="margin-bottom: 8px;">
+                        <i class="fa-solid fa-scale-balanced"></i> بتسجيلك الدخول واستخدام الموقع أنت توافق على جميع سياسات وشروط الاستخدام
+                    </div>
+                    <p style="text-align: center; color: var(--text-secondary); font-size: 0.78rem; font-weight: 700;">
+                        المطور: <a href="https://t.me/diajb0" target="_blank" style="color: var(--primary-color);">@diajb0</a> | الإصدار v2.0
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- شاشة الإيداعات المؤجلة الكاملة (عند عطل زين كاش) -->
     <div id="pendingDepositsModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -3930,20 +3954,47 @@
         let selectedPendingDriver = null;
         let isArchivedOpen = false;
 
-        // إدارة القائمة الشاملة (ثلاث خطوط)
-        function openFullscreenNavMenu() {
-            if (fullscreenNavMenu) {
-                fullscreenNavMenu.classList.remove('hidden');
+        // إدارة القائمة الشاملة (ثلاث خطوط) بدعم كامل لجميع المتصفحات وشاشات اللمس
+        function openFullscreenNavMenu(e) {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
             }
-        }
-        function closeFullscreenNavMenu() {
-            if (fullscreenNavMenu) {
-                fullscreenNavMenu.classList.add('hidden');
+            const menu = document.getElementById('fullscreenNavMenu');
+            if (menu) {
+                menu.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
             }
         }
 
-        if (hamburgerMenuBtn) hamburgerMenuBtn.onclick = openFullscreenNavMenu;
-        if (closeNavMenuBtn) closeNavMenuBtn.onclick = closeFullscreenNavMenu;
+        function closeFullscreenNavMenu(e) {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            const menu = document.getElementById('fullscreenNavMenu');
+            if (menu) {
+                menu.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+        }
+
+        window.openFullscreenNavMenu = openFullscreenNavMenu;
+        window.closeFullscreenNavMenu = closeFullscreenNavMenu;
+
+        if (hamburgerMenuBtn) {
+            hamburgerMenuBtn.onclick = openFullscreenNavMenu;
+            hamburgerMenuBtn.addEventListener('touchend', (e) => {
+                openFullscreenNavMenu(e);
+            }, { passive: false });
+        }
+
+        if (closeNavMenuBtn) {
+            closeNavMenuBtn.onclick = closeFullscreenNavMenu;
+            closeNavMenuBtn.addEventListener('touchend', (e) => {
+                closeFullscreenNavMenu(e);
+            }, { passive: false });
+        }
 
         if (navItemPending) navItemPending.onclick = () => {
             closeFullscreenNavMenu();
