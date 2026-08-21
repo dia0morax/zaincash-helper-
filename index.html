@@ -1260,17 +1260,22 @@
             padding-top: 15px;
         }
 
-        /* تخصيص شاشة الإيداعات المؤجلة بشاشة كاملة 100% */
+        /* تخصيص شاشة الإيداعات المؤجلة بأعلى طبقة رؤية عليا 100% (فوق كافة عناصر الموقع) */
         #pendingDepositsModal {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
             width: 100vw; height: 100vh;
             background: var(--bg-color);
-            z-index: 100025;
+            z-index: 100060;
             display: none;
             flex-direction: column;
             padding: 0;
             overflow: hidden;
+        }
+        #pendingSearchContainer {
+            position: relative;
+            z-index: 100;
+            margin-bottom: 14px;
         }
         #pendingDepositsModal .modal-content {
             width: 100vw;
@@ -1333,7 +1338,7 @@
         }
 
 
-        /* صندوق اقتراحات البحث في شاشة الإيداعات المؤجلة - طبقة رؤية علوية واضحة */
+        /* صندوق اقتراحات البحث في شاشة الإيداعات المؤجلة - أعلى طبقة بصرية مطلقة فوق كافة الكروت */
         #pendingSuggestions {
             position: absolute;
             top: 100%;
@@ -1344,9 +1349,9 @@
             background: var(--card-bg);
             border: 2px solid var(--primary-color);
             border-radius: 14px;
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.28);
-            z-index: 100050;
-            max-height: 280px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            z-index: 100070;
+            max-height: 300px;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
         }
@@ -2415,6 +2420,7 @@
         const db = firebase.firestore();
 
         let drivers = [];
+        // حالة الإيداعات المؤجلة معرفة في أعلى السكربت
         let fullScreenDriverId = null;
         let activeCompanyFilter = 'all';
         let activeTalabatBranchFilter = 'all';
@@ -3970,29 +3976,32 @@
         });
 
         // ==========================================
-        // إدارة نافذة آخر التحديثات والنقطة الحمراء
+        // إدارة نافذة آخر التحديثات والنقطة الحمراء بأمان كامل
         // ==========================================
         const CURRENT_APP_VERSION = 'v2.0';
         const updatesBtn = document.getElementById('updatesBtn');
         const updatesModal = document.getElementById('updatesModal');
-        const updatesDot = document.getElementById('updatesDot');
+        const navUpdatesDot = document.getElementById('navUpdatesDot');
+        const menuNotificationDot = document.getElementById('menuNotificationDot');
         const closeUpdatesBtn = document.querySelector('.close-updates-btn');
         const closeUpdatesModalBtn = document.getElementById('closeUpdatesModalBtn');
 
-        // التحقق من رؤية آخر تحديث
+        // التحقق من رؤية آخر تحديث وإظهار شارة التنبيه بأمان تام
         const lastSeenVersion = localStorage.getItem('last_seen_update_version');
         if (lastSeenVersion !== CURRENT_APP_VERSION) {
-            updatesDot.classList.remove('hidden'); // إظهار النقطة الحمراء
+            if (navUpdatesDot) navUpdatesDot.classList.remove('hidden');
+            if (menuNotificationDot) menuNotificationDot.classList.remove('hidden');
         }
 
         function openUpdatesModal() {
-            updatesModal.style.display = 'flex';
-            updatesDot.classList.add('hidden'); // إخفاء النقطة الحمراء
+            if (updatesModal) updatesModal.style.display = 'flex';
+            if (navUpdatesDot) navUpdatesDot.classList.add('hidden');
+            if (menuNotificationDot) menuNotificationDot.classList.add('hidden');
             localStorage.setItem('last_seen_update_version', CURRENT_APP_VERSION);
         }
 
         function closeUpdatesModal() {
-            updatesModal.style.display = 'none';
+            if (updatesModal) updatesModal.style.display = 'none';
         }
 
         if (updatesBtn) updatesBtn.onclick = openUpdatesModal;
@@ -4022,8 +4031,6 @@
         const navItemDisclaimer = document.getElementById('navItemDisclaimer');
         const navItemSettings = document.getElementById('navItemSettings');
         const navPendingBadge = document.getElementById('navPendingBadge');
-        const navUpdatesDot = document.getElementById('navUpdatesDot');
-        const menuNotificationDot = document.getElementById('menuNotificationDot');
 
         const pendingDepositsModal = document.getElementById('pendingDepositsModal');
         const pendingSearchInput = document.getElementById('pendingSearchInput');
@@ -4384,10 +4391,12 @@
                             </div>
                             <span class="company-badge" style="font-size: 0.75rem;">${isTalabat ? 'طلبات' : 'بلي فود'}</span>
                         `;
-                        div.onclick = (e) => {
+                        const selectHandler = (e) => {
                             if (e) { e.preventDefault(); e.stopPropagation(); }
                             selectDriverForPendingDeposit(d);
                         };
+                        div.onclick = selectHandler;
+                        div.addEventListener('touchend', selectHandler, { passive: false });
                         pendingSuggestions.appendChild(div);
                     });
                     pendingSuggestions.classList.remove('hidden');
