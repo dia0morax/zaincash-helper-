@@ -1332,6 +1332,40 @@
             font-size: 0.85rem;
         }
 
+
+        /* صندوق اقتراحات البحث في شاشة الإيداعات المؤجلة - طبقة رؤية علوية واضحة */
+        #pendingSuggestions {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            left: 0;
+            width: 100%;
+            margin-top: 6px;
+            background: var(--card-bg);
+            border: 2px solid var(--primary-color);
+            border-radius: 14px;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.28);
+            z-index: 100050;
+            max-height: 280px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        #pendingSuggestions .suggestion-item {
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border-color);
+            transition: background 0.2s;
+            color: var(--text-color);
+            background: var(--card-bg);
+        }
+        #pendingSuggestions .suggestion-item:hover,
+        #pendingSuggestions .suggestion-item:active {
+            background: rgba(0, 102, 255, 0.08);
+        }
+
     </style>
 </head>
 <body>
@@ -2283,7 +2317,7 @@
                     <button onclick="location.reload()" class="submit-btn btn-sync">
                         <i class="fa-solid fa-rotate"></i> تحديث والمزامنة
                     </button>
-                    <button id="settingsDisclaimerBtn" class="submit-btn btn-sync" style="background: rgba(0, 102, 255, 0.1); color: var(--primary-color); border: 1px solid var(--border-color); margin-bottom: 10px;">
+                    <button type="button" id="settingsDisclaimerBtn" class="submit-btn btn-sync" onclick="openDisclaimerModalFromSettings()" style="background: rgba(0, 102, 255, 0.1); color: var(--primary-color); border: 1px solid var(--border-color); margin-bottom: 10px; cursor: pointer;">
                         <i class="fa-solid fa-scale-balanced"></i> إخلاء المسؤولية وقوانين الاستخدام
                     </button>
                     <button id="logoutBtn" class="submit-btn btn-danger">
@@ -2739,18 +2773,21 @@
         }
 
         // ==========================================
-        // 1. جلب السائقين بدون استنزاف القراءات (Query Optimization)
+        // 1. جلب كافة السائقين واستبعاد المحذوفات تلقائياً (دعم حتى 10,000+ سائق)
         // ==========================================
         function loadDriversFromCloud() {
-            // جلب السائقين الفعالين فقط عبر الاستعلام المباشر
-            db.collection("drivers").where("isDeleted", "==", false).onSnapshot((snapshot) => {
+            // جلب كافة السائقين لحظياً مع الحفاظ الكامل على السجلات القديمة واستبعاد المحذوفات (isDeleted !== true)
+            db.collection("drivers").onSnapshot((snapshot) => {
                 drivers = [];
                 snapshot.forEach((doc) => {
                     const data = doc.data();
-                    drivers.push({ id: doc.id, ...data });
+                    // استبعاد السائقين المحذوفين فقط (Soft-deleted) وقبول السائقين الفعالين والسجلات القديمة
+                    if (data.isDeleted !== true) {
+                        drivers.push({ id: doc.id, ...data });
+                    }
                 });
 
-                // ترتيب السائقين تنازلياً حسب حقل createdAt في الذاكرة لضمان سرعة الاستجابة وعرض أحدث السائقين أولاً بدون استبعاد السجلات القديمة
+                // ترتيب السائقين تنازلياً حسب تاريخ الإضافة في الذاكرة لضمان سرعة الاستجابة القصوى
                 drivers.sort((a, b) => {
                     const getTimestamp = (val) => {
                         if (!val) return 0;
@@ -3192,53 +3229,70 @@
             return score;
         }
 
-        // تسريع البحث وتقليل ضغط إعادة الرسم باستخدام Debounce
+        // محرك البحث الذكي العام - دقة وترتيب استثنائي واستبعاد تام للمحذوفات
         let searchDebounceTimer = null;
 
         searchInput.addEventListener('input', () => {
             clearTimeout(searchDebounceTimer);
             searchDebounceTimer = setTimeout(() => {
-                currentRenderLimit = 30; // إعادة التصفح للحد الأولي عند البحث الجديد
+                currentRenderLimit = 40; // حد العرض الأولي عند البحث
                 const query = searchInput.value.trim();
 
                 if (query.length === 0) {
                     searchSuggestions.classList.add('hidden');
+                    searchSuggestions.style.display = 'none';
                     filterAndRenderDrivers();
                     return;
                 }
 
-                // حساب درجات التطابق وترتيب الاقتراحات شاملاً لكافة السائقين والأفرع
+                // احتساب درجات التطابق لجميع السائقين الفعالين
                 const scoredMatches = [];
                 drivers.forEach(d => {
-                    const score = calculateSearchScore(d, query);
-                    if (score > 0) {
-                        scoredMatches.push({ driver: d, score: score });
+                    if (d.isDeleted !== true) {
+                        const score = calculateSearchScore(d, query);
+                        if (score > 0) {
+                            scoredMatches.push({ driver: d, score: score });
+                        }
                     }
                 });
 
-                scoredMatches.sort((a, b) => b.score - a.score || a.driver.name.localeCompare(b.driver.name, 'ar'));
+                // ترتيب النتائج بدقة فائقة: أعلى درجة تطابق أولاً، ثم الترتيب الأبجدي العربي الدقيق
+                scoredMatches.sort((a, b) => b.score - a.score || (a.driver.name || '').localeCompare(b.driver.name || '', 'ar'));
 
                 if (scoredMatches.length > 0) {
                     searchSuggestions.innerHTML = '';
-                    scoredMatches.slice(0, 10).forEach(itemObj => {
+                    scoredMatches.slice(0, 12).forEach(itemObj => {
                         const m = itemObj.driver;
                         const item = document.createElement('div');
                         item.className = 'suggestion-item';
-                        item.innerHTML = `<span><strong>${escapeHtml(m.name)}</strong> (${escapeHtml(m.driverId || m.phone)})</span> <small style="color:var(--primary-color)">${escapeHtml(m.company.toUpperCase())}${m.branch ? ' - ' + escapeHtml(m.branch) : ''}</small>`;
-                        item.onclick = () => {
+                        const isTalabat = m.company === 'talabat';
+                        item.innerHTML = `
+                            <div style="text-align: right;">
+                                <strong style="font-size: 0.96rem; display: block; color: var(--text-color);">${escapeHtml(m.name)}</strong>
+                                <small style="color: var(--text-secondary); font-size: 0.8rem;">
+                                    ${isTalabat && m.driverId ? `ID: <b>${escapeHtml(m.driverId)}</b> | ` : ''}📱 ${escapeHtml(m.phone || '---')}${m.branch ? ' | 📍 ' + escapeHtml(m.branch) : ''}
+                                </small>
+                            </div>
+                            <span class="company-badge" style="font-size: 0.72rem;">${isTalabat ? 'طلبات' : 'بلي فود'}</span>
+                        `;
+                        item.onclick = (e) => {
+                            if (e) e.stopPropagation();
                             fullScreenDriverId = m.id;
                             searchSuggestions.classList.add('hidden');
+                            searchSuggestions.style.display = 'none';
                             searchInput.value = m.name;
                             filterAndRenderDrivers();
                         };
                         searchSuggestions.appendChild(item);
                     });
                     searchSuggestions.classList.remove('hidden');
+                    searchSuggestions.style.display = 'block';
                 } else {
                     searchSuggestions.classList.add('hidden');
+                    searchSuggestions.style.display = 'none';
                 }
                 filterAndRenderDrivers();
-            }, 100);
+            }, 60);
         });
 
         function filterAndRenderDrivers() {
@@ -3879,21 +3933,30 @@
             backToMainTagsBtn.onclick = showMainTagsView;
         }
 
-                // إدارة نافذة إخلاء المسؤولية وقوانين الاستخدام
+                // إدارة نافذة إخلاء المسؤولية وقوانين الاستخدام بأعلى موثوقية
         const disclaimerTermsModal = document.getElementById('disclaimerTermsModal');
         const disclaimerTermsBtn = document.getElementById('disclaimerTermsBtn');
         const settingsDisclaimerBtn = document.getElementById('settingsDisclaimerBtn');
         const loginDisclaimerBtn = document.getElementById('loginDisclaimerBtn');
 
         function openDisclaimerModal() {
-            if (disclaimerTermsModal) disclaimerTermsModal.style.display = 'flex';
+            const modal = document.getElementById('disclaimerTermsModal');
+            if (modal) {
+                modal.style.display = 'flex';
+                modal.style.zIndex = '100035';
+            }
         }
+        window.openDisclaimerModal = openDisclaimerModal;
+
+        function openDisclaimerModalFromSettings() {
+            const sModal = document.getElementById('settingsModal');
+            if (sModal) sModal.style.display = 'none';
+            openDisclaimerModal();
+        }
+        window.openDisclaimerModalFromSettings = openDisclaimerModalFromSettings;
 
         if (disclaimerTermsBtn) disclaimerTermsBtn.onclick = openDisclaimerModal;
-        if (settingsDisclaimerBtn) settingsDisclaimerBtn.onclick = () => {
-            if (settingsModal) settingsModal.style.display = 'none';
-            openDisclaimerModal();
-        };
+        if (settingsDisclaimerBtn) settingsDisclaimerBtn.onclick = openDisclaimerModalFromSettings;
         if (loginDisclaimerBtn) loginDisclaimerBtn.onclick = (e) => {
             e.preventDefault();
             openDisclaimerModal();
@@ -4281,45 +4344,81 @@
             }
         }
 
-        // البحث الذكي داخل قائمة الإيداع المؤجل
+        // البحث الذكي الفوري داخل قائمة الإيداع المؤجل (دقة كاملة لجميع السائقين)
         if (pendingSearchInput) {
-            pendingSearchInput.addEventListener('input', () => {
+            const handlePendingSearch = () => {
                 const query = pendingSearchInput.value.trim();
-                if (query.length === 0) {
-                    if (pendingSuggestions) pendingSuggestions.classList.add('hidden');
+                if (!query) {
+                    if (pendingSuggestions) {
+                        pendingSuggestions.classList.add('hidden');
+                        pendingSuggestions.style.display = 'none';
+                        pendingSuggestions.innerHTML = '';
+                    }
                     return;
                 }
 
                 const scoredMatches = [];
                 drivers.forEach(d => {
-                    const score = calculateSearchScore(d, query);
-                    if (score > 0) scoredMatches.push({ driver: d, score: score });
+                    if (d.isDeleted !== true) {
+                        const score = calculateSearchScore(d, query);
+                        if (score > 0) scoredMatches.push({ driver: d, score: score });
+                    }
                 });
 
-                scoredMatches.sort((a, b) => b.score - a.score || a.driver.name.localeCompare(b.driver.name, 'ar'));
+                // ترتيب ذكي بأعلى دقة للاسم والهاتف والـ ID
+                scoredMatches.sort((a, b) => b.score - a.score || (a.driver.name || '').localeCompare(b.driver.name || '', 'ar'));
 
                 if (scoredMatches.length > 0) {
                     pendingSuggestions.innerHTML = '';
-                    scoredMatches.slice(0, 8).forEach(itemObj => {
+                    scoredMatches.slice(0, 12).forEach(itemObj => {
                         const d = itemObj.driver;
+                        const isTalabat = d.company === 'talabat';
                         const div = document.createElement('div');
                         div.className = 'suggestion-item';
-                        div.innerHTML = `<span><strong>${escapeHtml(d.name)}</strong> (${escapeHtml(d.driverId || d.phone)})</span> <small style="color:var(--primary-color)">${escapeHtml(d.company.toUpperCase())}</small>`;
-                        div.onclick = () => {
+                        div.innerHTML = `
+                            <div style="text-align: right;">
+                                <strong style="font-size: 0.98rem; display: block; color: var(--text-color);">${escapeHtml(d.name)}</strong>
+                                <small style="color: var(--text-secondary); font-size: 0.82rem;">
+                                    ${isTalabat && d.driverId ? `ID: <b>${escapeHtml(d.driverId)}</b> | ` : ''}📱 ${escapeHtml(d.phone || '---')}${d.branch ? ' | 📍 ' + escapeHtml(d.branch) : ''}
+                                </small>
+                            </div>
+                            <span class="company-badge" style="font-size: 0.75rem;">${isTalabat ? 'طلبات' : 'بلي فود'}</span>
+                        `;
+                        div.onclick = (e) => {
+                            if (e) { e.preventDefault(); e.stopPropagation(); }
                             selectDriverForPendingDeposit(d);
                         };
                         pendingSuggestions.appendChild(div);
                     });
                     pendingSuggestions.classList.remove('hidden');
+                    pendingSuggestions.style.display = 'block';
                 } else {
-                    pendingSuggestions.classList.add('hidden');
+                    pendingSuggestions.innerHTML = `<div style="padding: 14px; text-align: center; color: var(--text-secondary); font-weight: 700; font-size: 0.85rem;">لا توجد أي نتائج مطابقة لكلمة البحث.</div>`;
+                    pendingSuggestions.classList.remove('hidden');
+                    pendingSuggestions.style.display = 'block';
+                }
+            };
+
+            pendingSearchInput.addEventListener('input', handlePendingSearch);
+            pendingSearchInput.addEventListener('focus', () => {
+                if (pendingSearchInput.value.trim().length > 0) handlePendingSearch();
+            });
+            pendingSearchInput.addEventListener('keyup', (e) => {
+                if (e.key === 'Escape') {
+                    if (pendingSuggestions) {
+                        pendingSuggestions.classList.add('hidden');
+                        pendingSuggestions.style.display = 'none';
+                    }
                 }
             });
         }
 
         function selectDriverForPendingDeposit(driver) {
             selectedPendingDriver = driver;
-            if (pendingSuggestions) pendingSuggestions.classList.add('hidden');
+            if (pendingSuggestions) {
+                pendingSuggestions.classList.add('hidden');
+                pendingSuggestions.style.display = 'none';
+            }
             if (pendingSearchInput) pendingSearchInput.value = '';
 
             if (promptDriverNameDisplay) {
@@ -4327,14 +4426,24 @@
                 promptDriverNameDisplay.innerHTML = `<i class="fa-solid fa-user-check"></i> ${escapeHtml(driver.name)} (${comp})`;
             }
             if (pendingAmountInput) pendingAmountInput.value = '';
-            if (pendingAmountPromptBox) pendingAmountPromptBox.classList.remove('hidden');
-            if (pendingAmountInput) pendingAmountInput.focus();
+            if (pendingAmountPromptBox) {
+                pendingAmountPromptBox.classList.remove('hidden');
+                pendingAmountPromptBox.style.display = 'block';
+            }
+            if (pendingAmountInput) {
+                setTimeout(() => pendingAmountInput.focus(), 60);
+            }
         }
+        window.selectDriverForPendingDeposit = selectDriverForPendingDeposit;
 
         function cancelPendingPrompt() {
             selectedPendingDriver = null;
-            if (pendingAmountPromptBox) pendingAmountPromptBox.classList.add('hidden');
+            if (pendingAmountPromptBox) {
+                pendingAmountPromptBox.classList.add('hidden');
+                pendingAmountPromptBox.style.display = 'none';
+            }
         }
+        window.cancelPendingPrompt = cancelPendingPrompt;
         if (cancelPromptBtn) cancelPromptBtn.onclick = cancelPendingPrompt;
 
         // تأكيد إضافة السائق والمبلغ للقائمة المؤجلة بأمان كامل وسرعة فورية
