@@ -2517,10 +2517,71 @@
             return deviceId;
         }
 
-        // فحص الجلسة المحفوظة ومراقبة الحظر والطرد اللحظي
+        // ==========================================
+        // 3. المراقبة اللحظية للجلسة والطرد الفوري (Real-time Session Watcher)
+        // ==========================================
+        let sessionWatcherUnsubscribe = null;
+
+        function logoutAndEject() {
+            if (sessionWatcherUnsubscribe) {
+                sessionWatcherUnsubscribe();
+                sessionWatcherUnsubscribe = null;
+            }
+            localStorage.removeItem('zaincash_logged_user');
+            localStorage.removeItem('zaincash_session_key');
+            location.reload();
+        }
+
+        function startSessionWatcher(username) {
+            if (sessionWatcherUnsubscribe) {
+                sessionWatcherUnsubscribe();
+                sessionWatcherUnsubscribe = null;
+            }
+
+            const currentDeviceId = getDeviceID();
+            const savedSessionKey = localStorage.getItem('zaincash_session_key');
+
+            sessionWatcherUnsubscribe = db.collection("subscriptions").doc(username).onSnapshot(doc => {
+                // 1. حذف الحساب نهائياً من Firestore
+                if (!doc.exists) {
+                    logoutAndEject();
+                    return;
+                }
+
+                const data = doc.data();
+                const now = Date.now();
+                const expiryTime = data.expiryDate ? new Date(data.expiryDate).getTime() : 0;
+
+                // 2. تفعيل الحظر (isBanned === true)
+                if (data.isBanned === true) {
+                    logoutAndEject();
+                    return;
+                }
+
+                // 3. انتهاء تاريخ الصلاحية
+                if (now > expiryTime) {
+                    logoutAndEject();
+                    return;
+                }
+
+                // 4. تصفير الأجهزة وتحديث sessionKey من لوحة التحكم
+                if (data.sessionKey && savedSessionKey && data.sessionKey !== savedSessionKey) {
+                    logoutAndEject();
+                    return;
+                }
+
+                // 5. التحقق من بقاء الجهاز ضمن مصفوفة الأجهزة المعتمدة
+                const devicesList = Array.isArray(data.devices) ? data.devices : [];
+                if (devicesList.length > 0 && !devicesList.includes(currentDeviceId)) {
+                    logoutAndEject();
+                    return;
+                }
+            }, err => console.log("Session watcher note:", err));
+        }
+
+        // فحص الجلسة المحفوظة وتهيئة المراقب اللحظي
         (function initSession() {
             const savedUser = localStorage.getItem('zaincash_logged_user');
-            const savedSessionKey = localStorage.getItem('zaincash_session_key');
 
             if (savedUser) {
                 authScreen.classList.add('hidden');
@@ -2528,32 +2589,16 @@
                 if (userEmailDisplay) userEmailDisplay.textContent = `الحساب الحالي: ${savedUser}`;
                 loadDriversFromCloud();
                 loadPendingDeposits();
-
-                db.collection("subscriptions").doc(savedUser).onSnapshot(doc => {
-                    if (doc.exists) {
-                        const data = doc.data();
-                        const now = Date.now();
-                        const expiry = new Date(data.expiryDate).getTime();
-
-                        // طرد فوري إذا تم الحظر أو انتهى الاشتراك أو تم تصفير الأجهزة
-                        if (data.isBanned === true || now > expiry || (data.sessionKey && data.sessionKey !== savedSessionKey)) {
-                            localStorage.removeItem('zaincash_logged_user');
-                            localStorage.removeItem('zaincash_session_key');
-                            location.reload();
-                        }
-                    } else {
-                        localStorage.removeItem('zaincash_logged_user');
-                        localStorage.removeItem('zaincash_session_key');
-                        location.reload();
-                    }
-                }, err => console.log("Session error:", err));
+                startSessionWatcher(savedUser);
             } else {
                 authScreen.classList.remove('hidden');
                 appContainer.classList.add('hidden');
             }
         })();
 
-        // تسجيل الدخول مع فحص الحظر اللحظي وسبب الحظر
+        // ==========================================
+        // 2. التحقق المباشر من الحسابات (Custom Authentication بدون Firebase Auth)
+        // ==========================================
         if (loginForm) {
             loginForm.onsubmit = async (e) => {
                 e.preventDefault();
@@ -2571,6 +2616,7 @@
                 };
 
                 try {
+                    // الاستعلام المباشر من مسار subscriptions/{username}
                     const userDoc = await db.collection("subscriptions").doc(usernameInput).get();
                     
                     if (!userDoc.exists) {
@@ -2581,26 +2627,26 @@
 
                     const data = userDoc.data();
 
-                    // 1. مطابقة كلمة المرور
+                    // 1. مطابقة كلمة المرور مع حقل password
                     if (String(data.password).trim() !== passwordInput) {
                         resetBtnState();
                         showAuthError("خطأ في تسجيل الدخول", "اسم المستخدم أو كلمة المرور غير صحيحة.");
                         return;
                     }
 
-                    // 2. فحص حالة الحظر (Blacklist)
+                    // 2. فحص حالة الحظر (isBanned === true) وإظهار سبب الحظر (banReason)
                     if (data.isBanned === true) {
                         resetBtnState();
                         showAuthError(
                             "تم حظر هذا الحساب",
-                            `تم حظر هذا الحساب من استخدام المنظومة.<br><b style="color:var(--danger-color); display:block; margin-top:8px;">سبب الحظر: ${data.banReason || 'مخالفة الشروط'}</b>`
+                            `تم حظر هذا الحساب من استخدام المنظومة.<br><b style="color:var(--danger-color); display:block; margin-top:8px;">سبب الحظر: ${escapeHtml(data.banReason || 'مخالفة شروط الاستخدام')}</b>`
                         );
                         return;
                     }
                     
-                    // 3. فحص انتهاء الوقت
+                    // 3. فحص تاريخ انتهاء الصلاحية expiryDate ومقارنته بالوقت الحالي Date.now()
                     const now = Date.now();
-                    const expiryTime = new Date(data.expiryDate).getTime();
+                    const expiryTime = data.expiryDate ? new Date(data.expiryDate).getTime() : 0;
                     if (now > expiryTime) {
                         resetBtnState();
                         showAuthError(
@@ -2610,7 +2656,7 @@
                         return;
                     }
 
-                    // 4. فحص الأجهزة (4 كحد أقصى)
+                    // 4. فحص عدد الأجهزة المسجلة داخل مصفوفة devices (4 كحد أقصى)
                     let devicesArray = Array.isArray(data.devices) ? [...data.devices] : [];
                     
                     if (!devicesArray.includes(currentDeviceId)) {
@@ -2623,20 +2669,23 @@
                             return;
                         } else {
                             devicesArray.push(currentDeviceId);
-                            db.collection("subscriptions").doc(usernameInput).update({
+                            await db.collection("subscriptions").doc(usernameInput).update({
                                 devices: devicesArray
-                            }).catch(err => console.log("Device update err:", err));
+                            });
                         }
                     }
 
                     // 5. حفظ الجلسة والدخول
                     localStorage.setItem('zaincash_logged_user', usernameInput);
                     localStorage.setItem('zaincash_session_key', data.sessionKey || '');
+                    localStorage.setItem('zaincash_device_id', currentDeviceId);
                     if (userEmailDisplay) userEmailDisplay.textContent = `الحساب الحالي: ${usernameInput}`;
                     
                     authScreen.classList.add('hidden');
                     appContainer.classList.remove('hidden');
                     loadDriversFromCloud();
+                    loadPendingDeposits();
+                    startSessionWatcher(usernameInput);
 
                 } catch (error) {
                     resetBtnState();
@@ -2648,30 +2697,28 @@
         }
 
         // تسجيل الخروج
-        document.getElementById('logoutBtn').onclick = () => {
-            if (confirm("هل أنت متأكد من تسجيل الخروج؟ (سيبقى هذا الجهاز مسجلاً ضمن أجهزتك المعتمدة)")) {
-                localStorage.removeItem('zaincash_logged_user');
-                localStorage.removeItem('zaincash_session_key');
-                location.reload();
-            }
-        };
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+            logoutBtn.onclick = () => {
+                if (confirm("هل أنت متأكد من تسجيل الخروج؟ (سيبقى هذا الجهاز مسجلاً ضمن أجهزتك المعتمدة)")) {
+                    logoutAndEject();
+                }
+            };
+        }
 
         // ==========================================
-        // 3. جلب البيانات لحظياً مع استثناء المحذوفات الوهمية
+        // 1. جلب السائقين بدون استنزاف القراءات (Query Optimization)
         // ==========================================
         function loadDriversFromCloud() {
-            // جلب كافة السائقين دون استثناء السجلات القديمة التي تفتقر لحقل createdAt
-            db.collection("drivers").onSnapshot((snapshot) => {
+            // جلب السائقين الفعالين فقط عبر الاستعلام المباشر
+            db.collection("drivers").where("isDeleted", "==", false).onSnapshot((snapshot) => {
                 drivers = [];
                 snapshot.forEach((doc) => {
                     const data = doc.data();
-                    // عرض السائق فقط إذا لم يكن موسوماً كمحذوف (Soft Delete)
-                    if (data.isDeleted !== true) {
-                        drivers.push({ id: doc.id, ...data });
-                    }
+                    drivers.push({ id: doc.id, ...data });
                 });
 
-                // ترتيب السائقين في الذاكرة لضمان عدم استبعاد أي سجل قديم من قاعدة البيانات
+                // ترتيب السائقين تنازلياً حسب حقل createdAt في الذاكرة لضمان سرعة الاستجابة وعرض أحدث السائقين أولاً بدون استبعاد السجلات القديمة
                 drivers.sort((a, b) => {
                     const getTimestamp = (val) => {
                         if (!val) return 0;
