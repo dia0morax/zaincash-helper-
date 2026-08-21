@@ -51,17 +51,74 @@
         .auth-header h2 { font-size: 1.6rem; font-weight: 800; margin-bottom: 5px; }
         .auth-header p { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 25px; }
 
-        /* --- الهيدر والكونتينر --- */
-        .app-header {
-            display: flex; justify-content: space-between; align-items: center; padding: 18px 24px;
-            background: var(--card-bg); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 100;
+        /* --- الهيدر والكونتينر بأبعاد وتصميم الهاتف الذكي --- */
+        .app-container {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: var(--bg-color);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.05);
         }
-        .header-title h2 { font-weight: 800; font-size: 1.3rem; }
-        .brand-icon { color: var(--primary-color); font-size: 1.4rem; }
-        .header-actions { display: flex; gap: 10px; }
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 14px;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            width: 100%;
+        }
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        .header-title .brand-icon {
+            font-size: 1.35rem;
+            color: var(--primary-color);
+        }
+        .title-lines {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.15;
+        }
+        .title-line-1 {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--text-color);
+            margin: 0;
+        }
+        .title-line-2 {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 0;
+        }
+        .header-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-shrink: 0;
+        }
         .icon-btn {
-            width: 44px; height: 44px; border-radius: 14px; border: none; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; font-size: 1.1rem; transition: 0.2s;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.05rem;
+            transition: 0.2s;
         }
         .btn-primary { background: var(--primary-color); color: #FFF; }
         .btn-secondary { background: var(--bg-color); color: var(--text-color); position: relative; }
@@ -150,24 +207,41 @@
         }
         .suggestion-item:hover { background: var(--bg-color); }
 
-        /* الوسوم والأفرع والقوائم */
+        /* الوسوم والأفرع والقوائم - منع تمديد الشاشة والسحب السلس */
+        .search-section, .main-container {
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
+        }
         .company-tags-container {
-            margin-bottom: 20px;
+            margin-bottom: 18px;
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            overflow: hidden;
+            box-sizing: border-box;
         }
         .company-tags {
             display: flex;
             gap: 8px;
             overflow-x: auto;
+            overflow-y: hidden;
             white-space: nowrap;
-            padding-bottom: 6px;
+            padding: 4px 2px 8px 2px;
             scrollbar-width: none;
             -webkit-overflow-scrolling: touch;
+            touch-action: pan-x;
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
         }
         .company-tags::-webkit-scrollbar { display: none; }
         .tag {
             padding: 8px 16px; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 30px;
             font-size: 0.88rem; font-weight: 700; cursor: pointer; color: var(--text-secondary); transition: 0.2s;
-            display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0;
+            display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; user-select: none;
         }
         .tag.active { background: var(--primary-color); color: #FFF; border-color: var(--primary-color); }
         .tag-badge {
@@ -186,10 +260,16 @@
             display: flex;
             gap: 8px;
             overflow-x: auto;
+            overflow-y: hidden;
             white-space: nowrap;
-            padding-bottom: 6px;
+            padding: 4px 2px 8px 2px;
             scrollbar-width: none;
             -webkit-overflow-scrolling: touch;
+            touch-action: pan-x;
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
             animation: fadeIn 0.25s ease;
         }
         .branch-tags-bar::-webkit-scrollbar { display: none; }
@@ -256,6 +336,45 @@
             padding: 2px 8px;
             border-radius: 20px;
             font-weight: 700;
+        }
+
+        /* اختيار رمز العميل وتاريخ الكرت */
+        .code-selector-group {
+            display: flex;
+            gap: 8px;
+        }
+        .code-opt-btn {
+            flex: 1;
+            text-align: center;
+            padding: 10px 6px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            background: var(--bg-color);
+            color: var(--text-color);
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.2s;
+            user-select: none;
+        }
+        .code-opt-btn input { display: none; }
+        .code-opt-btn.active {
+            background: var(--primary-color);
+            color: #FFF;
+            border-color: var(--primary-color);
+        }
+        .driver-card-date {
+            font-size: 0.76rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .btn-locked {
+            opacity: 0.65;
+            cursor: not-allowed;
         }
         .branch-tag:hover {
             border-color: var(--talabat-color);
@@ -816,6 +935,375 @@
             color: var(--danger-color);
             border-color: var(--danger-color);
         }
+
+        /* --- أنيميشن وتصميم عصري فائق الجمال (Modern UI & Animations) --- */
+        @keyframes cardEnter {
+            from { opacity: 0; transform: translateY(18px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 0 0 rgba(0, 102, 255, 0.3); }
+            70% { box-shadow: 0 0 0 10px rgba(0, 102, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 102, 255, 0); }
+        }
+        @keyframes badgePop {
+            0% { transform: scale(0.8); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .driver-card {
+            animation: cardEnter 0.3s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+        }
+        .driver-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 36px rgba(112, 144, 176, 0.2);
+        }
+
+        /* تنسيقات قائمة الإيداعات المؤجلة (عند عطل زين كاش) */
+        .privacy-notice-box {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            background: rgba(0, 102, 255, 0.06);
+            border: 1px solid rgba(0, 102, 255, 0.2);
+            border-radius: 14px;
+            padding: 12px 14px;
+            margin-bottom: 14px;
+            font-size: 0.82rem;
+            line-height: 1.5;
+        }
+        .info-help-box {
+            background: rgba(255, 153, 0, 0.08);
+            border: 1px dashed rgba(255, 153, 0, 0.35);
+            border-radius: 14px;
+            padding: 12px 14px;
+            margin-bottom: 16px;
+        }
+        .pending-subtabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .pending-tab-btn {
+            flex: 1;
+            padding: 10px 8px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-color);
+            color: var(--text-secondary);
+            font-weight: 700;
+            font-size: 0.88rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .pending-tab-btn.active {
+            background: var(--primary-color);
+            color: #fff;
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 15px rgba(0, 102, 255, 0.25);
+        }
+        .pending-card {
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            transition: 0.2s;
+            position: relative;
+        }
+        .pending-card:hover {
+            border-color: var(--primary-color);
+            box-shadow: var(--shadow);
+        }
+        .pending-amount-badge {
+            font-size: 1.15rem;
+            font-weight: 900;
+            color: var(--success-color);
+            background: rgba(5, 205, 153, 0.12);
+            padding: 4px 12px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+        .binding-terms-alert {
+            background: rgba(0, 102, 255, 0.05);
+            border: 1px dashed var(--primary-color);
+            border-radius: 10px;
+            padding: 8px 12px;
+            margin: 10px 0;
+            font-size: 0.78rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            text-align: center;
+        }
+
+
+        /* --- التصميم العصري الفائق والأنيميشنز (1000% Modern UI & Transitions) --- */
+        @keyframes cardEnter {
+            from { opacity: 0; transform: translateY(16px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes fadeInNav {
+            from { opacity: 0; transform: scale(0.96); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 0 0 rgba(0, 102, 255, 0.35); }
+            70% { box-shadow: 0 0 0 10px rgba(0, 102, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 102, 255, 0); }
+        }
+
+        .driver-card {
+            animation: cardEnter 0.32s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+        }
+        .driver-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 36px rgba(112, 144, 176, 0.2);
+        }
+
+        /* زر إضافة سائق الكبير بالهيدر */
+        .main-add-driver-btn {
+            background: linear-gradient(135deg, #0066FF 0%, #004ecc 100%);
+            color: #FFFFFF;
+            border: none;
+            border-radius: 14px;
+            padding: 9px 16px;
+            font-size: 0.92rem;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            box-shadow: 0 4px 16px rgba(0, 102, 255, 0.35);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            white-space: nowrap;
+            user-select: none;
+        }
+        .main-add-driver-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 102, 255, 0.45);
+        }
+        .main-add-driver-btn:active {
+            transform: scale(0.96);
+        }
+
+        /* زر القائمة المنسدلة الثلاث خطوط (Hamburger) */
+        .hamburger-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 13px;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+        .hamburger-btn:hover {
+            background: var(--card-bg);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        /* قائمة الشاشة الكاملة المنبثقة من الثلاث خطوط */
+        .fullscreen-nav-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            width: 100vw; height: 100vh;
+            background: var(--card-bg);
+            z-index: 100020;
+            display: flex;
+            flex-direction: column;
+            animation: fadeInNav 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow-y: auto;
+        }
+        .fullscreen-nav-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 22px;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--card-bg);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .fullscreen-nav-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .fullscreen-nav-title h3 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            margin: 0;
+        }
+        .fullscreen-nav-close-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-color);
+            color: var(--text-color);
+            font-size: 1.25rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+        .fullscreen-nav-close-btn:hover {
+            background: rgba(238, 93, 80, 0.15);
+            color: var(--danger-color);
+            border-color: var(--danger-color);
+        }
+        .fullscreen-nav-body {
+            padding: 22px 18px;
+            max-width: 550px;
+            margin: 0 auto;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            flex: 1;
+        }
+        .nav-menu-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .nav-menu-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 15px 18px;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+        .nav-menu-item:hover {
+            border-color: var(--primary-color);
+            transform: translateX(-4px);
+            box-shadow: var(--shadow);
+            background: var(--card-bg);
+        }
+        .nav-item-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        .nav-item-content {
+            flex: 1;
+            text-align: right;
+        }
+        .nav-item-content strong {
+            display: block;
+            font-size: 1.02rem;
+            color: var(--text-color);
+            margin-bottom: 2px;
+        }
+        .nav-item-content small {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+        .nav-arrow {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        .nav-menu-footer {
+            margin-top: auto;
+            padding-top: 15px;
+        }
+
+        /* تخصيص شاشة الإيداعات المؤجلة بشاشة كاملة 100% */
+        #pendingDepositsModal {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            width: 100vw; height: 100vh;
+            background: var(--bg-color);
+            z-index: 100025;
+            display: none;
+            flex-direction: column;
+            padding: 0;
+            overflow: hidden;
+        }
+        #pendingDepositsModal .modal-content {
+            width: 100vw;
+            height: 100vh;
+            max-width: 100vw;
+            max-height: 100vh;
+            border-radius: 0;
+            padding: 0;
+            background: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            box-shadow: none;
+            border: none;
+        }
+        #pendingDepositsModal .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            margin-bottom: 0;
+        }
+        #pendingDepositsModal .modal-body {
+            padding: 20px 16px 60px 16px;
+            max-width: 650px;
+            margin: 0 auto;
+            width: 100%;
+            flex: 1;
+            overflow-y: auto;
+        }
+        .archived-toggle-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 14px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            cursor: pointer;
+            user-select: none;
+            transition: 0.2s;
+        }
+        .archived-toggle-header:hover {
+            border-color: var(--primary-color);
+        }
+        .archived-mini-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 12px 14px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+        }
+
     </style>
 </head>
 <body>
@@ -826,7 +1314,7 @@
             <div class="auth-header">
                 <i class="fa-solid fa-wallet brand-icon"></i>
                 <h2>مساعد ايداع السواق</h2>
-                <p style="color: var(--primary-color); font-weight: 700; font-size: 0.85rem;">منظومة الإدارة السريعة للمنافذ (الإصدار 1.5)</p>
+                <p style="color: var(--primary-color); font-weight: 700; font-size: 0.85rem;">منظومة الإدارة السريعة للمنافذ (الإصدار 2.0)</p>
             </div>
             
             <form id="loginForm" class="login-form">
@@ -841,12 +1329,19 @@
                 </button>
             </form>
 
+            <div class="binding-terms-alert">
+                <i class="fa-solid fa-scale-balanced"></i> بتسجيلك الدخول واستخدام الموقع أنت توافق على جميع سياسات وشروط الاستخدام
+            </div>
+
             <div class="login-actions">
                 <button id="showBenefitsBtn" class="action-link-btn">
                     <i class="fa-solid fa-lightbulb"></i> ليش تحتاج هاي المنظومة؟
                 </button>
                 <button id="showPackagesBtn" class="action-link-btn highlight">
                     <i class="fa-solid fa-fire"></i> أسعار الباقات (تجربة مجانية 7 أيام)
+                </button>
+                <button id="loginDisclaimerBtn" class="action-link-btn" style="color: var(--text-secondary);">
+                    <i class="fa-solid fa-scale-balanced"></i> إخلاء مسؤولية وقوانين الاستخدام
                 </button>
             </div>
 
@@ -862,6 +1357,101 @@
         </div>
     </div>
 
+        <!-- نافذة إخلاء المسؤولية وقوانين الاستخدام الشاملة -->
+    <div id="disclaimerTermsModal" class="modal" style="z-index: 100018;">
+        <div class="modal-content" style="max-height: 85vh; overflow-y: auto; max-width: 540px;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-scale-balanced" style="color: var(--primary-color);"></i> إخلاء المسؤولية وشروط الاستخدام</h3>
+                <span class="close-disclaimer-btn close-btn">&times;</span>
+            </div>
+            <div class="modal-body" style="text-align: right; line-height: 1.6; font-size: 0.88rem;">
+                
+                <!-- القسم الأول: تنبيه قانوني وإخلاء مسؤولية -->
+                <div style="background: rgba(0, 102, 255, 0.05); border: 1px solid var(--border-color); border-radius: 16px; padding: 16px; margin-bottom: 18px;">
+                    <h4 style="color: var(--primary-color); font-size: 1rem; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-shield-halved"></i> تنبيه قانوني وإخلاء مسؤولية
+                    </h4>
+                    
+                    <div style="margin-bottom: 10px;">
+                        <b style="color: var(--text-color); display: block;">1. طبيعة المنظومة والاستقلالية:</b>
+                        <p style="color: var(--text-secondary); margin: 3px 0 0 0;">هذا الموقع أداة برمجية وتنظيمية مستقلة مخصصة لمساعدة أصحاب المنافذ في تدوين وتنظيم البيانات وتسريع النسخ، ولا يتبع أو يمثل رسمياً شركة طلبات (Talabat)، شركة بلي (Balee)، أو شركة زين كاش (ZainCash).</p>
+                    </div>
+
+                    <div style="margin-bottom: 10px;">
+                        <b style="color: var(--text-color); display: block;">2. عدم إجراء أي معاملات مالية:</b>
+                        <p style="color: var(--text-secondary); margin: 3px 0 0 0;">المنظومة لا تستقبل، لا تحول، ولا تحتفظ بأي مبالغ نقدية أو أرصدة مالية؛ وتقتصر مهمتها حصراً على تنظيم أرقام الحسابات والمعرفات لتسهيل إدخالها في التطبيقات الرسمية المرخصة.</p>
+                    </div>
+
+                    <div style="margin-bottom: 10px;">
+                        <b style="color: var(--text-color); display: block;">3. مسؤولية صحة البيانات:</b>
+                        <p style="color: var(--text-secondary); margin: 3px 0 0 0;">المنفذ والسائق هما المسؤولان حصراً وبشكل كامل عن مراجعة وتأكيد دقة الأرقام والـ ID والرموز قبل تنفيذ أي عملية تحويل عبر المحفظة الرسمية، ولا يتحمل مطور المنظومة أي تبعات ناتجة عن أخطاء الإدخال البشري.</p>
+                    </div>
+
+                    <div style="margin-bottom: 10px;">
+                        <b style="color: var(--text-color); display: block;">4. الملكية الفكرية والعلامات التجارية:</b>
+                        <p style="color: var(--text-secondary); margin: 3px 0 0 0;">جميع الأسماء والعلامات التجارية المذكورة (مثل طلبات، بلي فود، زين كاش) هي ملك لأصحابها الشرعيين وتُذكر في المنظومة لغايات التوضيح والتصنيف التنظيمي فقط.</p>
+                    </div>
+
+                    <div style="margin-bottom: 10px;">
+                        <b style="color: var(--text-color); display: block;">5. حماية وسرية البيانات:</b>
+                        <p style="color: var(--text-secondary); margin: 3px 0 0 0;">تلتزم المنظومة بعدم بيع أو مشاركة بيانات السائقين أو المنافذ مع أي جهات خارجية أو إعلانية، ويقتصر استخدامها على غايات التوثيق والتسهيل الداخلي بين المنفذ والسائق.</p>
+                    </div>
+
+                    <div>
+                        <b style="color: var(--text-color); display: block;">6. الموافقة على التواصل:</b>
+                        <p style="color: var(--text-secondary); margin: 3px 0 0 0;">استخدام ميزات التوثيق عبر واتساب أو الرسائل القصيرة يعد موافقة صريحة من السائق على استلام ملخص بياناته لمراجعتها وتأكيدها لحماية حسابه من أخطاء الإيداع.</p>
+                    </div>
+                </div>
+
+                <!-- القسم الثاني: شروط الاستخدام وسياسة حظر الحسابات -->
+                <div style="background: rgba(238, 93, 80, 0.05); border: 1px solid rgba(238, 93, 80, 0.25); border-radius: 16px; padding: 16px;">
+                    <h4 style="color: var(--danger-color); font-size: 1rem; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-triangle-exclamation"></i> شروط الاستخدام وسياسة حظر الحسابات
+                    </h4>
+
+                    <div style="margin-bottom: 10px;">
+                        <b style="color: var(--text-color); display: block;">1. منع التعديل أو الحذف العشوائي والتخريبي:</b>
+                        <p style="color: var(--text-secondary); margin: 3px 0 0 0;">يُمنع منعاً باتاً حذف أو تعديل بيانات أي سائق دون وجود سبب حقيقي مبرر أو طلب مباشر من السائق نفسه؛ تتبع المنظومة سجلاً رقمياً لكل عملية تعديل، وأي تلاعب مقصود يعرّض حساب المنفذ للحظر الدائم والفوري دون استرداد قيمة الاشتراك.</p>
+                    </div>
+
+                    <div style="margin-bottom: 10px;">
+                        <b style="color: var(--text-color); display: block;">2. أمان الحساب والحد الأقصى للأجهزة:</b>
+                        <p style="color: var(--text-secondary); margin: 3px 0 0 0;">الحساب مخصص لمنفذك فقط ومسموح بتشغيله على 4 أجهزة كحد أقصى؛ يُمنع مشاركة كلمة المرور مع منافذ أخرى، ومحاولة تداول الحساب تؤدي إلى قفله تلقائياً.</p>
+                    </div>
+
+                    <div style="margin-bottom: 10px;">
+                        <b style="color: var(--text-color); display: block;">3. دقة البيانات المدخلة:</b>
+                        <p style="color: var(--text-secondary); margin: 3px 0 0 0;">يلتزم صاحب المنفذ بإدخال الأسماء الحقيقية، الأرقام الدقيقة، ومعرّفات الـ ID الصحيحة؛ ويُمنع إدخال بيانات وهمية أو تجريبية في قاعدة البيانات العامة المشتركة.</p>
+                    </div>
+
+                    <div style="margin-bottom: 10px;">
+                        <b style="color: var(--text-color); display: block;">4. حق الإدارة في الحظر الفوري:</b>
+                        <p style="color: var(--text-secondary); margin: 3px 0 0 0;">تحتفظ إدارة المنظومة بالحق الكامل في إيقاف أو حظر أي حساب يثبت قيامه بممارسات تخريبية، محاولات اختراق، أو إساءة استخدام لقاعدة البيانات دون إشعار مسبق.</p>
+                    </div>
+
+                    <div style="margin-bottom: 10px;">
+                        <b style="color: var(--text-color); display: block;">5. استخدام النسخ الاحتياطي وسجل التعديلات:</b>
+                        <p style="color: var(--text-secondary); margin: 3px 0 0 0;">في حال حدوث أي حذف أو خطأ غير مقصود، يجب إبلاغ المطور فوراً لاستعادة النسخة السابقة من سجل التعديلات أو سلة المحذوفات قبل اتخاذ أي إجراء إداري.</p>
+                    </div>
+
+                    <div style="margin-bottom: 10px;">
+                        <b style="color: var(--text-color); display: block;">6. الالتزام بأخلاقيات المهنة:</b>
+                        <p style="color: var(--text-secondary); margin: 3px 0 0 0;">يُحظر استخدام أرقام السائقين أو بياناتهم في أي أغراض تسويقية، رسائل مزعجة (Spam)، أو تداولها خارج نطاق عمليات الإيداع الرسمية المرخصة.</p>
+                    </div>
+
+                    <div style="background: rgba(238, 93, 80, 0.1); padding: 10px 12px; border-radius: 10px; border: 1px dashed var(--danger-color);">
+                        <b style="color: var(--danger-color); display: block;"><i class="fa-solid fa-lock"></i> الرقابة البرمجية التامة وعدم جدوى التخريب:</b>
+                        <p style="color: var(--text-color); margin: 3px 0 0 0; font-weight: 600;">المنظومة مزودة بنظام تتبع سحابي فوري ومحمي يسجل هوية المنفذ واسم الحساب بجانب كل حرف يتم إدخاله، تعديله، أو حذفه، مع الاحتفاظ بالنسخ السابقة تلقائياً في سجل التعديلات وسلة المحذوفات. أي محاولة لحذف السائقين أو تشويه البيانات هي محاولة عقيمة تماماً ولا تضر قاعدة البيانات لأنه يمكن استرجاعها بضغطة زر واحدة؛ والنتيجة الوحيدة لها هي طردك وحظر حسابك نهائياً من المنظومة وسحب صلاحية الوصول فوراً.</p>
+                    </div>
+                </div>
+
+                <button class="submit-btn close-disclaimer-btn" style="margin-top: 18px;">
+                    فهمت كافة القوانين والشروط
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div id="benefitsModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -869,51 +1459,58 @@
                 <span class="close-benefits-btn close-btn">&times;</span>
             </div>
             <div class="modal-body">
-                <div class="feature-item">
-                    <i class="fa-solid fa-users feature-icon"></i>
+                
+                <!-- مبرمج مخصص ومتاح بين يديك -->
+                <div class="feature-item" style="border: 1px solid rgba(0, 102, 255, 0.25); background: rgba(0, 102, 255, 0.04);">
+                    <i class="fa-solid fa-laptop-code feature-icon" style="color: var(--primary-color);"></i>
                     <div>
-                        <strong>قاعدة بيانات سحابية مشتركة ومحدثة</strong>
-                        <p>بدلاً من تكرار حفظ السائقين في دفاتر أو جهات الاتصال، المنظومة توفر دليلاً مشتركاً ينمو بمساهمة المنافذ لتجد بيانات السائقين فوراً.</p>
+                        <strong style="color: var(--primary-color);">لديك مبرمج مخصص ومتاح بين يديك يضيف أي ميزة ترغب بها</strong>
+                        <p>أنت لا تشتري برنامجاً جامداً، بل لديك مبرمج تحت خدمتك يطور لك المنظومة باستمرار ويضيف أي أفكار أو ميزات جديدة تطلبها لمنفذك فوراً.</p>
                     </div>
                 </div>
 
+                <!-- عمل متواصل وتطوير دائم -->
                 <div class="feature-item">
-                    <i class="fa-brands fa-whatsapp feature-icon" style="color: #25D366;"></i>
+                    <i class="fa-solid fa-clock-rotate-left feature-icon" style="color: var(--warning-color);"></i>
                     <div>
-                        <strong>توثيق البيانات مع السائق عبر واتساب و SMS</strong>
-                        <p>إمكانية إرسال كليشة جاهزة ببيانات السائق (الاسم، الـ ID، رمز 531، الهاتف) لرقمه بضغطة زر ليتأكد منها ويتحمل مسؤولية صحتها قبل الإيداع.</p>
+                        <strong>أعمل طويلاً وبشكل مستمر على التحديثات والإصلاحات</strong>
+                        <p>جهد برمجي مكثف ومتابعة يومية لسد الثغرات، تسريع الاستجابة، وتطوير خوارزميات البحث لتوفير أقصى درجات الراحة لمنفذك.</p>
                     </div>
                 </div>
 
+                <!-- حماية مالية من أخطاء التحويل -->
                 <div class="feature-item">
-                    <i class="fa-solid fa-filter-circle-dollar feature-icon"></i>
+                    <i class="fa-solid fa-shield-check feature-icon" style="color: var(--success-color);"></i>
                     <div>
-                        <strong>تدقيق صيغ الأرقام ومنع نقص الخانات</strong>
-                        <p>فحص برمجي صارم يضمن أن الـ ID يتكون من 7 أرقام، وأن الهاتف بالصيغة العراقية الصحيحة المعتمدة (9647XXXXXXXXX)، مع تثبيت رمز 531 لمنع أخطاء الإدخال اليدوي.</p>
+                        <strong>منع أخطاء الإيداع المالية وتوفير أموالك</strong>
+                        <p>فحص صارم للـ ID ورموز الشركات (531 / 5212) وتدقيق أرقام العراق ومنع التكرار، مما يحميك من أي خسائر مالية ناتجة عن السهو البشري.</p>
                     </div>
                 </div>
 
+                <!-- سرعة فائقة وقت الزخم -->
                 <div class="feature-item">
-                    <i class="fa-solid fa-users-viewfinder feature-icon"></i>
+                    <i class="fa-solid fa-bolt feature-icon" style="color: var(--primary-color);"></i>
                     <div>
-                        <strong>نظام كشف الحسابات المكررة (التطابق المزدوج)</strong>
-                        <p>تنبيه فوري لصاحب المنفذ إذا كان رقم الهاتف أو الـ ID مسجلاً مسبقاً باسم كابتن آخر لمنع أي تداخل بين السائقين.</p>
+                        <strong>تسريع حركة السائقين وخدمة المنفذ وقت الزخم</strong>
+                        <p>محرك بحث فوري ذكي يتعرف على الأسماء الثنائية والثلاثية، مع نافذة عائمة فوق زين كاش وأزرار اتصال ونسخ مباشرة بضغطة زر.</p>
                     </div>
                 </div>
 
+                <!-- تنظيم وتصنيف أفرع طلبات وبلي -->
                 <div class="feature-item">
-                    <i class="fa-solid fa-bolt feature-icon"></i>
+                    <i class="fa-solid fa-code-branch feature-icon" style="color: var(--talabat-color);"></i>
                     <div>
-                        <strong>نسخ فوري فائق السرعة ونافذة عائمة</strong>
-                        <p>أزرار نسخ بنقرة واحدة لكل حقل مع إمكانية فتح التطبيق كنافذة عائمة فوق أو بجانب تطبيق زين كاش لتسريع عملية الإيداع وقت الزخم.</p>
+                        <strong>فرز دقيق لكافة الأفرع المعتمدة والمخصصة</strong>
+                        <p>شريط أفرع منزلق مع عدادات رقمية فورية لكل فرع، مما يتيح لك إدارة مئات السائقين وتنظيمهم بمرونة واحترافية لا مثيل لها.</p>
                     </div>
                 </div>
 
+                <!-- أمان الحساب وتعدد الأجهزة -->
                 <div class="feature-item">
-                    <i class="fa-solid fa-mobile-screen feature-icon"></i>
+                    <i class="fa-solid fa-mobile-screen feature-icon" style="color: var(--text-color);"></i>
                     <div>
-                        <strong>حساب مخصص وآمن (حتى 4 أجهزة)</strong>
-                        <p>إمكانية تسجيل الدخول لحساب منفذك على 4 أجهزة وهواتف في نفس الوقت لتغطية كادر العمل بالكامل وبحماية سحابية عالية.</p>
+                        <strong>تشغيل على 4 أجهزة وحماية ملكية الكروت</strong>
+                        <p>تغطية كامل كادر المنفذ بحساب واحد على 4 هواتف وأجهزة، مع حماية ملكية السائقين ومنع أي منفذ آخر من تعديل أو حذف بيانات سائقيك.</p>
                     </div>
                 </div>
 
@@ -923,41 +1520,82 @@
     </div>
 
     <div id="packagesModal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content" style="max-height: 88vh; overflow-y: auto; max-width: 520px;">
             <div class="modal-header">
-                <h3><i class="fa-solid fa-gem" style="color: var(--talabat-color);"></i> باقات الاشتراك</h3>
+                <h3><i class="fa-solid fa-crown" style="color: var(--warning-color);"></i> باقات وعروض الاشتراك المعتمدة</h3>
                 <span class="close-packages-btn close-btn">&times;</span>
             </div>
-            <div class="modal-body">
-                <div class="package-card" style="border: 2px dashed var(--success-color); background: rgba(5, 205, 153, 0.05);">
-                    <div class="pkg-title"><i class="fa-solid fa-gift"></i> باقة التجربة</div>
-                    <div class="pkg-price">مجاناً</div>
-                    <div class="pkg-desc">جرب المنظومة بالكامل لمدة 7 أيام بدون أي رسوم، وإذا عجبتك تشترك!</div>
+            <div class="modal-body" style="text-align: right;">
+                
+                <!-- باقة التجربة المجانية -->
+                <div class="package-card" style="border: 2px dashed var(--success-color); background: rgba(5, 205, 153, 0.05); margin-bottom: 12px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <div class="pkg-title" style="color: var(--success-color);"><i class="fa-solid fa-gift"></i> تجربة مجانية (أسبوع كامل)</div>
+                        <div class="pkg-price" style="color: var(--success-color); font-size: 1.15rem;">مجاناً (7 أيام)</div>
+                    </div>
+                    <div class="pkg-desc" style="color: var(--text-color); font-size: 0.84rem; line-height: 1.5;">
+                        جرّب كافة إمكانيات المنظومة وسرعة محرك البحث والنسخ الفوري لمدة 7 أيام كاملة دون دفع أي دينار، وتأكد بنفسك من توفير وقتك وراحة منفذك قبل الاشتراك!
+                    </div>
                 </div>
                 
-                <div class="package-card">
-                    <div class="pkg-title">الاشتراك الشهري</div>
-                    <div class="pkg-price">10,000 د.ع</div>
-                    <div class="pkg-desc">اشتراك مرن ومريح يضمن لك تحديثات مستمرة وقاعدة بيانات محمية.</div>
+                <!-- الاشتراك الشهري -->
+                <div class="package-card" style="border: 2px solid var(--primary-color); background: rgba(0, 102, 255, 0.04); margin-bottom: 15px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <div class="pkg-title" style="color: var(--primary-color);"><i class="fa-solid fa-calendar-check"></i> الاشتراك الشهري</div>
+                        <div class="pkg-price" style="color: var(--primary-color); font-size: 1.25rem; font-weight: 900;">15,000 د.ع <small style="font-size: 0.75rem;">/شهر</small></div>
+                    </div>
+                    <div class="pkg-desc" style="color: var(--text-color); font-size: 0.84rem; line-height: 1.5;">
+                        الخيار الأكثر مرونة وشعبية! يمنحك استخداماً غير محدود على 4 هواتف وأجهزة مع مبرمج خاص متاح معك لإضافة أي ميزة تطلبها، مع حماية مالية كاملة تمنع أخطاء الإيداع اليومية.
+                    </div>
                 </div>
 
-                <div class="package-card popular">
-                    <div class="popular-badge">الأوفر</div>
-                    <div class="pkg-title">الاشتراك السنوي (خصم 60%)</div>
-                    <div class="pkg-price">48,000 د.ع</div>
-                    <div class="pkg-desc">ادفع لمرة وحدة بالسنة وركز بشغلك! (يطلع عليك الشهر بـ 4 آلاف دينار فقط).</div>
+                <!-- قائمة منسدلة: خيارات أخرى وباقات التوفير الكبرى -->
+                <div style="margin-top: 10px; border-top: 1px dashed var(--border-color); padding-top: 14px;">
+                    <div id="extraPackagesToggleHeader" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 14px; cursor: pointer; user-select: none; transition: 0.2s;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <i class="fa-solid fa-fire" style="color: var(--talabat-color); font-size: 1.1rem;"></i>
+                            <span style="font-weight: 800; font-size: 0.92rem; color: var(--text-color);">خيارات أخرى (باقات التوفير الكبرى 🎁)</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-down" id="extraPackagesChevron" style="color: var(--text-secondary); font-size: 0.85rem; transition: transform 0.2s;"></i>
+                    </div>
+
+                    <div id="extraPackagesContent" class="hidden" style="margin-top: 12px; display: flex; flex-direction: column; gap: 12px;">
+                        
+                        <!-- الاشتراك السنوي -->
+                        <div class="package-card popular" style="margin-bottom: 0;">
+                            <div class="popular-badge" style="background: var(--talabat-color);">وفر أكثر من 55% (خصم 100 ألف)</div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                <div class="pkg-title"><i class="fa-solid fa-star"></i> الاشتراك السنوي</div>
+                                <div class="pkg-price" style="font-size: 1.25rem;">80,000 د.ع <small style="text-decoration: line-through; opacity: 0.6; font-size: 0.75rem;">180,000 د.ع</small></div>
+                            </div>
+                            <div class="pkg-desc" style="color: var(--text-color); font-size: 0.84rem; line-height: 1.5;">
+                                ادفع مرة واحدة في السنة ووفّر أكثر من 100,000 دينار عراقي! (يكلفك الشهر 6,600 د.ع فقط). الخيار الأفضل للاستقرار والتركيز التام على خدمة زبائن منفذك.
+                            </div>
+                        </div>
+
+                        <!-- اشتراك مدى الحياة -->
+                        <div class="package-card" style="border: 2px solid #FFD700; background: rgba(255, 215, 0, 0.06); margin-bottom: 0;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                <div class="pkg-title" style="color: #b8860b;"><i class="fa-solid fa-infinity"></i> اشتراك مدى الحياة (VIP للأبد)</div>
+                                <div class="pkg-price" style="color: #b8860b; font-size: 1.25rem; font-weight: 900;">150,000 د.ع <small style="font-size: 0.75rem;">(دفعة واحدة للأبد)</small></div>
+                            </div>
+                            <div class="pkg-desc" style="color: var(--text-color); font-size: 0.84rem; line-height: 1.5;">
+                                امتلك المنظومة للأبد بدون أي تجديد شهري أو سنوي نهائياً! استثمار ذكي لمرة واحدة يضمن لك راحة البال، وتحديثات مجانية مستمرة، وأولوية قصوى بالدعم البرمجي.
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
 
-                <div class="package-card">
-                    <div class="pkg-title">اشتراك مدى الحياة</div>
-                    <div class="pkg-price">100,000 د.ع</div>
-                    <div class="pkg-desc">حساب مفتوح للأبد بدون أي تجديد، اشترِ راحتك لمرة واحدة فقط.</div>
+                <div class="contact-dev" style="margin-top: 18px; margin-bottom: 0;">
+                    <p style="margin-bottom: 6px; font-weight: 700;">لطلب الاشتراك أو تفعيل الباقة المجانية، تواصل مع المطور:</p>
+                    <div class="contact-links">
+                        <a href="https://t.me/diajb0" target="_blank"><i class="fa-brands fa-telegram"></i> @diajb0</a>
+                        <a href="https://wa.me/9647862247686?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%20%D8%A3%D8%B3%D8%AA%D8%A7%D8%B0%20%D8%B6%D9%8A%D8%A7%D8%A1%D8%8C%20%D8%A3%D8%B1%D8%BA%D8%A8%20%D8%A8%D8%A7%D9%84%D8%A7%D8%B4%D8%AA%D8%B1%D8%A7%D9%83%20%D9%81%D9%8A%20%D9%85%D9%86%D8%B8%D9%88%D9%85%D8%A9%20%D8%A5%D9%8A%D8%AF%D8%A7%D8%B9%20%D8%A7%D9%84%D8%B3%D9%88%D8%A7%D9%82" target="_blank"><i class="fa-brands fa-whatsapp"></i> واتساب: 07862247686</a>
+                    </div>
                 </div>
-                
-                <p style="font-size: 0.85rem; text-align: center; color: var(--text-secondary); margin-top: 15px; font-weight: bold;">
-                    للاشتراك أو طلب حساب تجريبي تواصل مع المطور: @diajb0
-                </p>
-                <button class="submit-btn close-packages-btn" style="margin-top: 10px;">رجوع</button>
+
+                <button class="submit-btn close-packages-btn" style="margin-top: 14px;">رجوع</button>
             </div>
         </div>
     </div>
@@ -969,27 +1607,115 @@
         <header class="app-header" id="mainAppHeader">
             <div class="header-title">
                 <i class="fa-solid fa-wallet brand-icon"></i>
-                <h2>مساعد ايداع السواق</h2>
+                <div class="title-lines">
+                    <h2 class="title-line-1">مساعد إيداع</h2>
+                    <h2 class="title-line-2">السواق</h2>
+                </div>
             </div>
             <div class="header-actions">
-                <button id="floatWindowBtn" class="icon-btn btn-secondary" title="فتح كنافذة عائمة">
-                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                <button id="addDriverBtn" class="main-add-driver-btn" title="إضافة سائق جديد">
+                    <i class="fa-solid fa-user-plus"></i> إضافة سائق
                 </button>
-                <button id="updatesBtn" class="icon-btn btn-secondary" title="آخر التحديثات">
-                    <i class="fa-solid fa-bullhorn"></i>
-                    <span id="updatesDot" class="update-badge hidden"></span>
-                </button>
-                <button id="guideBtn" class="icon-btn btn-secondary" title="دليل الاستخدام والنافذة العائمة">
-                    <i class="fa-solid fa-book-open"></i>
-                </button>
-                <button id="addDriverBtn" class="icon-btn btn-primary" title="إضافة سائق جديد">
-                    <i class="fa-solid fa-user-plus"></i>
-                </button>
-                <button id="settingsBtn" class="icon-btn btn-secondary" title="الإعدادات">
-                    <i class="fa-solid fa-gear"></i>
+                <button id="hamburgerMenuBtn" class="hamburger-btn" title="القائمة الرئيسية">
+                    <i class="fa-solid fa-bars"></i>
+                    <span id="menuNotificationDot" class="update-badge hidden"></span>
                 </button>
             </div>
         </header>
+
+        <!-- قائمة الشاشة الكاملة المنبثقة من الثلاث خطوط -->
+        <div id="fullscreenNavMenu" class="fullscreen-nav-overlay hidden">
+            <div class="fullscreen-nav-header">
+                <div class="fullscreen-nav-title">
+                    <i class="fa-solid fa-layer-group brand-icon"></i>
+                    <h3>قائمة المنظومة</h3>
+                </div>
+                <button id="closeNavMenuBtn" class="fullscreen-nav-close-btn" title="إغلاق القائمة">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="fullscreen-nav-body">
+                <div class="nav-menu-list">
+                    
+                    <!-- 1. الإيداعات المؤجلة -->
+                    <div class="nav-menu-item" id="navItemPending">
+                        <div class="nav-item-icon" style="background: rgba(255, 153, 0, 0.12); color: var(--warning-color);">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                        </div>
+                        <div class="nav-item-content">
+                            <strong>الإيداعات المؤجلة</strong>
+                            <small>تدوين وإدارة مبالغ السائقين عند عطل زين كاش</small>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span id="navPendingBadge" class="tag-badge hidden" style="background: rgba(255, 153, 0, 0.18); color: var(--warning-color); font-size: 0.75rem;">0</span>
+                            <i class="fa-solid fa-chevron-left nav-arrow"></i>
+                        </div>
+                    </div>
+
+                    <!-- 2. إضافات التحديثات -->
+                    <div class="nav-menu-item" id="navItemUpdates">
+                        <div class="nav-item-icon" style="background: rgba(0, 102, 255, 0.12); color: var(--primary-color);">
+                            <i class="fa-solid fa-bullhorn"></i>
+                        </div>
+                        <div class="nav-item-content">
+                            <strong>إضافات التحديثات</strong>
+                            <small>سجل التحديثات والميزات الجديدة في الإصدار 2.0</small>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span id="navUpdatesDot" class="update-badge hidden" style="position: static; display: inline-block;"></span>
+                            <i class="fa-solid fa-chevron-left nav-arrow"></i>
+                        </div>
+                    </div>
+
+                    <!-- 3. دليل الاستخدام -->
+                    <div class="nav-menu-item" id="navItemGuide">
+                        <div class="nav-item-icon" style="background: rgba(5, 205, 153, 0.12); color: var(--success-color);">
+                            <i class="fa-solid fa-book-open-reader"></i>
+                        </div>
+                        <div class="nav-item-content">
+                            <strong>دليل الاستخدام</strong>
+                            <small>شرح مبسط لكيفية العمل والنسخ السريع خطوة بخطوة</small>
+                        </div>
+                        <i class="fa-solid fa-chevron-left nav-arrow"></i>
+                    </div>
+
+                    <!-- 4. إخلاء المسؤولية وقوانين الاستخدام -->
+                    <div class="nav-menu-item" id="navItemDisclaimer">
+                        <div class="nav-item-icon" style="background: rgba(163, 174, 208, 0.18); color: var(--text-color);">
+                            <i class="fa-solid fa-scale-balanced"></i>
+                        </div>
+                        <div class="nav-item-content">
+                            <strong>إخلاء المسؤولية وقوانين الاستخدام</strong>
+                            <small>الشروط القانونية، حظر التلاعب، وسياسة حماية البيانات</small>
+                        </div>
+                        <i class="fa-solid fa-chevron-left nav-arrow"></i>
+                    </div>
+
+                    <!-- 5. الإعدادات -->
+                    <div class="nav-menu-item" id="navItemSettings">
+                        <div class="nav-item-icon" style="background: rgba(238, 93, 80, 0.12); color: var(--danger-color);">
+                            <i class="fa-solid fa-gear"></i>
+                        </div>
+                        <div class="nav-item-content">
+                            <strong>الإعدادات</strong>
+                            <small>بيانات الحساب، المزامنة، وتسجيل الخروج</small>
+                        </div>
+                        <i class="fa-solid fa-chevron-left nav-arrow"></i>
+                    </div>
+
+                </div>
+
+                <div class="nav-menu-footer">
+                    <div class="binding-terms-alert" style="margin-bottom: 8px;">
+                        <i class="fa-solid fa-scale-balanced"></i> بتسجيلك الدخول واستخدام الموقع أنت توافق على جميع سياسات وشروط الاستخدام
+                    </div>
+                    <p style="text-align: center; color: var(--text-secondary); font-size: 0.78rem; font-weight: 700;">
+                        المطور: <a href="https://t.me/diajb0" target="_blank" style="color: var(--primary-color);">@diajb0</a> | الإصدار v2.0
+                    </p>
+                </div>
+            </div>
+        </div>
 
         <!-- البحث والتصفية -->
         <main class="main-container">
@@ -1132,11 +1858,14 @@
                         
                         <div class="form-group talabat-only">
                             <label>رمز العميل:</label>
-                            <div class="input-with-action">
-                                <input type="text" id="companyCode" value="531" readonly style="background-color: rgba(0,0,0,0.03); cursor: not-allowed;">
-                                <button type="button" id="editCompanyCodeBtn" class="input-action-btn">
-                                    <i class="fa-solid fa-lock"></i> تعديل
-                                </button>
+                            <div class="code-selector-group" id="codeSelectorGroup">
+                                <button type="button" class="code-opt-btn active" data-code="531">531</button>
+                                <button type="button" class="code-opt-btn" data-code="5212">5212</button>
+                                <button type="button" class="code-opt-btn" data-code="__custom__"><i class="fa-solid fa-pen"></i> مخصص</button>
+                                <input type="hidden" id="selectedCompanyCodeVal" value="531">
+                            </div>
+                            <div id="customCompanyCodeContainer" class="hidden" style="margin-top: 8px;">
+                                <input type="text" id="customCompanyCodeInput" placeholder="أدخل رمز العميل المخصص...">
                             </div>
                         </div>
 
@@ -1166,7 +1895,94 @@
             </div>
         </div>
 
-        <div id="updatesModal" class="modal">
+            <!-- شاشة الإيداعات المؤجلة الكاملة (عند عطل زين كاش) -->
+    <div id="pendingDepositsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-clock-rotate-left brand-icon" style="color: var(--warning-color);"></i>
+                    <h3 style="margin: 0; font-size: 1.2rem;">الإيداعات المؤجلة (عند عطل زين كاش)</h3>
+                </div>
+                <button type="button" class="close-pending-btn fullscreen-nav-close-btn" title="رجوع">
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+            <div class="modal-body" style="text-align: right;">
+                
+                <!-- 1. شريط البحث في أعلى الشاشة مباشرة -->
+                <div id="pendingSearchContainer">
+                    <div class="search-box" style="margin-bottom: 12px; position: relative;">
+                        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                        <input type="text" id="pendingSearchInput" placeholder="🔍 اضغط وابحث باسم السائق أو الـ ID لإضافته..." autocomplete="off">
+                        <div id="pendingSuggestions" class="suggestions-box hidden" style="z-index: 100030;"></div>
+                    </div>
+                </div>
+
+                <!-- 2. صندوق إدخال المبلغ عند اختيار سائق من البحث -->
+                <div id="pendingAmountPromptBox" class="hidden" style="background: var(--card-bg); border: 2px solid var(--primary-color); border-radius: 16px; padding: 16px; margin-bottom: 16px; box-shadow: var(--shadow); animation: cardEnter 0.25s ease;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <b style="color: var(--primary-color); font-size: 0.95rem;" id="promptDriverNameDisplay"></b>
+                        <button type="button" class="sm-btn" id="cancelPromptBtn" style="background: var(--border-color); color: var(--text-color);"><i class="fa-solid fa-xmark"></i> إلغاء</button>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 12px;">
+                        <label style="font-size: 0.84rem; font-weight: 700;">المبلغ المطلوب إيداعه (د.ع):</label>
+                        <input type="number" id="pendingAmountInput" placeholder="أدخل المبلغ مثل: 25000" style="font-size: 1.15rem; font-weight: 800; direction: ltr; text-align: center;">
+                    </div>
+                    <button type="button" class="submit-btn" id="confirmAddPendingBtn" style="padding: 11px;">
+                        <i class="fa-solid fa-check"></i> تثبيت وإضافة للقائمة
+                    </button>
+                </div>
+
+                <!-- 3. قائمة الإيداعات النشطة (بانتظار الإيداع) -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin: 10px 0 10px 0;">
+                    <b style="font-size: 0.95rem; color: var(--text-color);"><i class="fa-solid fa-hourglass-half" style="color: var(--warning-color);"></i> بانتظار الإيداع (<span id="activePendingCount">0</span>)</b>
+                </div>
+                <div id="activePendingList">
+                    <p style="text-align: center; color: var(--text-secondary); margin: 25px 0; font-weight: 700;">لا توجد أي إيداعات مؤجلة حالياً. ابحث بالأعلى لإضافة سائق.</p>
+                </div>
+
+                <!-- 4. سجل العمليات المنجزة (الأرشيف القابل للفتح والطي بالأسفل) -->
+                <div class="archived-history-wrapper" style="margin-top: 20px; border-top: 1px dashed var(--border-color); padding-top: 14px;">
+                    <div class="archived-toggle-header" id="archivedToggleHeader">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <i class="fa-solid fa-box-archive" style="color: var(--text-secondary); font-size: 0.9rem;"></i>
+                            <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-secondary);">سجل الإيداعات المنجزة (آخر 48 ساعة)</span>
+                            <span id="archivedPendingCountBadge" class="tag-badge" style="background: rgba(0,0,0,0.06); font-size: 0.72rem;">0</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-down" id="archivedChevron" style="color: var(--text-secondary); font-size: 0.8rem; transition: transform 0.2s;"></i>
+                    </div>
+                    <div id="archivedPendingList" class="hidden" style="margin-top: 12px;">
+                        <p style="text-align: center; color: var(--text-secondary); margin: 15px 0; font-size: 0.82rem; font-weight: 700;">لا توجد أي عمليات مؤرشفة خلال آخر 48 ساعة.</p>
+                    </div>
+                </div>
+
+                <!-- 5. شرح القائمة وتنبيه الخصوصية في أسفل الشاشة -->
+                <div style="margin-top: 25px; border-top: 1px solid var(--border-color); padding-top: 16px;">
+                    <!-- تنبيه الخصوصية والعزل بالحساب -->
+                    <div class="privacy-notice-box" style="margin-bottom: 12px;">
+                        <i class="fa-solid fa-shield-halved" style="font-size: 1.3rem; color: var(--primary-color); flex-shrink: 0; margin-top: 2px;"></i>
+                        <div>
+                            <strong style="color: var(--primary-color);">سجل خاص بحسابك فقط ومؤمن سحابياً:</strong>
+                            <p style="color: var(--text-secondary); margin: 3px 0 0 0;">هذه القائمة وسجلاتها خاصة بمنفذك فقط ولا يراها أي منفذ آخر. (تنبيه: إذا قمت بمشاركة حسابك مع شخص آخر ستظهر له أيضاً ويستطيع تعديلها، لذا احرص على سرية حسابك وعدم إعطائه لأحد).</p>
+                        </div>
+                    </div>
+
+                    <!-- شرح الفكرة مع علامة الاستفهام -->
+                    <div class="info-help-box" style="margin-bottom: 0;">
+                        <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 5px;">
+                            <b style="color: var(--warning-color); font-size: 0.9rem;"><i class="fa-solid fa-circle-question"></i> فكرة ووظيفة هذه القائمة:</b>
+                        </div>
+                        <p style="font-size: 0.83rem; color: var(--text-color); line-height: 1.5; margin: 0;">
+                            عند حدوث عطل مؤقت في تطبيق زين كاش، يعطيك السائقون المبالغ ويذهبون. تتيح لك هذه القائمة تدوين السائق والمبلغ لتذكره بدقة. وعند عودة زين كاش للعمل تودع له وتضغط <b>"لقد تم الإيداع له"</b> لتُنقل إلى الأرشيف وتُحذف نهائياً وتلقائياً بعد يومين (48 ساعة).
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div id="updatesModal" class="modal">
             <div class="modal-content" style="max-height: 85vh; overflow-y: auto;">
                 <div class="modal-header">
                     <h3><i class="fa-solid fa-sparkles" style="color: var(--talabat-color);"></i> سجل التحديثات والميزات الجديدة</h3>
@@ -1174,11 +1990,91 @@
                 </div>
                 <div class="updates-container">
                     
-                    <!-- قسم الإصدار 1.5 الحالي -->
+                    <!-- قسم الإصدار 2.0 الحالي (الطفرة النوعية الشاملة) -->
                     <div class="version-section">
                         <div class="version-section-header">
-                            <span class="version-title"><i class="fa-solid fa-rocket"></i> الإصدار v1.5</span>
+                            <span class="version-title"><i class="fa-solid fa-crown" style="color: var(--warning-color);"></i> الإصدار v2.0 (التحديث الشامل الأكبر)</span>
                             <span class="version-badge-current">✨ التحديث الحالي</span>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <div class="update-item">
+                                <div class="update-icon" style="color: var(--warning-color); background: rgba(255, 153, 0, 0.12);"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                                <div class="update-text">
+                                    <strong>قائمة الإيداعات المؤجلة (عند عطل زين كاش) مع نسخ كامل للمعلومات</strong>
+                                    <p>شاشة كاملة مخصصة لتدوين مبالغ السائقين عند توقف زين كاش، مع أزرار نسخ فورية لرمز العميل والـ ID والاسم ورقم الهاتف والمبلغ، مع أرشفة تلقائية تُحذف بعد 48 ساعة.</p>
+                                </div>
+                            </div>
+                            <div class="update-item">
+                                <div class="update-icon" style="color: var(--primary-color); background: rgba(0, 102, 255, 0.12);"><i class="fa-solid fa-bars"></i></div>
+                                <div class="update-text">
+                                    <strong>قائمة الشاشة الكاملة المنبثقة (زر الثلاث خطوط)</strong>
+                                    <p>تنظيم الواجهة ونقل كافة الأدوات والإعدادات في قائمة منبثقة كاملة تفتح بضغطة زر واحدة لتوفير مساحة مريحة للعمل.</p>
+                                </div>
+                            </div>
+                            <div class="update-item">
+                                <div class="update-icon" style="color: #05CD99; background: rgba(5, 205, 153, 0.12);"><i class="fa-solid fa-user-plus"></i></div>
+                                <div class="update-text">
+                                    <strong>زر إضافة السائق البارز والعريض</strong>
+                                    <p>زر رئيسي عريض وواضح في أعلى الواجهة لفتح نافذة إضافة وتوثيق السائقين الجدد بأقصى سرعة.</p>
+                                </div>
+                            </div>
+                            <div class="update-item">
+                                <div class="update-icon" style="color: var(--primary-color); background: rgba(0, 102, 255, 0.12);"><i class="fa-solid fa-phone"></i></div>
+                                <div class="update-text">
+                                    <strong>الاتصال الهاتفي المباشر بالسائق</strong>
+                                    <p>استبدال رسائل SMS بزر اتصال هاتفي مباشر عبر شريحة السيمكارد بنقرة واحدة للتواصل السريع مع السائق.</p>
+                                </div>
+                            </div>
+                            <div class="update-item">
+                                <div class="update-icon" style="color: var(--talabat-color); background: rgba(255, 90, 0, 0.12);"><i class="fa-solid fa-list-ol"></i></div>
+                                <div class="update-text">
+                                    <strong>تطوير اختيار رمز العميل (531 / 5212 / مخصص)</strong>
+                                    <p>أزرار اختيار سريعة وتفاعلية للرمزين المعتمدين 531 و 5212 مع زر كتابة مخصص يفتح حقلاً مباشراً دون تعليق.</p>
+                                </div>
+                            </div>
+                            <div class="update-item">
+                                <div class="update-icon" style="color: var(--danger-color); background: rgba(238, 93, 80, 0.12);"><i class="fa-solid fa-user-lock"></i></div>
+                                <div class="update-text">
+                                    <strong>حماية ملكية الكروت وسرية المنافذ</strong>
+                                    <p>منع تعديل أو حذف أي كرت مضاف من منفذ آخر مع زر تواصل مباشر بالواتساب، ومنح حساب المطور (diajb) صلاحيات إدارة شاملة.</p>
+                                </div>
+                            </div>
+                            <div class="update-item">
+                                <div class="update-icon" style="color: var(--talabat-color); background: rgba(255, 90, 0, 0.12);"><i class="fa-solid fa-arrows-left-right"></i></div>
+                                <div class="update-text">
+                                    <strong>سحب سلس لأفرع طلبات دون تمطيط الشاشة</strong>
+                                    <p>شريط أفرع منزلق ناعم بالسحب لليمين واليسار متوافق تماماً مع أبعاد الهواتف دون تمديد الصفحة أو تأثر العناصر.</p>
+                                </div>
+                            </div>
+                            <div class="update-item">
+                                <div class="update-icon" style="color: #05CD99; background: rgba(5, 205, 153, 0.12);"><i class="fa-solid fa-calendar-day"></i></div>
+                                <div class="update-text">
+                                    <strong>إظهار تاريخ وتوقيت إضافة كل سائق</strong>
+                                    <p>عرض تاريخ تسجيل كل سائق في أعلى بطاقته بتنسيق عربي منظم لتسهيل التتبع والتوثيق.</p>
+                                </div>
+                            </div>
+                            <div class="update-item">
+                                <div class="update-icon" style="color: var(--primary-color); background: rgba(0, 102, 255, 0.12);"><i class="fa-solid fa-book-open-reader"></i></div>
+                                <div class="update-text">
+                                    <strong>الدليل الشامل لاستخدام المنظومة للمبتدئين</strong>
+                                    <p>شرح تفصيلي خطوة بخطوة لكيفية العمل والنسخ السريع واستخدام المميزات بسهولة من الصفر.</p>
+                                </div>
+                            </div>
+                            <div class="update-item">
+                                <div class="update-icon" style="color: var(--text-color); background: rgba(163, 174, 208, 0.18);"><i class="fa-solid fa-scale-balanced"></i></div>
+                                <div class="update-text">
+                                    <strong>لائحة إخلاء المسؤولية وشروط الاستخدام</strong>
+                                    <p>شروط الاستخدام الرسمية، الاستقلالية البرمجية، سياسة حظر التلاعب، وحماية خصوصية السجلات.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- قسم الإصدار 1.5 السابق -->
+                    <div class="version-section">
+                        <div class="version-section-header" style="background: rgba(163, 174, 208, 0.1);">
+                            <span class="version-title" style="color: var(--text-secondary);"><i class="fa-solid fa-clock-rotate-left"></i> الإصدار v1.5</span>
+                            <span class="version-badge-past">إصدار سابق</span>
                         </div>
                         <div style="display: flex; flex-direction: column; gap: 10px;">
                             <div class="update-item">
@@ -1214,20 +2110,6 @@
                                 <div class="update-text">
                                     <strong>محرك بحث ذكي وتخفيف أداء الواجهة</strong>
                                     <p>ترتيب الاقتراحات حسب الأولوية الاسمية وتسريع التصفح بتقنية content-visibility والعرض التدريجي للكروت.</p>
-                                </div>
-                            </div>
-                            <div class="update-item">
-                                <div class="update-icon" style="color: #05CD99; background: rgba(5, 205, 153, 0.1);"><i class="fa-solid fa-circle-check"></i></div>
-                                <div class="update-text">
-                                    <strong>إشعار النجاح السريع (Success Toast)</strong>
-                                    <p>رسالة منبثقة خضراء فورية تظهر عند إضافة سائق بنجاح مع زر مباشر للانتقال السريع لبطاقة السائق.</p>
-                                </div>
-                            </div>
-                            <div class="update-item">
-                                <div class="update-icon" style="color: var(--primary-color); background: rgba(0, 102, 255, 0.1);"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
-                                <div class="update-text">
-                                    <strong>محرك البحث الشامل وتوحيد الأسماء المركبة</strong>
-                                    <p>البحث التلقائي يشمل كافة الشركات والأفرع فور كتابة أي حرف دون التقيد بالتبويب المفتوح، مع توحيد ومطابقة الأسماء المركبة (مثل: عبدالله وعبد الله) والأسماء الثنائية والثلاثية بدقة تامة.</p>
                                 </div>
                             </div>
                         </div>
@@ -1280,40 +2162,76 @@
 
         <!-- نافذة دليل الاستخدام وتثبيت التطبيق -->
         <div id="guideModal" class="modal">
-            <div class="modal-content">
+            <div class="modal-content" style="max-height: 88vh; overflow-y: auto; max-width: 550px;">
                 <div class="modal-header">
-                    <h3><i class="fa-solid fa-book-bookmark" style="color: var(--primary-color);"></i> دليل استخدام المنظومة</h3>
+                    <h3><i class="fa-solid fa-book-open-reader" style="color: var(--primary-color);"></i> الدليل الشامل لاستخدام المنظومة (للمبتدئين)</h3>
                     <span class="close-guide-btn close-btn">&times;</span>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" style="text-align: right; line-height: 1.6;">
+                    
+                    <div style="background: rgba(0, 102, 255, 0.05); border: 1px solid var(--border-color); border-radius: 14px; padding: 12px 14px; margin-bottom: 15px;">
+                        <b style="color: var(--primary-color); font-size: 0.95rem;">👋 مرحباً بك في منظومة إيداع السواق</b>
+                        <p style="font-size: 0.84rem; color: var(--text-secondary); margin: 4px 0 0 0;">هذا الدليل صُمم ليشرح لك كيفية استخدام الموقع خطوة بخطوة بكل سهولة حتى لو كانت هذه أول مرة تستخدم فيها المنظومة.</p>
+                    </div>
+
                     <div class="feature-item">
-                        <i class="fa-solid fa-window-restore feature-icon"></i>
+                        <div class="feature-icon" style="background: rgba(0, 102, 255, 0.1); color: var(--primary-color);"><i class="fa-solid fa-magnifying-glass"></i></div>
                         <div>
-                            <strong>تشغيل المنظومة كنافذة عائمة فوق زين كاش:</strong>
-                            <p>1. افتح المنظومة ثم اخرج لقائمة التطبيقات المفتوحة الحديثة (زر المهام ||| أسفل الشاشة).<br>
-                            2. اضغط مطولاً على أيقونة المتصفح في الأعلى واختر <b>"الفتح في عرض الإطار المنبثق"</b> (Pop-up view) أو <b>"نافذة عائمة"</b>.<br>
-                            3. افتح تطبيق زين كاش واجعل نافذة المنظومة مصغرة على الجانب لتنسخ وتلصق البيانات فوراً دون تبديل التطبيقات.</p>
+                            <strong>1. كيف تبحث عن السائق وتنسخ بياناته بثوانٍ؟</strong>
+                            <p>اكتب اسم السائق أو رقمه أو الـ ID في شريط البحث العلوي. ستظهر لك بطاقة السائق فوراً، اضغط على زر <b>"نسخ"</b> بجانب رقم الهاتف أو الـ ID أو رمز العميل ليتم نسخه مباشرة ولصقه في تطبيق زين كاش.</p>
                         </div>
                     </div>
 
                     <div class="feature-item">
-                        <i class="fa-solid fa-expand feature-icon"></i>
+                        <div class="feature-icon" style="background: rgba(5, 205, 153, 0.1); color: var(--success-color);"><i class="fa-solid fa-expand"></i></div>
                         <div>
-                            <strong>التركيز وشاشة الكرت الكاملة:</strong>
-                            <p>اضغط على أي كرت سائق لتكبيره بشاشة كاملة وإخفاء القوائم وأشرطة البحث لسهولة القراءة والنسخ أثناء الزخم.</p>
+                            <strong>2. وضع التركيز والشاشة الكاملة (أثناء الزخم الشديد):</strong>
+                            <p>إذا كان المحل مزدحماً، اضغط على كرت السائق نفسه في أي مكان ليكبر ويملأ الشاشة بالكامل ويخفي أي قوائم أخرى، مما يمنحك وضوحاً كاملاً وسرعة خالية من التشتت.</p>
                         </div>
                     </div>
 
                     <div class="feature-item">
-                        <i class="fa-solid fa-mobile-screen-button feature-icon" style="color: var(--talabat-color);"></i>
+                        <div class="feature-icon" style="background: rgba(255, 90, 0, 0.1); color: var(--talabat-color);"><i class="fa-solid fa-user-plus"></i></div>
                         <div>
-                            <strong>إضافة الموقع كتطبيق للشاشة الرئيسية:</strong>
-                            <p>اضغط على خيارات المتصفح (⋮) ثم اختر <b>"إضافة إلى الشاشة الرئيسية"</b> (Add to Home Screen) ليفتح معك التطبيق بملء الشاشة وبسرعة فائقة كتطبيق مثبت.</p>
+                            <strong>3. كيفية إضافة سائق جديد وتدقيق بياناته:</strong>
+                            <p>اضغط على زر <b>(+)</b> في الأعلى، اختر شركة طلبات أو بلي، حدد الفرع من القائمة، واكتب الاسم ورقم الهاتف. النظام يفحص الأرقام تلقائياً ويحذرك بالأصفر عند التشابه وبالأحمر إذا كان السائق مسجلاً مسبقاً لمنع أي خطأ.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-item">
+                        <div class="feature-icon" style="background: rgba(255, 153, 0, 0.1); color: var(--warning-color);"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                        <div>
+                            <strong>4. الإيداعات المؤجلة (عند عطل تطبيق زين كاش):</strong>
+                            <p>اضغط على أيقونة الساعة في الهيدر، وابحث عن السائق وسجل المبلغ الذي سلمه لك. سيبقى محفوظاً في قائمتك الخاصة حتى يعود زين كاش للعمل، ثم تودع له وتضغط <b>"لقد تم الإيداع له"</b>.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-item">
+                        <div class="feature-icon" style="background: rgba(0, 102, 255, 0.1); color: var(--primary-color);"><i class="fa-solid fa-code-branch"></i></div>
+                        <div>
+                            <strong>5. فرز أفرع طلبات وبلي:</strong>
+                            <p>اضغط على كلمة <b>"طلبات"</b> في الواجهة ليظهر لك شريط أفقي منزلق يضم كافة الأفرع (الابداع، التعاضد، سنرجي، إلخ...) مع عداد رقمي لعدد سائقي كل فرع لتصفيتهم بسهولة.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-item">
+                        <div class="feature-icon" style="background: rgba(37, 211, 102, 0.1); color: #25D366;"><i class="fa-solid fa-phone"></i></div>
+                        <div>
+                            <strong>6. الاتصال المباشر والواتساب:</strong>
+                            <p>تحتوي كل بطاقة على زر <b>"اتصال بالسائق"</b> للاتصال بشريحته فوراً، وزر <b>"تأكيد واتساب"</b> لإرسال رسالة توثيق رسمية ببيانات حسابه ليتأكد منها بنفسه.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-item">
+                        <div class="feature-icon" style="background: rgba(163, 174, 208, 0.15); color: var(--text-color);"><i class="fa-solid fa-mobile-screen"></i></div>
+                        <div>
+                            <strong>7. تشغيل المنظومة كنافذة عائمة وتثبيتها:</strong>
+                            <p>يمكنك فتح الموقع كنافذة منبثقة عائمة فوق تطبيق زين كاش من خلال خيارات تقسيم الشاشة بهاتفك، أو تثبيته كتطبيق مستقل بملء الشاشة بالضغط على الزر أدناه.</p>
                         </div>
                     </div>
 
                     <button id="pwaInstallBtn" class="submit-btn" style="background: var(--talabat-color); margin-top: 10px;">
-                        <i class="fa-solid fa-download"></i> تثبيت التطبيق على الشاشة الرئيسية
+                        <i class="fa-solid fa-download"></i> تثبيت التطبيق على الشاشة الرئيسية (PWA)
                     </button>
                     <button class="submit-btn close-guide-btn" style="margin-top: 8px; background: var(--border-color); color: var(--text-color);">
                         إغلاق الدليل
@@ -1333,17 +2251,46 @@
                     <button onclick="location.reload()" class="submit-btn btn-sync">
                         <i class="fa-solid fa-rotate"></i> تحديث والمزامنة
                     </button>
+                    <button id="settingsDisclaimerBtn" class="submit-btn btn-sync" style="background: rgba(0, 102, 255, 0.1); color: var(--primary-color); border: 1px solid var(--border-color); margin-bottom: 10px;">
+                        <i class="fa-solid fa-scale-balanced"></i> إخلاء المسؤولية وقوانين الاستخدام
+                    </button>
                     <button id="logoutBtn" class="submit-btn btn-danger">
                         <i class="fa-solid fa-right-from-bracket"></i> تسجيل الخروج
                     </button>
 
+                    <div class="binding-terms-alert" style="margin-bottom: 12px;">
+                        <i class="fa-solid fa-scale-balanced"></i> بتسجيلك الدخول واستخدام الموقع أنت توافق على جميع سياسات وشروط الاستخدام
+                    </div>
+
                     <div class="app-info-card">
                         <p class="app-dev">المطور: <a href="https://t.me/diajb0" target="_blank">@diajb0</a> <i class="fa-brands fa-telegram"></i></p>
-                        <span class="app-version">الإصدار: v1.5</span>
+                        <span class="app-version">الإصدار: v2.0</span>
                     </div>
                 </div>
             </div>
         </div>
+
+            <!-- نافذة حظر الصلاحية والتواصل مع المطور -->
+    <div id="permissionLockModal" class="modal" style="z-index: 100015;">
+        <div class="confirm-modal-content" style="border: 2px solid var(--warning-color);">
+            <div class="confirm-icon-wrapper" style="background: rgba(234, 160, 65, 0.15); color: var(--warning-color);">
+                <i class="fa-solid fa-user-lock"></i>
+            </div>
+            <h3 class="confirm-title" style="color: var(--warning-color);">حماية البيانات والخصوصية</h3>
+            <p class="confirm-message" style="margin-bottom: 20px;">
+                عذراً، لا يمكنك تعديل أو حذف بيانات هذا السائق لأنه <b>مضاف من قبل منفذ آخر</b>.<br><br>
+                للحفاظ على سلامة وسرية السجلات، الإجراء متاح فقط للمنفذ الأصلي أو عبر مراجعة المطور المباشر.
+            </p>
+            <div class="confirm-actions" style="display: flex; gap: 10px;">
+                <button type="button" class="btn-correct" onclick="document.getElementById('permissionLockModal').style.display='none';">
+                    <i class="fa-solid fa-xmark"></i> إغلاق
+                </button>
+                <a href="https://wa.me/9647862247686?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%20%D8%A3%D8%B3%D8%AA%D8%A7%D8%B0%20%D8%B6%D9%8A%D8%A7%D8%A1%D8%8C%20%D8%A3%D8%AD%D8%AA%D8%A7%D8%AC%20%D8%B5%D9%84%D8%A7%D8%AD%D9%8A%D8%A9%20%D8%AA%D8%B9%D8%AF%D9%8A%D9%84%20%D8%A3%D9%88%20%D8%AD%D8%B0%D9%81%20%D8%B3%D8%A7%D8%A6%D9%82%20%D9%81%D9%8A%20%D8%A7%D9%84%D9%85%D9%86%D8%B8%D9%88%D9%85%D8%A9" target="_blank" class="btn-override" style="background: #25D366; color: #FFF; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: 800;">
+                    <i class="fa-brands fa-whatsapp"></i> تواصل مع المطور
+                </a>
+            </div>
+        </div>
+    </div>
 
         <div id="customConfirmModal" class="modal" style="z-index: 100010;">
             <div class="confirm-modal-content">
@@ -1580,6 +2527,7 @@
                 appContainer.classList.remove('hidden');
                 if (userEmailDisplay) userEmailDisplay.textContent = `الحساب الحالي: ${savedUser}`;
                 loadDriversFromCloud();
+                loadPendingDeposits();
 
                 db.collection("subscriptions").doc(savedUser).onSnapshot(doc => {
                     if (doc.exists) {
@@ -1825,10 +2773,28 @@
         let currentRenderLimit = 30;
         let currentFilteredDrivers = [];
 
+        // دالة تنسيق تاريخ إضافة السائق
+        function formatDriverDate(createdAt) {
+            if (!createdAt) return 'سجل سابق';
+            let dateObj = null;
+            if (createdAt.toDate) dateObj = createdAt.toDate();
+            else if (createdAt.seconds) dateObj = new Date(createdAt.seconds * 1000);
+            else if (createdAt.toMillis) dateObj = new Date(createdAt.toMillis());
+            else dateObj = new Date(createdAt);
+
+            if (isNaN(dateObj.getTime())) return 'سجل سابق';
+            return dateObj.toLocaleDateString('ar-EG', { year: 'numeric', month: 'short', day: 'numeric' });
+        }
+
         function renderDriverCardElement(driver, isFullscreen) {
             const card = document.createElement('div');
             const isTalabat = driver.company === 'talabat';
             const isBalee = driver.company === 'baleefood';
+            const currentUser = (localStorage.getItem('zaincash_logged_user') || 'unknown').toLowerCase().trim();
+
+            // فحص صلاحيات الحساب المطور الفائق diajb أو صاحب الكرت
+            const isMaster = (currentUser === 'diajb');
+            const isOwner = isMaster || (!driver.createdBy || driver.createdBy.toLowerCase() === currentUser);
 
             card.className = `driver-card ${isTalabat ? 'talabat-card' : ''} ${isBalee ? 'balee-card' : ''} ${isFullscreen ? 'fullscreen' : ''}`;
             card.dataset.driverId = driver.id;
@@ -1855,10 +2821,21 @@
                 </div>
             ` : '';
 
+            // إظهار حساب من أضاف السائق حصرياً للمطور diajb
+            const creatorHTML = isMaster ? `
+                <div style="font-size: 0.75rem; color: var(--primary-color); font-weight: 700; margin-top: 3px; display: flex; align-items: center; gap: 4px;">
+                    <i class="fa-solid fa-user-shield"></i> أُضيف بواسطة: <b>${escapeHtml(driver.createdBy || 'سجل قديم')}</b>
+                </div>
+            ` : '';
+
             card.innerHTML = `
                 ${closeHeaderHTML}
                 <div class="driver-card-header">
-                    <strong>${escapeHtml(driver.name || '')}</strong>
+                    <div>
+                        <strong>${escapeHtml(driver.name || '')}</strong>
+                        <div class="driver-card-date"><i class="fa-regular fa-calendar-plus"></i> أُضيف: ${formatDriverDate(driver.createdAt)}</div>
+                        ${creatorHTML}
+                    </div>
                     <span class="company-badge">${isTalabat ? 'طلبات' : (isBalee ? 'بلي فود' : escapeHtml((driver.company || '').toUpperCase()))}</span>
                 </div>
                 ${fieldsHTML}
@@ -1866,13 +2843,17 @@
                     <button class="card-action-btn" style="background: rgba(37, 211, 102, 0.15); color: #25D366; font-size: 0.82rem;" data-action="send-verification" data-type="whatsapp" data-id="${escapeHtml(driver.id)}">
                         <i class="fa-brands fa-whatsapp"></i> إرسال تأكيد واتساب
                     </button>
-                    <button class="card-action-btn" style="background: rgba(0, 102, 255, 0.1); color: var(--primary-color); font-size: 0.82rem;" data-action="send-verification" data-type="sms" data-id="${escapeHtml(driver.id)}">
-                        <i class="fa-solid fa-comment-sms"></i> إرسال SMS
+                    <button class="card-action-btn" style="background: rgba(0, 102, 255, 0.1); color: var(--primary-color); font-size: 0.82rem;" data-action="call-phone" data-phone="${escapeHtml(driver.phone || '')}">
+                        <i class="fa-solid fa-phone"></i> اتصال بالسائق
                     </button>
                 </div>
                 <div class="card-actions">
-                    <button class="card-action-btn btn-edit" data-action="edit" data-id="${escapeHtml(driver.id)}"><i class="fa-solid fa-pen-to-square"></i> تعديل</button>
-                    <button class="card-action-btn btn-delete" data-action="delete" data-id="${escapeHtml(driver.id)}"><i class="fa-solid fa-trash"></i> حذف</button>
+                    <button class="card-action-btn btn-edit ${!isOwner ? 'btn-locked' : ''}" data-action="${isOwner ? 'edit' : 'locked-edit'}" data-id="${escapeHtml(driver.id)}">
+                        <i class="fa-solid ${isOwner ? 'fa-pen-to-square' : 'fa-lock'}"></i> تعديل
+                    </button>
+                    <button class="card-action-btn btn-delete ${!isOwner ? 'btn-locked' : ''}" data-action="${isOwner ? 'delete' : 'locked-delete'}" data-id="${escapeHtml(driver.id)}">
+                        <i class="fa-solid ${isOwner ? 'fa-trash' : 'fa-lock'}"></i> حذف
+                    </button>
                 </div>
             `;
 
@@ -1932,7 +2913,7 @@
             }
         }
 
-        // تفويض الأحداث (Event Delegation) لقائمة السائقين لتأمين الأحداث بالكامل
+        // تفويض الأحداث (Event Delegation) لقائمة السائقين
         driversList.addEventListener('click', (e) => {
             const actionBtn = e.target.closest('button[data-action]');
             if (actionBtn) {
@@ -1945,10 +2926,19 @@
                 } else if (action === 'send-verification') {
                     const type = actionBtn.dataset.type || 'whatsapp';
                     sendDriverVerification(id, type, e);
+                } else if (action === 'call-phone') {
+                    const rawPhone = actionBtn.dataset.phone || '';
+                    const cleanPhone = rawPhone.replace(/\D/g, '');
+                    if (cleanPhone) {
+                        window.location.href = `tel:${cleanPhone}`;
+                    }
                 } else if (action === 'edit') {
                     openEditModal(id, e);
                 } else if (action === 'delete') {
                     deleteDriver(id, e);
+                } else if (action === 'locked-edit' || action === 'locked-delete') {
+                    const lockModal = document.getElementById('permissionLockModal');
+                    if (lockModal) lockModal.style.display = 'flex';
                 } else if (action === 'exit-fullscreen') {
                     exitFullScreen(e);
                 }
@@ -2218,13 +3208,50 @@
         const modalTitle = document.getElementById('modalTitle');
         const editDriverDocId = document.getElementById('editDriverDocId');
         const companySelect = document.getElementById('companySelect');
-        const companyCodeInput = document.getElementById('companyCode');
-        const editCompanyCodeBtn = document.getElementById('editCompanyCodeBtn');
+        const selectedCompanyCodeVal = document.getElementById('selectedCompanyCodeVal');
+        const customCompanyCodeContainer = document.getElementById('customCompanyCodeContainer');
+        const customCompanyCodeInput = document.getElementById('customCompanyCodeInput');
         const branchSelect = document.getElementById('branchSelect');
         const customBranchContainer = document.getElementById('customBranchContainer');
         const customBranchInput = document.getElementById('customBranchInput');
         const autoWhatsAppToggle = document.getElementById('autoWhatsAppToggle');
         const waTooltipBtn = document.getElementById('waTooltipBtn');
+
+        // إدارة واختيار أزرار رمز العميل (531 / 5212 / مخصص)
+        function setCompanyCodeSelection(codeVal = '531') {
+            const targetVal = String(codeVal).trim();
+            const isStandard = (targetVal === '531' || targetVal === '5212');
+
+            document.querySelectorAll('#codeSelectorGroup .code-opt-btn').forEach(btn => {
+                const btnCode = btn.getAttribute('data-code');
+                if (btnCode === targetVal || (!isStandard && btnCode === '__custom__')) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+
+            if (!isStandard) {
+                if (selectedCompanyCodeVal) selectedCompanyCodeVal.value = '__custom__';
+                if (customCompanyCodeContainer) customCompanyCodeContainer.classList.remove('hidden');
+                if (customCompanyCodeInput) customCompanyCodeInput.value = (targetVal === '__custom__' || !targetVal) ? '' : targetVal;
+            } else {
+                if (selectedCompanyCodeVal) selectedCompanyCodeVal.value = targetVal;
+                if (customCompanyCodeContainer) customCompanyCodeContainer.classList.add('hidden');
+                if (customCompanyCodeInput) customCompanyCodeInput.value = '';
+            }
+        }
+
+        document.querySelectorAll('#codeSelectorGroup .code-opt-btn').forEach(btn => {
+            btn.onclick = (e) => {
+                e.preventDefault();
+                const code = btn.getAttribute('data-code');
+                setCompanyCodeSelection(code);
+                if (code === '__custom__' && customCompanyCodeInput) {
+                    customCompanyCodeInput.focus();
+                }
+            };
+        });
 
         // تهيئة وحفظ حالة سويتش الواتساب التلقائي
         function initWhatsAppToggle() {
@@ -2256,32 +3283,7 @@
             };
         }
 
-        // زر قفل/تعديل رمز العميل
-        let isCodeEditable = false;
-        function resetCompanyCodeField(val = '531') {
-            companyCodeInput.value = val;
-            companyCodeInput.readOnly = true;
-            companyCodeInput.style.backgroundColor = 'rgba(0,0,0,0.03)';
-            companyCodeInput.style.cursor = 'not-allowed';
-            editCompanyCodeBtn.innerHTML = '<i class="fa-solid fa-lock"></i> تعديل';
-            isCodeEditable = false;
-        }
 
-        editCompanyCodeBtn.onclick = () => {
-            isCodeEditable = !isCodeEditable;
-            if (isCodeEditable) {
-                companyCodeInput.readOnly = false;
-                companyCodeInput.style.backgroundColor = 'var(--bg-color)';
-                companyCodeInput.style.cursor = 'text';
-                companyCodeInput.focus();
-                editCompanyCodeBtn.innerHTML = '<i class="fa-solid fa-lock-open"></i> قفل';
-            } else {
-                companyCodeInput.readOnly = true;
-                companyCodeInput.style.backgroundColor = 'rgba(0,0,0,0.03)';
-                companyCodeInput.style.cursor = 'not-allowed';
-                editCompanyCodeBtn.innerHTML = '<i class="fa-solid fa-lock"></i> تعديل';
-            }
-        };
 
         // دالة التبديل الديناميكي للحقول حسب الشركة
         function toggleFormFieldsByCompany(company) {
@@ -2308,7 +3310,7 @@
             if (branchSelect) branchSelect.value = '';
             if (customBranchContainer) customBranchContainer.classList.add('hidden');
             if (customBranchInput) customBranchInput.value = '';
-            resetCompanyCodeField('531');
+            setCompanyCodeSelection('531');
             toggleFormFieldsByCompany(companySelect.value);
             driverModal.style.display = 'flex';
         };
@@ -2316,9 +3318,18 @@
         document.querySelector('.close-btn').onclick = () => driverModal.style.display = 'none';
 
         function openEditModal(docId, e) {
-            e.stopPropagation();
+            if (e) e.stopPropagation();
             const driver = drivers.find(d => d.id === docId);
             if (!driver) return;
+
+            const currentUser = (localStorage.getItem('zaincash_logged_user') || 'unknown').toLowerCase().trim();
+            const isMaster = (currentUser === 'diajb');
+
+            if (!isMaster && driver.createdBy && driver.createdBy.toLowerCase() !== currentUser) {
+                const lockModal = document.getElementById('permissionLockModal');
+                if (lockModal) lockModal.style.display = 'flex';
+                return;
+            }
 
             editDriverDocId.value = driver.id;
             modalTitle.textContent = 'تعديل بيانات السائق';
@@ -2343,7 +3354,7 @@
                     customBranchContainer.classList.add('hidden');
                     customBranchInput.value = '';
                 }
-                resetCompanyCodeField(driver.companyCode || '531');
+                setCompanyCodeSelection(driver.companyCode || '531');
                 document.getElementById('driverId').value = driver.driverId || '';
             }
 
@@ -2351,8 +3362,19 @@
         }
 
         async function deleteDriver(docId, e) {
-            e.stopPropagation();
-            const currentUser = localStorage.getItem('zaincash_logged_user') || 'unknown';
+            if (e) e.stopPropagation();
+            const driver = drivers.find(d => d.id === docId);
+            if (!driver) return;
+
+            const currentUser = (localStorage.getItem('zaincash_logged_user') || 'unknown').toLowerCase().trim();
+            const isMaster = (currentUser === 'diajb');
+
+            if (!isMaster && driver.createdBy && driver.createdBy.toLowerCase() !== currentUser) {
+                const lockModal = document.getElementById('permissionLockModal');
+                if (lockModal) lockModal.style.display = 'flex';
+                return;
+            }
+
             if (confirm("هل أنت متأكد من رغبتك في حذف هذا السائق من القائمة؟")) {
                 try {
                     // وسم السائق كمحذوف بدلاً من مسحه نهائياً
@@ -2628,7 +3650,15 @@
                 } else {
                     payload.branch = '';
                 }
-                payload.companyCode = companyCodeInput.value.trim() || '531';
+
+                // حساب رمز العميل المختار (531 / 5212 / مخصص)
+                const codeType = selectedCompanyCodeVal ? selectedCompanyCodeVal.value : '531';
+                if (codeType === '__custom__') {
+                    payload.companyCode = (customCompanyCodeInput ? customCompanyCodeInput.value.trim() : '') || '531';
+                } else {
+                    payload.companyCode = codeType;
+                }
+
                 payload.driverId = driverId || '';
             }
 
@@ -2751,10 +3781,37 @@
             backToMainTagsBtn.onclick = showMainTagsView;
         }
 
+                // إدارة نافذة إخلاء المسؤولية وقوانين الاستخدام
+        const disclaimerTermsModal = document.getElementById('disclaimerTermsModal');
+        const disclaimerTermsBtn = document.getElementById('disclaimerTermsBtn');
+        const settingsDisclaimerBtn = document.getElementById('settingsDisclaimerBtn');
+        const loginDisclaimerBtn = document.getElementById('loginDisclaimerBtn');
+
+        function openDisclaimerModal() {
+            if (disclaimerTermsModal) disclaimerTermsModal.style.display = 'flex';
+        }
+
+        if (disclaimerTermsBtn) disclaimerTermsBtn.onclick = openDisclaimerModal;
+        if (settingsDisclaimerBtn) settingsDisclaimerBtn.onclick = () => {
+            if (settingsModal) settingsModal.style.display = 'none';
+            openDisclaimerModal();
+        };
+        if (loginDisclaimerBtn) loginDisclaimerBtn.onclick = (e) => {
+            e.preventDefault();
+            openDisclaimerModal();
+        };
+
+        document.querySelectorAll('.close-disclaimer-btn').forEach(btn => {
+            btn.onclick = (e) => {
+                e.preventDefault();
+                if (disclaimerTermsModal) disclaimerTermsModal.style.display = 'none';
+            };
+        });
+
         // ==========================================
         // إدارة نافذة آخر التحديثات والنقطة الحمراء
         // ==========================================
-        const CURRENT_APP_VERSION = 'v1.5';
+        const CURRENT_APP_VERSION = 'v2.0';
         const updatesBtn = document.getElementById('updatesBtn');
         const updatesModal = document.getElementById('updatesModal');
         const updatesDot = document.getElementById('updatesDot');
@@ -2781,26 +3838,444 @@
         if (closeUpdatesBtn) closeUpdatesBtn.onclick = closeUpdatesModal;
         if (closeUpdatesModalBtn) closeUpdatesModalBtn.onclick = closeUpdatesModal;
 
-        // إدارة نافذة الإعدادات
+        // إدارة نافذة الإعدادات بأمان كامل
         const settingsBtn = document.getElementById('settingsBtn');
         const settingsModal = document.getElementById('settingsModal');
-        settingsBtn.onclick = () => settingsModal.style.display = 'flex';
-        document.querySelector('.close-settings-btn').onclick = () => settingsModal.style.display = 'none';
+        if (settingsBtn && settingsModal) {
+            settingsBtn.onclick = () => settingsModal.style.display = 'flex';
+        }
+        const closeSettingsBtn = document.querySelector('.close-settings-btn');
+        if (closeSettingsBtn && settingsModal) {
+            closeSettingsBtn.onclick = () => settingsModal.style.display = 'none';
+        }
 
-        // فتح التطبيق في نافذة منبثقة مصغرة مخصصة للعمل بجانب أو فوق تطبيق زين كاش
-        const floatWindowBtn = document.getElementById('floatWindowBtn');
+        // ==========================================
+        // 9. منظومة الإيداعات المؤجلة والقائمة الشاملة
+        // ==========================================
+        const fullscreenNavMenu = document.getElementById('fullscreenNavMenu');
+        const hamburgerMenuBtn = document.getElementById('hamburgerMenuBtn');
+        const closeNavMenuBtn = document.getElementById('closeNavMenuBtn');
+        const navItemPending = document.getElementById('navItemPending');
+        const navItemUpdates = document.getElementById('navItemUpdates');
+        const navItemGuide = document.getElementById('navItemGuide');
+        const navItemDisclaimer = document.getElementById('navItemDisclaimer');
+        const navItemSettings = document.getElementById('navItemSettings');
+        const navPendingBadge = document.getElementById('navPendingBadge');
+        const navUpdatesDot = document.getElementById('navUpdatesDot');
+        const menuNotificationDot = document.getElementById('menuNotificationDot');
 
-        if (floatWindowBtn) {
-            floatWindowBtn.onclick = () => {
-                const width = 380;
-                const height = 600;
-                const left = (screen.width) ? screen.width - width : 0;
-                
-                window.open(
-                    window.location.href, 
-                    'ZainCashHelperFloat', 
-                    `width=${width},height=${height},top=50,left=${left},resizable=yes,scrollbars=yes,status=no`
-                );
+        const pendingDepositsModal = document.getElementById('pendingDepositsModal');
+        const pendingSearchInput = document.getElementById('pendingSearchInput');
+        const pendingSuggestions = document.getElementById('pendingSuggestions');
+        const pendingAmountPromptBox = document.getElementById('pendingAmountPromptBox');
+        const promptDriverNameDisplay = document.getElementById('promptDriverNameDisplay');
+        const pendingAmountInput = document.getElementById('pendingAmountInput');
+        const confirmAddPendingBtn = document.getElementById('confirmAddPendingBtn');
+        const cancelPromptBtn = document.getElementById('cancelPromptBtn');
+        const activePendingList = document.getElementById('activePendingList');
+        const archivedPendingList = document.getElementById('archivedPendingList');
+        const activePendingCountEl = document.getElementById('activePendingCount');
+        const archivedPendingCountBadge = document.getElementById('archivedPendingCountBadge');
+        const archivedToggleHeader = document.getElementById('archivedToggleHeader');
+        const archivedChevron = document.getElementById('archivedChevron');
+
+        let pendingDepositsList = [];
+        let selectedPendingDriver = null;
+        let isArchivedOpen = false;
+
+        // إدارة القائمة الشاملة (ثلاث خطوط)
+        function openFullscreenNavMenu() {
+            if (fullscreenNavMenu) {
+                fullscreenNavMenu.classList.remove('hidden');
+            }
+        }
+        function closeFullscreenNavMenu() {
+            if (fullscreenNavMenu) {
+                fullscreenNavMenu.classList.add('hidden');
+            }
+        }
+
+        if (hamburgerMenuBtn) hamburgerMenuBtn.onclick = openFullscreenNavMenu;
+        if (closeNavMenuBtn) closeNavMenuBtn.onclick = closeFullscreenNavMenu;
+
+        if (navItemPending) navItemPending.onclick = () => {
+            closeFullscreenNavMenu();
+            if (pendingDepositsModal) pendingDepositsModal.style.display = 'flex';
+        };
+        if (navItemUpdates) navItemUpdates.onclick = () => {
+            closeFullscreenNavMenu();
+            openUpdatesModal();
+        };
+        if (navItemGuide) navItemGuide.onclick = () => {
+            closeFullscreenNavMenu();
+            if (guideModal) guideModal.style.display = 'flex';
+        };
+        if (navItemDisclaimer) navItemDisclaimer.onclick = () => {
+            closeFullscreenNavMenu();
+            openDisclaimerModal();
+        };
+        if (navItemSettings) navItemSettings.onclick = () => {
+            closeFullscreenNavMenu();
+            if (settingsModal) settingsModal.style.display = 'flex';
+        };
+
+        // طي وفتح الأرشيف المصغر
+        if (archivedToggleHeader) {
+            archivedToggleHeader.onclick = () => {
+                isArchivedOpen = !isArchivedOpen;
+                if (archivedPendingList) {
+                    if (isArchivedOpen) archivedPendingList.classList.remove('hidden');
+                    else archivedPendingList.classList.add('hidden');
+                }
+                if (archivedChevron) {
+                    archivedChevron.style.transform = isArchivedOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+                }
+            };
+        }
+
+                // تفعيل أزرار النسخ لقائمة الإيداعات المؤجلة
+        if (activePendingList) {
+            activePendingList.addEventListener('click', (e) => {
+                const copyBtn = e.target.closest('button[data-action="copy"]');
+                if (copyBtn) {
+                    e.stopPropagation();
+                    const text = copyBtn.dataset.copy;
+                    copyToClipboard(text, copyBtn, e);
+                }
+            });
+        }
+
+        // حفظ ومزامنة قائمة الإيداعات المؤجلة عبر مستند الحساب المصرح به (مستقر 100% بدون أي أخطاء صلاحيات)
+        async function savePendingDepositsList(updatedList) {
+            const currentUser = (localStorage.getItem('zaincash_logged_user') || '').toLowerCase().trim();
+            if (!currentUser) return;
+
+            pendingDepositsList = updatedList;
+            try {
+                localStorage.setItem(`zaincash_pending_${currentUser}`, JSON.stringify(pendingDepositsList));
+            } catch(e) {}
+            renderPendingDepositsUI();
+
+            try {
+                await db.collection("subscriptions").doc(currentUser).update({
+                    pendingDeposits: updatedList
+                });
+            } catch(err) {
+                console.log("Cloud sync note:", err);
+            }
+        }
+
+        // جلب الإيداعات المؤجلة ومراقبتها لحظياً لحساب المستخدم الحالي
+        function loadPendingDeposits() {
+            const currentUser = (localStorage.getItem('zaincash_logged_user') || '').toLowerCase().trim();
+            if (!currentUser) return;
+
+            // جلب فوري من التخزين المحلي
+            try {
+                const localSaved = localStorage.getItem(`zaincash_pending_${currentUser}`);
+                if (localSaved) {
+                    pendingDepositsList = JSON.parse(localSaved);
+                    renderPendingDepositsUI();
+                }
+            } catch(e) {}
+
+            // المزامنة اللحظية عبر مستند الحساب
+            db.collection("subscriptions").doc(currentUser).onSnapshot(doc => {
+                if (!doc.exists) return;
+                const data = doc.data();
+                const cloudList = Array.isArray(data.pendingDeposits) ? data.pendingDeposits : [];
+                const now = Date.now();
+                const twoDaysMs = 48 * 60 * 60 * 1000;
+
+                let needsPurge = false;
+                pendingDepositsList = cloudList.filter(item => {
+                    if (item.isCompleted && item.completedAt) {
+                        const compTime = new Date(item.completedAt).getTime();
+                        if (!isNaN(compTime) && (now - compTime > twoDaysMs)) {
+                            needsPurge = true;
+                            return false;
+                        }
+                    }
+                    return true;
+                });
+
+                try {
+                    localStorage.setItem(`zaincash_pending_${currentUser}`, JSON.stringify(pendingDepositsList));
+                } catch(e) {}
+
+                if (needsPurge) {
+                    db.collection("subscriptions").doc(currentUser).update({
+                        pendingDeposits: pendingDepositsList
+                    }).catch(e => console.log(e));
+                }
+
+                renderPendingDepositsUI();
+            }, err => console.log("Pending deposits snapshot note:", err));
+        }
+
+        function renderPendingDepositsUI() {
+            const activeItems = pendingDepositsList.filter(item => !item.isCompleted);
+            const archivedItems = pendingDepositsList.filter(item => item.isCompleted);
+
+            // تحديث شارات العداد بالقائمة وبزر الثلاث خطوط
+            if (activePendingCountEl) activePendingCountEl.textContent = activeItems.length;
+            if (archivedPendingCountBadge) archivedPendingCountBadge.textContent = archivedItems.length;
+
+            if (navPendingBadge) {
+                if (activeItems.length > 0) {
+                    navPendingBadge.textContent = activeItems.length;
+                    navPendingBadge.classList.remove('hidden');
+                } else {
+                    navPendingBadge.classList.add('hidden');
+                }
+            }
+            if (menuNotificationDot) {
+                if (activeItems.length > 0) menuNotificationDot.classList.remove('hidden');
+                else menuNotificationDot.classList.add('hidden');
+            }
+
+            // رسم قائمة بانتظار الإيداع مع أزرار نسخ كاملة لكافة المعلومات
+            if (activePendingList) {
+                if (activeItems.length === 0) {
+                    activePendingList.innerHTML = `<p style="text-align: center; color: var(--text-secondary); margin: 25px 0; font-weight: 700;">لا توجد أي إيداعات مؤجلة بانتظار التنفيذ حالياً.</p>`;
+                } else {
+                    activePendingList.innerHTML = '';
+                    activeItems.forEach(item => {
+                        const card = document.createElement('div');
+                        const isTalabat = item.company === 'talabat';
+                        const isBalee = item.company === 'baleefood';
+                        const amountNum = Number(item.amount || 0);
+                        const amountFormatted = amountNum.toLocaleString('ar-EG');
+
+                        card.className = `driver-card ${isTalabat ? 'talabat-card' : ''} ${isBalee ? 'balee-card' : ''}`;
+                        card.style.marginBottom = '14px';
+
+                        let fieldsHTML = isTalabat ? `
+                            ${item.branch ? `<div class="info-row"><span class="info-label">اسم الفرع:</span><span class="info-value">${escapeHtml(item.branch)}</span></div>` : ''}
+                            ${item.companyCode ? `<div class="info-row"><span class="info-label">رمز العميل:</span><div class="info-value-group"><span class="info-value">${escapeHtml(item.companyCode)}</span><button class="copy-btn" data-action="copy" data-copy="${escapeHtml(item.companyCode)}"><i class="fa-regular fa-copy"></i> نسخ</button></div></div>` : ''}
+                            <div class="info-row"><span class="info-label">ID السائق:</span><div class="info-value-group"><span class="info-value">${escapeHtml(item.driverId || '')}</span><button class="copy-btn" data-action="copy" data-copy="${escapeHtml(item.driverId || '')}"><i class="fa-regular fa-copy"></i> نسخ ID</button></div></div>
+                            <div class="info-row"><span class="info-label">اسم السائق:</span><div class="info-value-group"><span class="info-value">${escapeHtml(item.name || '')}</span><button class="copy-btn" data-action="copy" data-copy="${escapeHtml(item.name || '')}"><i class="fa-regular fa-copy"></i> نسخ الاسم</button></div></div>
+                            <div class="info-row"><span class="info-label">رقم الهاتف:</span><div class="info-value-group"><span class="info-value">${escapeHtml(item.phone || '')}</span><button class="copy-btn" data-action="copy" data-copy="${escapeHtml(item.phone || '')}"><i class="fa-regular fa-copy"></i> نسخ الهاتف</button></div></div>
+                            <div class="info-row" style="background: rgba(5, 205, 153, 0.08); border-radius: 10px; padding: 6px 10px; margin-top: 6px;">
+                                <span class="info-label" style="color: var(--success-color); font-weight: 800;">المبلغ المطلوب:</span>
+                                <div class="info-value-group">
+                                    <span class="info-value" style="color: var(--success-color); font-weight: 900; font-size: 1.1rem;">${amountFormatted} د.ع</span>
+                                    <button class="copy-btn" data-action="copy" data-copy="${amountNum}"><i class="fa-regular fa-copy"></i> نسخ المبلغ</button>
+                                </div>
+                            </div>
+                        ` : `
+                            <div class="info-row"><span class="info-label">اسم السائق:</span><div class="info-value-group"><span class="info-value">${escapeHtml(item.name || '')}</span><button class="copy-btn" data-action="copy" data-copy="${escapeHtml(item.name || '')}"><i class="fa-regular fa-copy"></i> نسخ الاسم</button></div></div>
+                            <div class="info-row"><span class="info-label">رقم الهاتف:</span><div class="info-value-group"><span class="info-value">${escapeHtml(item.phone || '')}</span><button class="copy-btn" data-action="copy" data-copy="${escapeHtml(item.phone || '')}"><i class="fa-regular fa-copy"></i> نسخ الهاتف</button></div></div>
+                            <div class="info-row" style="background: rgba(5, 205, 153, 0.08); border-radius: 10px; padding: 6px 10px; margin-top: 6px;">
+                                <span class="info-label" style="color: var(--success-color); font-weight: 800;">المبلغ المطلوب:</span>
+                                <div class="info-value-group">
+                                    <span class="info-value" style="color: var(--success-color); font-weight: 900; font-size: 1.1rem;">${amountFormatted} د.ع</span>
+                                    <button class="copy-btn" data-action="copy" data-copy="${amountNum}"><i class="fa-regular fa-copy"></i> نسخ المبلغ</button>
+                                </div>
+                            </div>
+                        `;
+
+                        card.innerHTML = `
+                            <div class="driver-card-header">
+                                <div>
+                                    <strong>${escapeHtml(item.name || '')}</strong>
+                                    <div class="driver-card-date"><i class="fa-regular fa-clock"></i> تم التدوين: ${formatDriverDate(item.createdAt)}</div>
+                                </div>
+                                <span class="company-badge">${isTalabat ? 'طلبات' : 'بلي فود'}</span>
+                            </div>
+                            ${fieldsHTML}
+                            <div style="display: flex; gap: 8px; margin-top: 12px;">
+                                <button type="button" class="submit-btn" style="flex: 2; padding: 10px; background: var(--success-color); font-weight: 800; font-size: 0.9rem;" onclick="markPendingAsCompleted('${item.id}')">
+                                    <i class="fa-solid fa-circle-check"></i> لقد تم الإيداع له
+                                </button>
+                                <button type="button" class="sm-btn btn-danger" style="flex: 1; padding: 10px; font-size: 0.85rem;" onclick="deletePendingDeposit('${item.id}')">
+                                    <i class="fa-solid fa-trash"></i> حذف
+                                </button>
+                            </div>
+                        `;
+                        activePendingList.appendChild(card);
+                    });
+                }
+            }
+
+            // رسم قائمة الأرشيف المؤقت
+            if (archivedPendingList) {
+                if (archivedItems.length === 0) {
+                    archivedPendingList.innerHTML = `<p style="text-align: center; color: var(--text-secondary); margin: 25px 0; font-weight: 700;">لا توجد أي إيداعات مؤرشفة خلال آخر 48 ساعة.</p>`;
+                } else {
+                    archivedPendingList.innerHTML = '';
+                    archivedItems.forEach(item => {
+                        const card = document.createElement('div');
+                        card.className = 'pending-card';
+                        card.style.opacity = '0.85';
+                        const isTalabat = item.company === 'talabat';
+                        const compDate = item.completedAt ? new Date(item.completedAt).toLocaleString('ar-EG') : 'تم الإيداع';
+                        card.innerHTML = `
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                <div>
+                                    <strong style="font-size: 0.95rem; text-decoration: line-through;">${escapeHtml(item.name)}</strong>
+                                    <span class="company-badge" style="margin-right: 6px;">${isTalabat ? 'طلبات' : 'بلي'}</span>
+                                </div>
+                                <div style="font-size: 0.95rem; font-weight: 800; color: var(--success-color);">${Number(item.amount || 0).toLocaleString('ar-EG')} د.ع</div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; color: var(--text-secondary);">
+                                <span><i class="fa-solid fa-check-double" style="color: var(--success-color);"></i> تم الإيداع: ${compDate}</span>
+                                <button type="button" class="sm-btn" style="background: rgba(238, 93, 80, 0.15); color: var(--danger-color); padding: 4px 8px;" onclick="deletePendingDeposit('${item.id}')">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
+                        `;
+                        archivedPendingList.appendChild(card);
+                    });
+                }
+            }
+        }
+
+        // تعليم العملية كمنجزة ونقلها للأرشيف المؤقت
+        async function markPendingAsCompleted(id) {
+            const updated = pendingDepositsList.map(item => {
+                if (item.id === id) {
+                    return { ...item, isCompleted: true, completedAt: new Date().toISOString() };
+                }
+                return item;
+            });
+            await savePendingDepositsList(updated);
+        }
+
+        // حذف العملية من السجل نهائياً
+        async function deletePendingDeposit(id) {
+            if (confirm("هل تريد حذف هذه العملية من القائمة؟")) {
+                const updated = pendingDepositsList.filter(item => item.id !== id);
+                await savePendingDepositsList(updated);
+            }
+        }
+
+        // البحث الذكي داخل قائمة الإيداع المؤجل
+        if (pendingSearchInput) {
+            pendingSearchInput.addEventListener('input', () => {
+                const query = pendingSearchInput.value.trim();
+                if (query.length === 0) {
+                    if (pendingSuggestions) pendingSuggestions.classList.add('hidden');
+                    return;
+                }
+
+                const scoredMatches = [];
+                drivers.forEach(d => {
+                    const score = calculateSearchScore(d, query);
+                    if (score > 0) scoredMatches.push({ driver: d, score: score });
+                });
+
+                scoredMatches.sort((a, b) => b.score - a.score || a.driver.name.localeCompare(b.driver.name, 'ar'));
+
+                if (scoredMatches.length > 0) {
+                    pendingSuggestions.innerHTML = '';
+                    scoredMatches.slice(0, 8).forEach(itemObj => {
+                        const d = itemObj.driver;
+                        const div = document.createElement('div');
+                        div.className = 'suggestion-item';
+                        div.innerHTML = `<span><strong>${escapeHtml(d.name)}</strong> (${escapeHtml(d.driverId || d.phone)})</span> <small style="color:var(--primary-color)">${escapeHtml(d.company.toUpperCase())}</small>`;
+                        div.onclick = () => {
+                            selectDriverForPendingDeposit(d);
+                        };
+                        pendingSuggestions.appendChild(div);
+                    });
+                    pendingSuggestions.classList.remove('hidden');
+                } else {
+                    pendingSuggestions.classList.add('hidden');
+                }
+            });
+        }
+
+        function selectDriverForPendingDeposit(driver) {
+            selectedPendingDriver = driver;
+            if (pendingSuggestions) pendingSuggestions.classList.add('hidden');
+            if (pendingSearchInput) pendingSearchInput.value = '';
+
+            if (promptDriverNameDisplay) {
+                const comp = driver.company === 'talabat' ? 'طلبات' : 'بلي فود';
+                promptDriverNameDisplay.innerHTML = `<i class="fa-solid fa-user-check"></i> ${escapeHtml(driver.name)} (${comp})`;
+            }
+            if (pendingAmountInput) pendingAmountInput.value = '';
+            if (pendingAmountPromptBox) pendingAmountPromptBox.classList.remove('hidden');
+            if (pendingAmountInput) pendingAmountInput.focus();
+        }
+
+        function cancelPendingPrompt() {
+            selectedPendingDriver = null;
+            if (pendingAmountPromptBox) pendingAmountPromptBox.classList.add('hidden');
+        }
+        if (cancelPromptBtn) cancelPromptBtn.onclick = cancelPendingPrompt;
+
+        // تأكيد إضافة السائق والمبلغ للقائمة المؤجلة بأمان كامل وسرعة فورية
+        if (confirmAddPendingBtn) {
+            confirmAddPendingBtn.onclick = async () => {
+                if (!selectedPendingDriver) {
+                    alert("يرجى اختيار سائق من نتائج البحث أولاً.");
+                    return;
+                }
+                const amt = Number(pendingAmountInput.value);
+                if (!amt || isNaN(amt) || amt <= 0) {
+                    alert("يرجى إدخال مبلغ إيداع صحيح أكبر من صفر.");
+                    if (pendingAmountInput) pendingAmountInput.focus();
+                    return;
+                }
+
+                try {
+                    confirmAddPendingBtn.disabled = true;
+                    confirmAddPendingBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الحفظ...';
+
+                    const newPendingItem = {
+                        id: 'dep_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+                        driverDocId: selectedPendingDriver.id || '',
+                        driverId: selectedPendingDriver.driverId || '',
+                        name: selectedPendingDriver.name || '',
+                        phone: selectedPendingDriver.phone || '',
+                        company: selectedPendingDriver.company || 'talabat',
+                        branch: selectedPendingDriver.branch || '',
+                        companyCode: selectedPendingDriver.companyCode || '531',
+                        amount: amt,
+                        isCompleted: false,
+                        createdAt: new Date().toISOString(),
+                        completedAt: ''
+                    };
+
+                    const updatedList = [newPendingItem, ...pendingDepositsList];
+                    await savePendingDepositsList(updatedList);
+                    cancelPendingPrompt();
+                } catch (err) {
+                    alert("خطأ أثناء إضافة الإيداع المؤجل: " + err.message);
+                } finally {
+                    confirmAddPendingBtn.disabled = false;
+                    confirmAddPendingBtn.innerHTML = '<i class="fa-solid fa-check"></i> تثبيت وإضافة للقائمة';
+                }
+            };
+        }
+
+
+
+        document.querySelectorAll('.close-pending-btn').forEach(btn => {
+            btn.onclick = (e) => {
+                e.preventDefault();
+                if (pendingDepositsModal) pendingDepositsModal.style.display = 'none';
+            };
+        });
+
+        // إدارة طي وفتح باقات التوفير الكبرى في نافذة الاشتراكات
+        const extraPackagesToggleHeader = document.getElementById('extraPackagesToggleHeader');
+        const extraPackagesContent = document.getElementById('extraPackagesContent');
+        const extraPackagesChevron = document.getElementById('extraPackagesChevron');
+        let isExtraPackagesOpen = false;
+
+        if (extraPackagesToggleHeader) {
+            extraPackagesToggleHeader.onclick = () => {
+                isExtraPackagesOpen = !isExtraPackagesOpen;
+                if (extraPackagesContent) {
+                    if (isExtraPackagesOpen) extraPackagesContent.classList.remove('hidden');
+                    else extraPackagesContent.classList.add('hidden');
+                }
+                if (extraPackagesChevron) {
+                    extraPackagesChevron.style.transform = isExtraPackagesOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+                }
             };
         }
     </script>
