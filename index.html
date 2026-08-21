@@ -1211,12 +1211,20 @@
             cursor: pointer;
             transition: all 0.2s ease;
             user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            width: 100%;
+            text-align: right;
         }
-        .nav-menu-item:hover {
+        .nav-menu-item:hover, .nav-menu-item:active {
             border-color: var(--primary-color);
             transform: translateX(-4px);
             box-shadow: var(--shadow);
             background: var(--card-bg);
+        }
+        .nav-menu-item * {
+            pointer-events: none;
         }
         .nav-item-icon {
             width: 44px;
@@ -1382,7 +1390,7 @@
         <div class="modal-content" style="max-height: 85vh; overflow-y: auto; max-width: 540px;">
             <div class="modal-header">
                 <h3><i class="fa-solid fa-scale-balanced" style="color: var(--primary-color);"></i> إخلاء المسؤولية وشروط الاستخدام</h3>
-                <span class="close-disclaimer-btn close-btn">&times;</span>
+                <span class="close-disclaimer-btn close-btn" onclick="closeModalById('disclaimerTermsModal')" role="button" tabindex="0">&times;</span>
             </div>
             <div class="modal-body" style="text-align: right; line-height: 1.6; font-size: 0.88rem;">
                 
@@ -1465,7 +1473,7 @@
                     </div>
                 </div>
 
-                <button class="submit-btn close-disclaimer-btn" style="margin-top: 18px;">
+                <button type="button" class="submit-btn close-disclaimer-btn" onclick="closeModalById('disclaimerTermsModal')" style="margin-top: 18px;">
                     فهمت كافة القوانين والشروط
                 </button>
             </div>
@@ -1476,7 +1484,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h3><i class="fa-solid fa-shield-check" style="color: var(--primary-color);"></i> لماذا تحتاج هذه المنظومة في منفذك؟</h3>
-                <span class="close-benefits-btn close-btn">&times;</span>
+                <span class="close-benefits-btn close-btn" onclick="closeModalById('benefitsModal')" role="button" tabindex="0">&times;</span>
             </div>
             <div class="modal-body">
                 
@@ -1534,7 +1542,7 @@
                     </div>
                 </div>
 
-                <button class="submit-btn close-benefits-btn" style="margin-top: 10px;">رجوع</button>
+                <button type="button" class="submit-btn close-benefits-btn" onclick="closeModalById('benefitsModal')" style="margin-top: 10px;">رجوع</button>
             </div>
         </div>
     </div>
@@ -1543,7 +1551,7 @@
         <div class="modal-content" style="max-height: 88vh; overflow-y: auto; max-width: 520px;">
             <div class="modal-header">
                 <h3><i class="fa-solid fa-crown" style="color: var(--warning-color);"></i> باقات وعروض الاشتراك المعتمدة</h3>
-                <span class="close-packages-btn close-btn">&times;</span>
+                <span class="close-packages-btn close-btn" onclick="closeModalById('packagesModal')" role="button" tabindex="0">&times;</span>
             </div>
             <div class="modal-body" style="text-align: right;">
                 
@@ -1615,7 +1623,7 @@
                     </div>
                 </div>
 
-                <button class="submit-btn close-packages-btn" style="margin-top: 14px;">رجوع</button>
+                <button type="button" class="submit-btn close-packages-btn" onclick="closeModalById('packagesModal')" style="margin-top: 14px;">رجوع</button>
             </div>
         </div>
     </div>
@@ -1732,7 +1740,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h3 id="modalTitle">إضافة سائق جديد</h3>
-                    <span class="close-btn">&times;</span>
+                    <span class="close-btn" onclick="closeModalById('driverModal')" role="button" tabindex="0">&times;</span>
                 </div>
                 <form id="driverForm">
                     <input type="hidden" id="editDriverDocId">
@@ -1840,7 +1848,7 @@
                 <div class="nav-menu-list">
                     
                     <!-- 1. الإيداعات المؤجلة -->
-                    <div class="nav-menu-item" id="navItemPending">
+                    <button type="button" class="nav-menu-item" id="navItemPending" onclick="openNavTarget('pending')">
                         <div class="nav-item-icon" style="background: rgba(255, 153, 0, 0.12); color: var(--warning-color);">
                             <i class="fa-solid fa-clock-rotate-left"></i>
                         </div>
@@ -1852,10 +1860,10 @@
                             <span id="navPendingBadge" class="tag-badge hidden" style="background: rgba(255, 153, 0, 0.18); color: var(--warning-color); font-size: 0.75rem;">0</span>
                             <i class="fa-solid fa-chevron-left nav-arrow"></i>
                         </div>
-                    </div>
+                    </button>
 
                     <!-- 2. إضافات التحديثات -->
-                    <div class="nav-menu-item" id="navItemUpdates">
+                    <button type="button" class="nav-menu-item" id="navItemUpdates" onclick="openNavTarget('updates')">
                         <div class="nav-item-icon" style="background: rgba(0, 102, 255, 0.12); color: var(--primary-color);">
                             <i class="fa-solid fa-bullhorn"></i>
                         </div>
@@ -1867,10 +1875,10 @@
                             <span id="navUpdatesDot" class="update-badge hidden" style="position: static; display: inline-block;"></span>
                             <i class="fa-solid fa-chevron-left nav-arrow"></i>
                         </div>
-                    </div>
+                    </button>
 
                     <!-- 3. دليل الاستخدام -->
-                    <div class="nav-menu-item" id="navItemGuide">
+                    <button type="button" class="nav-menu-item" id="navItemGuide" onclick="openNavTarget('guide')">
                         <div class="nav-item-icon" style="background: rgba(5, 205, 153, 0.12); color: var(--success-color);">
                             <i class="fa-solid fa-book-open-reader"></i>
                         </div>
@@ -1879,10 +1887,10 @@
                             <small>شرح مبسط لكيفية العمل والنسخ السريع خطوة بخطوة</small>
                         </div>
                         <i class="fa-solid fa-chevron-left nav-arrow"></i>
-                    </div>
+                    </button>
 
                     <!-- 4. إخلاء المسؤولية وقوانين الاستخدام -->
-                    <div class="nav-menu-item" id="navItemDisclaimer">
+                    <button type="button" class="nav-menu-item" id="navItemDisclaimer" onclick="openNavTarget('disclaimer')">
                         <div class="nav-item-icon" style="background: rgba(163, 174, 208, 0.18); color: var(--text-color);">
                             <i class="fa-solid fa-scale-balanced"></i>
                         </div>
@@ -1891,10 +1899,10 @@
                             <small>الشروط القانونية، حظر التلاعب، وسياسة حماية البيانات</small>
                         </div>
                         <i class="fa-solid fa-chevron-left nav-arrow"></i>
-                    </div>
+                    </button>
 
                     <!-- 5. الإعدادات -->
-                    <div class="nav-menu-item" id="navItemSettings">
+                    <button type="button" class="nav-menu-item" id="navItemSettings" onclick="openNavTarget('settings')">
                         <div class="nav-item-icon" style="background: rgba(238, 93, 80, 0.12); color: var(--danger-color);">
                             <i class="fa-solid fa-gear"></i>
                         </div>
@@ -1903,7 +1911,7 @@
                             <small>بيانات الحساب، المزامنة، وتسجيل الخروج</small>
                         </div>
                         <i class="fa-solid fa-chevron-left nav-arrow"></i>
-                    </div>
+                    </button>
 
                 </div>
 
@@ -1927,7 +1935,7 @@
                     <i class="fa-solid fa-clock-rotate-left brand-icon" style="color: var(--warning-color);"></i>
                     <h3 style="margin: 0; font-size: 1.2rem;">الإيداعات المؤجلة (عند عطل زين كاش)</h3>
                 </div>
-                <button type="button" class="close-pending-btn fullscreen-nav-close-btn" title="رجوع">
+                <button type="button" class="close-pending-btn fullscreen-nav-close-btn" onclick="closeModalById('pendingDepositsModal')" title="رجوع">
                     <i class="fa-solid fa-arrow-right"></i>
                 </button>
             </div>
@@ -2010,7 +2018,7 @@
             <div class="modal-content" style="max-height: 85vh; overflow-y: auto;">
                 <div class="modal-header">
                     <h3><i class="fa-solid fa-sparkles" style="color: var(--talabat-color);"></i> سجل التحديثات والميزات الجديدة</h3>
-                    <span class="close-updates-btn close-btn">&times;</span>
+                    <span class="close-updates-btn close-btn" onclick="closeModalById('updatesModal')" role="button" tabindex="0">&times;</span>
                 </div>
                 <div class="updates-container">
                     
@@ -2178,7 +2186,7 @@
                     </div>
 
                 </div>
-                <button id="closeUpdatesModalBtn" class="submit-btn" style="margin-top: 15px;">
+                <button type="button" id="closeUpdatesModalBtn" class="submit-btn" onclick="closeModalById('updatesModal')" style="margin-top: 15px;">
                     فهمت ذلك، استمرار للعمل
                 </button>
             </div>
@@ -2189,7 +2197,7 @@
             <div class="modal-content" style="max-height: 88vh; overflow-y: auto; max-width: 550px;">
                 <div class="modal-header">
                     <h3><i class="fa-solid fa-book-open-reader" style="color: var(--primary-color);"></i> الدليل الشامل لاستخدام المنظومة (للمبتدئين)</h3>
-                    <span class="close-guide-btn close-btn">&times;</span>
+                    <span class="close-guide-btn close-btn" onclick="closeModalById('guideModal')" role="button" tabindex="0">&times;</span>
                 </div>
                 <div class="modal-body" style="text-align: right; line-height: 1.6;">
                     
@@ -2257,7 +2265,7 @@
                     <button id="pwaInstallBtn" class="submit-btn" style="background: var(--talabat-color); margin-top: 10px;">
                         <i class="fa-solid fa-download"></i> تثبيت التطبيق على الشاشة الرئيسية (PWA)
                     </button>
-                    <button class="submit-btn close-guide-btn" style="margin-top: 8px; background: var(--border-color); color: var(--text-color);">
+                    <button type="button" class="submit-btn close-guide-btn" onclick="closeModalById('guideModal')" style="margin-top: 8px; background: var(--border-color); color: var(--text-color);">
                         إغلاق الدليل
                     </button>
                 </div>
@@ -2268,7 +2276,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h3><i class="fa-solid fa-gear"></i> الإعدادات والحساب</h3>
-                    <span class="close-settings-btn">&times;</span>
+                    <span class="close-settings-btn close-btn" onclick="closeModalById('settingsModal')" role="button" tabindex="0">&times;</span>
                 </div>
                 <div class="settings-body">
                     <p id="userEmailDisplay" class="user-email-text"></p>
@@ -2348,7 +2356,7 @@
                     <a href="tel:07862247686"><i class="fa-solid fa-phone"></i> 07862247686</a>
                 </div>
             </div>
-            <button id="closeAuthErrorBtn" class="submit-btn" style="background: var(--primary-color);">
+            <button type="button" id="closeAuthErrorBtn" class="submit-btn" onclick="closeModalById('authErrorModal')" style="background: var(--primary-color);">
                 حسناً، فهمت
             </button>
         </div>
@@ -3064,18 +3072,37 @@
             };
         }
 
-        // كود موحد يشغل أزرار (X) لجميع النوافذ المنبثقة والنقر الخارجي
-        document.querySelectorAll('.close-btn, .close-settings-btn, .close-updates-btn, .close-benefits-btn, .close-packages-btn, .close-guide-btn').forEach(btn => {
-            btn.onclick = (e) => {
+        // ==========================================
+        // إدارة إغلاق جميع النوافذ المنبثقة والشاشات بدقة فورية
+        // ==========================================
+        function closeModalById(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+        }
+        window.closeModalById = closeModalById;
+
+        // تفويض عام ومرن لإغلاق أي نافذة عند النقر على أي زر إغلاق أو رجوع
+        document.addEventListener('click', (e) => {
+            const closeBtn = e.target.closest('.close-btn, .close-settings-btn, .close-updates-btn, .close-benefits-btn, .close-packages-btn, .close-guide-btn, .close-disclaimer-btn, .close-pending-btn, .fullscreen-nav-close-btn');
+            if (closeBtn) {
                 e.preventDefault();
-                const modal = btn.closest('.modal');
-                if (modal) modal.style.display = 'none';
-            };
+                e.stopPropagation();
+                const modal = closeBtn.closest('.modal, .fullscreen-nav-overlay');
+                if (modal) {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = '';
+                }
+            }
         });
 
+        // إغلاق النافذة عند النقر على الخلفية المظلمة
         window.addEventListener('click', (e) => {
             if (e.target.classList.contains('modal') && e.target.id !== 'authErrorModal') {
                 e.target.style.display = 'none';
+                document.body.style.overflow = '';
             }
         });
 
@@ -3386,7 +3413,7 @@
             driverModal.style.display = 'flex';
         };
 
-        document.querySelector('.close-btn').onclick = () => driverModal.style.display = 'none';
+        // close handled universally
 
         function openEditModal(docId, e) {
             if (e) e.stopPropagation();
@@ -3996,26 +4023,32 @@
             }, { passive: false });
         }
 
-        if (navItemPending) navItemPending.onclick = () => {
+        // فتح الواجهة المستهدفة من القائمة المنسدلة بدقة وسرعة
+        function openNavTarget(targetName) {
             closeFullscreenNavMenu();
-            if (pendingDepositsModal) pendingDepositsModal.style.display = 'flex';
-        };
-        if (navItemUpdates) navItemUpdates.onclick = () => {
-            closeFullscreenNavMenu();
-            openUpdatesModal();
-        };
-        if (navItemGuide) navItemGuide.onclick = () => {
-            closeFullscreenNavMenu();
-            if (guideModal) guideModal.style.display = 'flex';
-        };
-        if (navItemDisclaimer) navItemDisclaimer.onclick = () => {
-            closeFullscreenNavMenu();
-            openDisclaimerModal();
-        };
-        if (navItemSettings) navItemSettings.onclick = () => {
-            closeFullscreenNavMenu();
-            if (settingsModal) settingsModal.style.display = 'flex';
-        };
+            
+            if (targetName === 'pending') {
+                const modal = document.getElementById('pendingDepositsModal');
+                if (modal) modal.style.display = 'flex';
+            } else if (targetName === 'updates') {
+                openUpdatesModal();
+            } else if (targetName === 'guide') {
+                const modal = document.getElementById('guideModal');
+                if (modal) modal.style.display = 'flex';
+            } else if (targetName === 'disclaimer') {
+                openDisclaimerModal();
+            } else if (targetName === 'settings') {
+                const modal = document.getElementById('settingsModal');
+                if (modal) modal.style.display = 'flex';
+            }
+        }
+        window.openNavTarget = openNavTarget;
+
+        if (navItemPending) navItemPending.onclick = () => openNavTarget('pending');
+        if (navItemUpdates) navItemUpdates.onclick = () => openNavTarget('updates');
+        if (navItemGuide) navItemGuide.onclick = () => openNavTarget('guide');
+        if (navItemDisclaimer) navItemDisclaimer.onclick = () => openNavTarget('disclaimer');
+        if (navItemSettings) navItemSettings.onclick = () => openNavTarget('settings');
 
         // طي وفتح الأرشيف المصغر
         if (archivedToggleHeader) {
