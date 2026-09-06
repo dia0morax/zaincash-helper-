@@ -4391,12 +4391,10 @@
                             </div>
                             <span class="company-badge" style="font-size: 0.75rem;">${isTalabat ? 'طلبات' : 'بلي فود'}</span>
                         `;
-                        const selectHandler = (e) => {
+                        div.onclick = (e) => {
                             if (e) { e.preventDefault(); e.stopPropagation(); }
                             selectDriverForPendingDeposit(d);
                         };
-                        div.onclick = selectHandler;
-                        div.addEventListener('touchend', selectHandler, { passive: false });
                         pendingSuggestions.appendChild(div);
                     });
                     pendingSuggestions.classList.remove('hidden');
