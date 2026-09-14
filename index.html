@@ -2969,7 +2969,11 @@
                         <i class="fa-solid fa-phone"></i> اتصال بالسائق
                     </button>
                 </div>
+                <button type="button" class="card-action-btn" style="width: 100%; margin-top: 8px; background: rgba(0, 102, 255, 0.08); color: var(--primary-color); border: 1px dashed var(--primary-color); font-size: 0.88rem;" data-action="copy-all" data-id="${escapeHtml(driver.id)}">
+                    <i class="fa-solid fa-copy"></i> نسخ الكل
+                </button>
                 <div class="card-actions">
+
                     <button class="card-action-btn btn-edit ${!isOwner ? 'btn-locked' : ''}" data-action="${isOwner ? 'edit' : 'locked-edit'}" data-id="${escapeHtml(driver.id)}">
                         <i class="fa-solid ${isOwner ? 'fa-pen-to-square' : 'fa-lock'}"></i> تعديل
                     </button>
@@ -3045,7 +3049,41 @@
                 if (action === 'copy') {
                     const text = actionBtn.dataset.copy;
                     copyToClipboard(text, actionBtn, e);
+                if (action === 'copy-all') {
+                    const driver = drivers.find(d => d.id === id);
+                    if (driver) {
+                        const items = [];
+                        if (driver.phone) items.push(String(driver.phone));
+                        if (driver.name) items.push(String(driver.name));
+                        if (driver.driverId) items.push(String(driver.driverId));
+                        if (driver.companyCode) items.push(String(driver.companyCode));
+
+                        const originalBtnContent = actionBtn.innerHTML;
+                        actionBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> جاري النسخ للحافظة...`;
+                        actionBtn.style.pointerEvents = 'none';
+
+                        const copySequence = async () => {
+                            for (let i = 0; i < items.length; i++) {
+                                try {
+                                    await navigator.clipboard.writeText(items[i]);
+                                } catch (err) {
+                                    console.log("Clipboard err:", err);
+                                }
+                                await new Promise(resolve => setTimeout(resolve, 300));
+                            }
+                            actionBtn.innerHTML = `<i class="fa-solid fa-check-double"></i> تم نسخ الـ 4 عناصر للحافظة!`;
+                            actionBtn.style.color = 'var(--success-color)';
+                            setTimeout(() => {
+                                actionBtn.innerHTML = originalBtnContent;
+                                actionBtn.style.color = 'var(--primary-color)';
+                                actionBtn.style.pointerEvents = 'auto';
+                            }, 2000);
+                        };
+                        copySequence();
+                    }
                 } else if (action === 'send-verification') {
+
+
                     const type = actionBtn.dataset.type || 'whatsapp';
                     sendDriverVerification(id, type, e);
                 } else if (action === 'call-phone') {
