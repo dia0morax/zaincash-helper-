@@ -2977,10 +2977,14 @@
                         <i class="fa-solid ${isOwner ? 'fa-trash' : 'fa-lock'}"></i> حذف
                     </button>
                 </div>
+                <button class="card-action-btn" style="width: 100%; margin-top: 10px; background: rgba(0, 102, 255, 0.08); border: 1px dashed var(--primary-color); color: var(--primary-color);" data-action="copy-all" data-id="${escapeHtml(driver.id)}">
+                    <i class="fa-solid fa-copy"></i> نسخ الكل
+                </button>
             `;
 
             return card;
         }
+
 
         function renderDrivers(data) {
             driversList.innerHTML = '';
@@ -3045,10 +3049,16 @@
                 if (action === 'copy') {
                     const text = actionBtn.dataset.copy;
                     copyToClipboard(text, actionBtn, e);
+                } else if (action === 'copy-all') {
+                    const driver = drivers.find(d => d.id === id);
+                    if (driver) {
+                        copyAllReversed(driver, actionBtn);
+                    }
                 } else if (action === 'send-verification') {
                     const type = actionBtn.dataset.type || 'whatsapp';
                     sendDriverVerification(id, type, e);
                 } else if (action === 'call-phone') {
+
                     const rawPhone = actionBtn.dataset.phone || '';
                     const cleanPhone = rawPhone.replace(/\D/g, '');
                     if (cleanPhone) {
@@ -3357,6 +3367,41 @@
                 }, 1500);
             });
         }
+
+        async function copyAllReversed(driver, buttonElement) {
+            const originalText = buttonElement.innerHTML;
+            buttonElement.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> جاري النسخ المتعدد...`;
+            
+            // ترتيب النسخ العكسي: الهاتف ثم الاسم ثم الايدي ثم رمز العميل
+            const itemsToCopy = [];
+            if (driver.phone) itemsToCopy.push(driver.phone);
+            if (driver.name) itemsToCopy.push(driver.name);
+            if (driver.driverId) itemsToCopy.push(driver.driverId);
+            if (driver.companyCode) itemsToCopy.push(driver.companyCode);
+
+            // النسخ المتعدد مع تأخير زمني بين كل عملية ليتم تخزينها كمدخلات منفصلة في حافظة الهاتف (Clipboard History)
+            for (let i = 0; i < itemsToCopy.length; i++) {
+                try {
+                    await navigator.clipboard.writeText(itemsToCopy[i]);
+                    await new Promise(resolve => setTimeout(resolve, 400)); // تأخير 400 ملي ثانية لتسجيلها كنسخة منفصلة
+                } catch (err) {
+                    console.error('Copy failed', err);
+                }
+            }
+
+            buttonElement.innerHTML = `<i class="fa-solid fa-check-double"></i> تم النسخ بنجاح`;
+            buttonElement.style.background = 'rgba(5, 205, 153, 0.15)';
+            buttonElement.style.color = 'var(--success-color)';
+            buttonElement.style.borderColor = 'var(--success-color)';
+            
+            setTimeout(() => {
+                buttonElement.innerHTML = originalText;
+                buttonElement.style.background = 'rgba(0, 102, 255, 0.08)';
+                buttonElement.style.color = 'var(--primary-color)';
+                buttonElement.style.borderColor = 'var(--primary-color)';
+            }, 2500);
+        }
+
 
         // ==========================================
         // 7. إضافة وتعديل وحذف السائقين
