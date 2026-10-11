@@ -3104,9 +3104,11 @@ if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
                 return;
             }
 
-            const card = e.target.closest('.driver-card');
+const card = e.target.closest('.driver-card');
             if (card && !e.target.closest('button') && !e.target.closest('a')) {
                 fullScreenDriverId = card.dataset.driverId;
+                const searchInputEl = document.getElementById('searchInput');
+                if (searchInputEl) searchInputEl.value = ''; // تفريغ مربع البحث عند فتح كرت السائق
                 filterAndRenderDrivers();
             }
         });
@@ -3318,12 +3320,12 @@ if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
                             </div>
                             <span class="company-badge" style="font-size: 0.72rem;">${isTalabat ? 'طلبات' : 'بلي فود'}</span>
                         `;
-                        item.onclick = (e) => {
+item.onclick = (e) => {
                             if (e) e.stopPropagation();
                             fullScreenDriverId = m.id;
                             searchSuggestions.classList.add('hidden');
                             searchSuggestions.style.display = 'none';
-                            searchInput.value = m.name;
+                            searchInput.value = ''; // تفريغ مربع البحث فوراً لتسهيل البحث عن سائق آخر
                             filterAndRenderDrivers();
                         };
                         searchSuggestions.appendChild(item);
