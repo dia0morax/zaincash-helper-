@@ -2,8 +2,17 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>مساعد ايداع السواق</title>
+
+    <!-- إعدادات تطبيق الويب (PWA) -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0066FF">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="مساعد الإيداع">
+    <link rel="apple-touch-icon" href="https://api.dicebear.com/7.x/identicon/png?seed=ZainCashDriver&size=192">
+
     <!-- خط Cairo والأيقونات FontAwesome -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -2415,9 +2424,15 @@
             appId: "1:108290396776:web:ae3a55b268aaaf84c1e1dd"
         };
 
-        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
+
+        // تفعيل التخزين المؤقت (الكاش) لجعل جلب البيانات سريعاً جداً ويعمل حتى عند ضعف النت
+        db.enablePersistence({ synchronizeTabs: true })
+            .catch(function(err) {
+                console.log("Persistence error:", err);
+            });
 
         let drivers = [];
         // حالة الإيداعات المؤجلة معرفة في أعلى السكربت
@@ -2778,12 +2793,12 @@
             };
         }
 
-        // ==========================================
+// ==========================================
         // 1. جلب كافة السائقين واستبعاد المحذوفات تلقائياً (دعم حتى 10,000+ سائق)
         // ==========================================
         function loadDriversFromCloud() {
-            // جلب كافة السائقين لحظياً مع الحفاظ الكامل على السجلات القديمة واستبعاد المحذوفات (isDeleted !== true)
-            db.collection("drivers").onSnapshot((snapshot) => {
+            // جلب كافة السائقين لحظياً مع الاعتماد على الكاش لتسريع الفتح بشكل صاروخي
+            db.collection("drivers").onSnapshot({ includeMetadataChanges: true }, (snapshot) => {
                 drivers = [];
                 snapshot.forEach((doc) => {
                     const data = doc.data();
@@ -2811,6 +2826,18 @@
                 console.error("خطأ في جلب البيانات: ", error);
             });
         }
+
+        // تحديث تلقائي (Auto-Refresh) عند العودة للموقع أو فتح الهاتف من وضع السكون
+        document.addEventListener("visibilitychange", () => {
+            if (document.visibilityState === "visible") {
+                const savedUser = localStorage.getItem('zaincash_logged_user');
+                if (savedUser && drivers.length > 0) {
+                    // إعادة رسم الواجهة فوراً من الكاش لضمان عدم التعليق وتحديث البيانات
+                    updateDriverCounts();
+                    filterAndRenderDrivers();
+                }
+            }
+        });
 
         // ==========================================
         // 4. رسم بطاقات السائقين (دعم الشاشة الكاملة الفوري)
@@ -4570,7 +4597,17 @@
                 }
             };
         }
+
+        // تفعيل Service Worker لتحويل الموقع إلى تطبيق
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(() => console.log('Service Worker Registered'))
+                    .catch((err) => console.log('Service Worker Failed:', err));
+            });
+        }
     </script>
+
     <!-- نافذة النجاح المنبثقة السريعة -->
     <div id="successToast" class="success-toast hidden">
         <div class="toast-content">
