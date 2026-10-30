@@ -1074,31 +1074,152 @@
             box-shadow: 0 16px 36px rgba(112, 144, 176, 0.2);
         }
 
-        /* زر إضافة سائق الكبير بالهيدر */
+        /* زر إضافة سائق المصغر بالهيدر + زر قارئ الباركود المربع */
         .main-add-driver-btn {
             background: linear-gradient(135deg, #0066FF 0%, #004ecc 100%);
             color: #FFFFFF;
             border: none;
-            border-radius: 14px;
-            padding: 9px 16px;
-            font-size: 0.92rem;
+            border-radius: 12px;
+            padding: 7px 11px;
+            height: 40px;
+            font-size: 0.82rem;
             font-weight: 800;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 7px;
-            box-shadow: 0 4px 16px rgba(0, 102, 255, 0.35);
+            gap: 5px;
+            box-shadow: 0 4px 14px rgba(0, 102, 255, 0.3);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
             white-space: nowrap;
             user-select: none;
         }
         .main-add-driver-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 102, 255, 0.45);
+            box-shadow: 0 6px 18px rgba(0, 102, 255, 0.42);
         }
         .main-add-driver-btn:active {
             transform: scale(0.96);
         }
+
+        .qr-scanner-header-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: rgba(0, 102, 255, 0.1);
+            border: 1.5px solid rgba(0, 102, 255, 0.3);
+            color: var(--primary-color);
+            font-size: 1.15rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+        .qr-scanner-header-btn:hover {
+            background: var(--primary-color);
+            color: #FFFFFF;
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 14px rgba(0, 102, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        .qr-scanner-header-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* تصميم قائمة خيارات الباركود (كاميرا / استوديو) وشاشة المسح */
+        .qr-options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 15px 0 8px 0;
+        }
+        .qr-option-card {
+            background: var(--bg-color);
+            border: 1.5px solid var(--border-color);
+            border-radius: 18px;
+            padding: 20px 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            user-select: none;
+        }
+        .qr-option-card:hover, .qr-option-card:active {
+            border-color: var(--primary-color);
+            background: rgba(0, 102, 255, 0.06);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+        }
+        .qr-option-icon {
+            width: 54px;
+            height: 54px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            background: rgba(0, 102, 255, 0.12);
+            color: var(--primary-color);
+        }
+        .qr-option-card.gallery-opt .qr-option-icon {
+            background: rgba(5, 205, 153, 0.12);
+            color: var(--success-color);
+        }
+        .qr-option-title {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--text-color);
+        }
+        .qr-option-sub {
+            font-size: 0.76rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            line-height: 1.35;
+        }
+        .qr-viewport-wrapper {
+            position: relative;
+            width: 100%;
+            min-height: 270px;
+            background: #000;
+            border-radius: 18px;
+            overflow: hidden;
+            border: 2px solid var(--primary-color);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #qrReaderViewport {
+            width: 100%;
+            min-height: 270px;
+        }
+        #qrReaderViewport video {
+            width: 100% !important;
+            height: auto !important;
+            object-fit: cover;
+            border-radius: 16px;
+        }
+        .qr-scan-Status {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 12px;
+        }
+        .field-autofilled {
+            border-color: var(--success-color) !important;
+            box-shadow: 0 0 0 3px rgba(5, 205, 153, 0.2) !important;
+            transition: all 0.3s ease;
+        }
+
 
         /* زر القائمة المنسدلة الثلاث خطوط (Hamburger) متوافق 100% مع كافة المتصفحات */
         .hamburger-btn {
@@ -1692,11 +1813,15 @@
                 <button id="addDriverBtn" class="main-add-driver-btn" title="إضافة سائق جديد">
                     <i class="fa-solid fa-user-plus"></i> إضافة سائق
                 </button>
+                <button type="button" id="openQrMenuBtn" class="qr-scanner-header-btn" title="قارئ باركود السائق" onclick="openQrChoiceModal()">
+                    <i class="fa-solid fa-qrcode"></i>
+                </button>
                 <button type="button" id="hamburgerMenuBtn" class="hamburger-btn" title="القائمة الرئيسية" onclick="openFullscreenNavMenu()">
                     <i class="fa-solid fa-bars"></i>
                     <span id="menuNotificationDot" class="update-badge hidden"></span>
                 </button>
             </div>
+
         </header>
 
 
@@ -4608,7 +4733,417 @@ item.onclick = (e) => {
                     .catch((err) => console.log('Service Worker Failed:', err));
             });
         }
+
+        // ==========================================
+        // 10. منظومة قارئ الباركود الذكي (الكاميرا المباشرة + الاستوديو)
+        // ==========================================
+        let html5QrScannerInstance = null;
+        let isQrScannerRunning = false;
+
+        function openQrChoiceModal() {
+            const modal = document.getElementById('qrChoiceModal');
+            const statusBox = document.getElementById('qrChoiceStatusMsg');
+            if (statusBox) {
+                statusBox.classList.add('hidden');
+                statusBox.textContent = '';
+            }
+            if (modal) {
+                modal.style.display = 'flex';
+            }
+        }
+        window.openQrChoiceModal = openQrChoiceModal;
+
+        function closeQrChoiceModal() {
+            const modal = document.getElementById('qrChoiceModal');
+            if (modal) modal.style.display = 'none';
+        }
+        window.closeQrChoiceModal = closeQrChoiceModal;
+
+        // دالة ذكية جداً لاستخراج الـ ID ورقم الهاتف من أي صيغة باركود
+        function extractDriverDataFromBarcode(rawText) {
+            if (!rawText) return { driverId: '', phone: '' };
+            const text = String(rawText).trim();
+            let extractedId = '';
+            let extractedPhone = '';
+
+            // 1. محاولة التحليل كـ JSON مباشرة أو استخراج كائن JSON من النص (مثل {"rider_id":"4148031","mobile_number":"9647862247686"})
+            try {
+                const jsonMatch = text.match(/\{[\s\S]*\}/);
+                const jsonCandidate = jsonMatch ? jsonMatch[0] : text;
+                const parsed = JSON.parse(jsonCandidate);
+
+                if (parsed && typeof parsed === 'object') {
+                    const idKeys = ['rider_id', 'riderId', 'driver_id', 'driverId', 'id', 'ID', 'user_id', 'userId', 'captain_id', 'captainId', 'code', 'emp_id'];
+                    const phoneKeys = ['mobile_number', 'mobileNumber', 'phone_number', 'phoneNumber', 'phone', 'mobile', 'tel', 'telephone', 'msisdn', 'contact', 'number'];
+
+                    for (const k of idKeys) {
+                        if (parsed[k] !== undefined && parsed[k] !== null && String(parsed[k]).trim() !== '') {
+                            extractedId = String(parsed[k]).trim();
+                            break;
+                        }
+                    }
+                    for (const k of phoneKeys) {
+                        if (parsed[k] !== undefined && parsed[k] !== null && String(parsed[k]).trim() !== '') {
+                            extractedPhone = String(parsed[k]).trim();
+                            break;
+                        }
+                    }
+
+                    // في حال كانت أسماء الحقول داخل JSON مختلفة أو غير متوقعة، نفحص القيم بذكاء
+                    if (!extractedPhone || !extractedId) {
+                        Object.entries(parsed).forEach(([k, val]) => {
+                            if (val === null || val === undefined) return;
+                            const strVal = String(val).trim();
+                            const digits = strVal.replace(/\D/g, '');
+                            if (!extractedPhone && /^(?:00964|964|0)?7[5789]\d{8}$/.test(digits)) {
+                                extractedPhone = digits;
+                            } else if (!extractedId && /^\d{4,10}$/.test(digits) && digits !== extractedPhone) {
+                                extractedId = digits;
+                            }
+                        });
+                    }
+                }
+            } catch (e) {
+                // ليس JSON صافي، ننتقل للتحليل الذكي للنصوص والروابط وأي صيغة أخرى
+            }
+
+            // 2. البحث الذكي في النص المفتوح (يدعم JSON تالف، روابط URL، سطور نصية، أو أرقام مفصولة)
+            if (!extractedId) {
+                const keyValIdMatch = text.match(/(?:rider_id|riderId|driver_id|driverId|captain_id|user_id|\bid\b|الايدي|معرف)[\s"'=:\-]*([0-9]{4,10})/i);
+                if (keyValIdMatch) {
+                    extractedId = keyValIdMatch[1];
+                }
+            }
+
+            if (!extractedPhone) {
+                const keyValPhoneMatch = text.match(/(?:mobile_number|mobileNumber|phone_number|phoneNumber|mobile|phone|tel|هاتف|موبايل|رقم)[\s"'=:\-+]*([0-9]{10,15})/i);
+                if (keyValPhoneMatch) {
+                    extractedPhone = keyValPhoneMatch[1];
+                }
+            }
+
+            // 3. البحث الشامل عن أي رقم هاتف عراقي بأي صيغة (9647... أو 07... أو 78...)
+            if (!extractedPhone) {
+                const iraqiPhoneMatch = text.match(/(?:00964|\+964|964|0)?(7[5789]\d{8})\b/);
+                if (iraqiPhoneMatch) {
+                    extractedPhone = iraqiPhoneMatch[0];
+                } else {
+                    const generalPhoneMatch = text.match(/\b(964\d{10}|07\d{9})\b/);
+                    if (generalPhoneMatch) extractedPhone = generalPhoneMatch[1];
+                }
+            }
+
+            // 4. استخراج الـ ID بعد استبعاد رقم الهاتف من النص حتى لا يختلط الرقمان
+            if (!extractedId) {
+                let remainingText = text;
+                if (extractedPhone) {
+                    const cleanRawPhone = extractedPhone.replace(/\D/g, '');
+                    remainingText = remainingText.replace(extractedPhone, ' ').replace(cleanRawPhone, ' ');
+                    if (cleanRawPhone.startsWith('964') && cleanRawPhone.length === 13) {
+                        remainingText = remainingText.replace(cleanRawPhone.substring(3), ' ');
+                    }
+                }
+                // الأولوية لرقم مكون من 7 أرقام (ID طلبات القياسي) ثم من 5 إلى 9 أرقام
+                const sevenDigitMatch = remainingText.match(/\b(\d{7})\b/);
+                if (sevenDigitMatch) {
+                    extractedId = sevenDigitMatch[1];
+                } else {
+                    const anyIdMatch = remainingText.match(/\b(\d{4,10})\b/);
+                    if (anyIdMatch) {
+                        extractedId = anyIdMatch[1];
+                    }
+                }
+            }
+
+            // تنظيف وتنسيق النتائج النهائية
+            const finalId = extractedId ? extractedId.replace(/\D/g, '') : '';
+            const finalPhone = extractedPhone ? normalizeIraqiPhone(extractedPhone) : '';
+
+            return {
+                driverId: finalId,
+                phone: finalPhone
+            };
+        }
+
+        // فتح نافذة إضافة سائق وتعبئة الـ ID ورقم الهاتف تلقائياً فور التقاط الباركود
+        function handleDecodedBarcodeSuccess(decodedText) {
+            const { driverId, phone } = extractDriverDataFromBarcode(decodedText);
+
+            if (!driverId && !phone) {
+                const statusBox = document.getElementById('qrChoiceStatusMsg');
+                if (statusBox) {
+                    statusBox.textContent = '⚠️ تم قراءة الباركود ولكن لم يتم العثور على ID أو رقم هاتف بداخله: ' + decodedText;
+                    statusBox.classList.remove('hidden');
+                }
+                return false;
+            }
+
+            // إغلاق شاشة الكاميرا وقائمة الباركود فوراً
+            stopLiveQrScannerAndClose();
+            closeQrChoiceModal();
+
+            // فتح قائمة إضافة سائق جديد وتهيئة الحقول
+            editDriverDocId.value = '';
+            modalTitle.textContent = 'إضافة سائق جديد';
+            driverForm.reset();
+            resetNameDuplicateAlert();
+            initWhatsAppToggle();
+            if (branchSelect) branchSelect.value = '';
+            if (customBranchContainer) customBranchContainer.classList.add('hidden');
+            if (customBranchInput) customBranchInput.value = '';
+            setCompanyCodeSelection('531');
+
+            // ضبط الشركة على طلبات لإظهار حقل الـ ID والفرع ورمز العميل
+            companySelect.value = 'talabat';
+            toggleFormFieldsByCompany('talabat');
+
+            const driverIdInputEl = document.getElementById('driverId');
+            const driverPhoneInputEl = document.getElementById('driverPhone');
+
+            if (driverIdInputEl && driverId) {
+                driverIdInputEl.value = driverId;
+                driverIdInputEl.classList.add('field-autofilled');
+                setTimeout(() => driverIdInputEl.classList.remove('field-autofilled'), 2500);
+            }
+
+            if (driverPhoneInputEl && phone) {
+                driverPhoneInputEl.value = phone;
+                driverPhoneInputEl.classList.add('field-autofilled');
+                setTimeout(() => driverPhoneInputEl.classList.remove('field-autofilled'), 2500);
+            }
+
+            driverModal.style.display = 'flex';
+
+            // وضع المؤشر على حقل اسم السائق ليكمل المستخدم باقي البيانات يدوياً
+            const nameInputEl = document.getElementById('driverName');
+            if (nameInputEl) {
+                setTimeout(() => nameInputEl.focus(), 120);
+            }
+            return true;
+        }
+
+        // خيار 1: فتح الكاميرا المباشرة لمسح الباركود
+        async function startLiveQrScanner() {
+            closeQrChoiceModal();
+            const cameraModal = document.getElementById('qrCameraModal');
+            const statusEl = document.getElementById('qrCameraStatus');
+            if (cameraModal) cameraModal.style.display = 'flex';
+            if (statusEl) statusEl.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري تشغيل الكاميرا... وجّه الكاميرا نحو الباركود';
+
+            await stopLiveQrScannerOnly();
+
+            try {
+                if (typeof Html5Qrcode === 'undefined') {
+                    if (statusEl) statusEl.textContent = '⚠️ جاري تحميل مكتبة الكاميرا، يرجى المحاولة بعد لحظة.';
+                    return;
+                }
+
+                html5QrScannerInstance = new Html5Qrcode("qrReaderViewport");
+                isQrScannerRunning = true;
+
+                await html5QrScannerInstance.start(
+                    { facingMode: "environment" },
+                    {
+                        fps: 15,
+                        qrbox: { width: 230, height: 230 },
+                        aspectRatio: 1.0
+                    },
+                    (decodedText) => {
+                        if (decodedText) {
+                            handleDecodedBarcodeSuccess(decodedText);
+                        }
+                    },
+                    () => {}
+                );
+
+                if (statusEl) {
+                    statusEl.innerHTML = '<i class="fa-solid fa-camera"></i> الكاميرا جاهزة — ضع الباركود داخل المربع ليتم التقاطه تلقائياً';
+                }
+            } catch (err) {
+                isQrScannerRunning = false;
+                if (statusEl) {
+                    statusEl.innerHTML = '<span style="color: var(--danger-color);">⚠️ تعذر فتح الكاميرا (تأكد من منح صلاحية الكاميرا للمتصفح أو استخدم خيار الاستوديو).</span>';
+                }
+            }
+        }
+        window.startLiveQrScanner = startLiveQrScanner;
+
+        async function stopLiveQrScannerOnly() {
+            if (html5QrScannerInstance) {
+                try {
+                    if (isQrScannerRunning) {
+                        await html5QrScannerInstance.stop();
+                    }
+                    await html5QrScannerInstance.clear();
+                } catch (e) {}
+                html5QrScannerInstance = null;
+                isQrScannerRunning = false;
+            }
+        }
+
+        async function stopLiveQrScannerAndClose() {
+            await stopLiveQrScannerOnly();
+            const cameraModal = document.getElementById('qrCameraModal');
+            if (cameraModal) cameraModal.style.display = 'none';
+        }
+        window.stopLiveQrScannerAndClose = stopLiveQrScannerAndClose;
+
+        // خيار 2: جلب صورة الباركود من الاستوديو وفحصها بدقة عالية جداً
+        function triggerQrGalleryUpload() {
+            const fileInput = document.getElementById('qrGalleryFileInput');
+            if (fileInput) {
+                fileInput.value = '';
+                fileInput.click();
+            }
+        }
+        window.triggerQrGalleryUpload = triggerQrGalleryUpload;
+
+        // قراءة الباركود من الصورة المرفوعة بـ 3 محركات متتالية لضمان قراءة كافة الصور والباركودات
+        async function decodeBarcodeFromImageFile(file) {
+            if (!file) return;
+            const statusBox = document.getElementById('qrChoiceStatusMsg');
+            if (statusBox) {
+                statusBox.style.color = 'var(--primary-color)';
+                statusBox.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري فحص وقراءة الباركود من الصورة...';
+                statusBox.classList.remove('hidden');
+            }
+
+            try {
+                const imgBitmap = await new Promise((resolve, reject) => {
+                    const img = new Image();
+                    img.onload = () => resolve(img);
+                    img.onerror = (e) => reject(e);
+                    img.src = URL.createObjectURL(file);
+                });
+
+                // المحرك الأول: فحص متعدد الأحجام والتباين عبر jsQR (يدعم الصورة المرفقة وكافة لقطات الشاشة)
+                if (typeof jsQR !== 'undefined') {
+                    const scales = [1, 0.75, 0.5, 1.35];
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+
+                    for (const scale of scales) {
+                        const w = Math.max(120, Math.round(imgBitmap.naturalWidth * scale));
+                        const h = Math.max(120, Math.round(imgBitmap.naturalHeight * scale));
+                        canvas.width = w;
+                        canvas.height = h;
+                        ctx.fillStyle = '#FFFFFF';
+                        ctx.fillRect(0, 0, w, h);
+                        ctx.drawImage(imgBitmap, 0, 0, w, h);
+
+                        const imageData = ctx.getImageData(0, 0, w, h);
+                        const code = jsQR(imageData.data, w, h, { inversionAttempts: 'attemptBoth' });
+                        if (code && code.data) {
+                            URL.revokeObjectURL(imgBitmap.src);
+                            handleDecodedBarcodeSuccess(code.data);
+                            return;
+                        }
+                    }
+                }
+
+                // المحرك الثاني: محرك المتصفح الأصلي BarcodeDetector (يدعم QR وكافة الباركودات الخطية)
+                if ('BarcodeDetector' in window) {
+                    try {
+                        const detector = new BarcodeDetector();
+                        const barcodes = await detector.detect(imgBitmap);
+                        if (barcodes && barcodes.length > 0 && barcodes[0].rawValue) {
+                            URL.revokeObjectURL(imgBitmap.src);
+                            handleDecodedBarcodeSuccess(barcodes[0].rawValue);
+                            return;
+                        }
+                    } catch (e) {}
+                }
+
+                URL.revokeObjectURL(imgBitmap.src);
+
+                // المحرك الثالث: محرك Html5Qrcode الاحتياطي
+                if (typeof Html5Qrcode !== 'undefined') {
+                    const tempScanner = new Html5Qrcode("qrHiddenFileReader");
+                    const decodedText = await tempScanner.scanFile(file, false);
+                    if (decodedText) {
+                        handleDecodedBarcodeSuccess(decodedText);
+                        return;
+                    }
+                }
+
+                if (statusBox) {
+                    statusBox.style.color = 'var(--danger-color)';
+                    statusBox.innerHTML = '⚠️ لم نتمكن من العثور على باركود واضح في هذه الصورة، يرجى اختيار صورة أوضح أو استخدام الكاميرا.';
+                    statusBox.classList.remove('hidden');
+                }
+            } catch (err) {
+                if (statusBox) {
+                    statusBox.style.color = 'var(--danger-color)';
+                    statusBox.innerHTML = '⚠️ تعذر قراءة الباركود من الصورة المختارة، تأكد من وضوح الباركود في الصورة.';
+                    statusBox.classList.remove('hidden');
+                }
+            }
+        }
+        window.decodeBarcodeFromImageFile = decodeBarcodeFromImageFile;
     </script>
+
+    <!-- مكتبات مسح الباركود والـ QR من الكاميرا والاستوديو -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+
+    <!-- نافذة اختيار طريقة مسح الباركود (كاميرا أو استوديو) بنفس تصميم الموقع -->
+    <div id="qrChoiceModal" class="modal" style="z-index: 100080;">
+        <div class="modal-content" style="max-width: 400px; text-align: center;">
+            <div class="modal-header" style="margin-bottom: 10px;">
+                <h3><i class="fa-solid fa-qrcode" style="color: var(--primary-color);"></i> مسح باركود السائق</h3>
+                <span class="close-btn" onclick="closeQrChoiceModal()" role="button" tabindex="0">&times;</span>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 700; margin-bottom: 12px;">
+                اختر طريقة قراءة الباركود ليتم ملء الـ ID ورقم الهاتف تلقائياً:
+            </p>
+            <div class="qr-options-grid">
+                <div class="qr-option-card" onclick="startLiveQrScanner()">
+                    <div class="qr-option-icon">
+                        <i class="fa-solid fa-camera"></i>
+                    </div>
+                    <div class="qr-option-title">الكاميرا</div>
+                    <div class="qr-option-sub">مسح مباشر وسريع عبر كاميرا الهاتف</div>
+                </div>
+                <div class="qr-option-card gallery-opt" onclick="triggerQrGalleryUpload()">
+                    <div class="qr-option-icon">
+                        <i class="fa-solid fa-images"></i>
+                    </div>
+                    <div class="qr-option-title">الاستوديو</div>
+                    <div class="qr-option-sub">جلب صورة الباركود من معرض الصور</div>
+                </div>
+            </div>
+            <input type="file" id="qrGalleryFileInput" accept="image/*" class="hidden" onchange="decodeBarcodeFromImageFile(this.files[0])">
+            <div id="qrHiddenFileReader" class="hidden"></div>
+            <div id="qrChoiceStatusMsg" class="hidden" style="margin-top: 12px; padding: 10px; border-radius: 12px; background: var(--bg-color); font-size: 0.82rem; font-weight: 700;"></div>
+            <button type="button" class="submit-btn" onclick="closeQrChoiceModal()" style="margin-top: 14px; background: var(--bg-color); color: var(--text-color); border: 1px solid var(--border-color);">
+                إلغاء
+            </button>
+        </div>
+    </div>
+
+    <!-- نافذة الكاميرا المباشرة لمسح الباركود -->
+    <div id="qrCameraModal" class="modal" style="z-index: 100090;">
+        <div class="modal-content" style="max-width: 420px; text-align: center;">
+            <div class="modal-header" style="margin-bottom: 12px;">
+                <h3><i class="fa-solid fa-camera" style="color: var(--primary-color);"></i> مسح الباركود بالكاميرا</h3>
+                <span class="close-btn" onclick="stopLiveQrScannerAndClose()" role="button" tabindex="0">&times;</span>
+            </div>
+            <div id="qrCameraStatus" class="qr-scan-Status">
+                وجّه الكاميرا نحو الباركود ليتم التقاطه تلقائياً
+            </div>
+            <div class="qr-viewport-wrapper">
+                <div id="qrReaderViewport"></div>
+            </div>
+            <div style="display: flex; gap: 8px;">
+                <button type="button" class="submit-btn" onclick="stopLiveQrScannerAndClose(); triggerQrGalleryUpload();" style="background: rgba(5, 205, 153, 0.12); color: var(--success-color); border: 1px solid rgba(5, 205, 153, 0.3);">
+                    <i class="fa-solid fa-images"></i> من الاستوديو
+                </button>
+                <button type="button" class="submit-btn btn-danger" onclick="stopLiveQrScannerAndClose()">
+                    <i class="fa-solid fa-xmark"></i> إغلاق الكاميرا
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- نافذة النجاح المنبثقة السريعة -->
     <div id="successToast" class="success-toast hidden">
@@ -4625,3 +5160,4 @@ item.onclick = (e) => {
     </div>
 </body>
 </html>
+
