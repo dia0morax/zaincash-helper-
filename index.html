@@ -4865,7 +4865,34 @@ item.onclick = (e) => {
             };
         }
 
-        // فتح نافذة إضافة سائق وتعبئة الـ ID ورقم الهاتف تلقائياً فور التقاط الباركود
+        // إظهار علامة منبثقة خضراء سريعة عند وجود السائق مسبقاً
+        function showExistingDriverQuickToast() {
+            const toast = document.getElementById('successToast');
+            const msgEl = document.getElementById('toastMessage');
+            const goBtn = document.getElementById('toastGoBtn');
+            const closeBtn = document.getElementById('toastCloseBtn');
+
+            if (!toast || !msgEl) return;
+
+            msgEl.innerHTML = `<b>السائق موجود بالفعل</b>`;
+            if (goBtn) goBtn.style.display = 'none';
+            toast.classList.remove('hidden');
+
+            if (closeBtn) {
+                closeBtn.onclick = () => {
+                    toast.classList.add('hidden');
+                    if (goBtn) goBtn.style.display = '';
+                };
+            }
+
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.add('hidden');
+                if (goBtn) goBtn.style.display = '';
+            }, 2500);
+        }
+
+        // فحص الباركود: إذا كان السائق موجوداً يفتح بطاقته مباشرة، وإلا يفتح نافذة إضافة سائق جديد
         function handleDecodedBarcodeSuccess(decodedText) {
             const { driverId, phone } = extractDriverDataFromBarcode(decodedText);
 
@@ -4882,7 +4909,30 @@ item.onclick = (e) => {
             stopLiveQrScannerAndClose();
             closeQrChoiceModal();
 
-            // فتح قائمة إضافة سائق جديد وتهيئة الحقول
+            // البحث عما إذا كان هناك سائق موجود أصلاً يتطابق في الـ ID ورقم الهاتف
+            const cleanScannedId = (driverId || '').replace(/\D/g, '');
+            const cleanScannedPhone = normalizeIraqiPhone(phone || '');
+
+            const existingDriver = drivers.find(d => {
+                if (d.isDeleted === true) return false;
+                const cardId = String(d.driverId || '').replace(/\D/g, '');
+                const cardPhone = normalizeIraqiPhone(d.phone || '');
+                return cleanScannedId !== '' && cleanScannedPhone !== '' && cardId === cleanScannedId && cardPhone === cleanScannedPhone;
+            });
+
+            if (existingDriver) {
+                // إغلاق نافذة الإضافة إن كانت مفتوحة والانتقال مباشرة لبطاقة السائق بوضع التركيز
+                if (driverModal) driverModal.style.display = 'none';
+                if (searchInput) searchInput.value = '';
+                activeCompanyFilter = 'all';
+                activeTalabatBranchFilter = 'all';
+                fullScreenDriverId = existingDriver.id;
+                filterAndRenderDrivers();
+                showExistingDriverQuickToast();
+                return true;
+            }
+
+            // إذا لم يكن موجوداً: فتح قائمة إضافة سائق جديد وتعبئة الـ ID ورقم الهاتف تلقائياً
             editDriverDocId.value = '';
             modalTitle.textContent = 'إضافة سائق جديد';
             driverForm.reset();
@@ -4921,6 +4971,7 @@ item.onclick = (e) => {
             }
             return true;
         }
+
 
         // خيار 1: فتح الكاميرا المباشرة لمسح الباركود
         async function startLiveQrScanner() {
